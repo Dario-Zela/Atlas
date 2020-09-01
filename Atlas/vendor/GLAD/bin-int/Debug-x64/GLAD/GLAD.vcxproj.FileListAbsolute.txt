@@ -1,0 +1,4 @@
+C:\dev\NEA\Engine\Vendor\GLAD\bin\Debug-x64\GLAD\GLAD.pdb
+C:\dev\NEA\Engine\Vendor\GLAD\bin-int\Debug-x64\GLAD\GLAD.pdb
+C:\dev\Atlas\Atlas\vendor\GLAD\bin\Debug-x64\GLAD\GLAD.pdb
+C:\dev\Atlas\Atlas\vendor\GLAD\bin-int\Debug-x64\GLAD\GLAD.pdb
