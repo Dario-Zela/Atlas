@@ -2,4 +2,5 @@
 //They will contain all the classes the user will be able to access
 
 #include "pch.h"
-#include "Window/Window.h"
+#include "Core/Application.h"
+#include "Layer/Layer.h"

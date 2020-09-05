@@ -2,13 +2,7 @@
 
 int main()
 {
-	Atlas::Window window;
-	if (window.Init("Test", 1024, 700))
-	{
-		while (window.isRunning())
-		{
-			window.Broadcast();
-		}
-	}
-	return 0;
+	Atlas::Logger->Init("djdj");
+	Atlas::Application app("Test", 1024, 700);
+	app.Run();
 }

@@ -10,6 +10,9 @@
 
 #include <string>
 #include <vector>
+#include <queue>
 #include <sstream>
+
+#include "Core/Core.h"
 
 #endif
