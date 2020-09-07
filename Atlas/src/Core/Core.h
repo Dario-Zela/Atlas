@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Log.h"
+#include "Graphics/DX11Exception.h"
 
 typedef unsigned int uint;
 

@@ -46,11 +46,17 @@ namespace Atlas
 
 	Application::~Application(){}
 	
+	static auto beg = std::chrono::system_clock::now();
+
 	void Application::Run()
 	{
 		//This checks if an exception has occoured
 		try
 		{
+			//The graphics are initialised here to get access to
+			//The debug information that it taken from the exception
+			m_Gfx.Init(m_Window.GetWindowHandle());
+
 			//The main loop
 			while (m_Window.isRunning())
 			{

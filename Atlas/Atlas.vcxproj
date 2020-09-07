@@ -97,6 +97,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Graphics\DxgiInfoManager.h" />
     <ClInclude Include="src\Core\Exception.h" />
     <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Core\Log.h" />
@@ -117,6 +118,7 @@
     <ClInclude Include="src\Graphics\DX11Exception.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Graphics\DxgiInfoManager.cpp" />
     <ClCompile Include="src\Core\Exception.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
     <ClCompile Include="src\Layer\Layer.cpp" />

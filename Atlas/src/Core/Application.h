@@ -4,6 +4,7 @@
 #include "Window/Window.h"
 #include "Layer/LayerHolder.h"
 #include "Layer/Layer.h"
+#include "Graphics/Graphics.h"
 
 namespace Atlas
 {
@@ -69,5 +70,8 @@ namespace Atlas
 
 		//The time of the previous layer
 		std::chrono::time_point<std::chrono::system_clock> m_LastFrameTime;
+
+		//The graphics object
+		Graphics m_Gfx;
 	};
 }

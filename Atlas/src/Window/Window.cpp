@@ -159,7 +159,7 @@ namespace Atlas
         : m_Minimised(false), m_EventManager(eventManager) {}
 
 
-    bool Window::Init(std::string name, uint width, uint height)
+    void Window::Init(std::string name, uint width, uint height)
     {
         //This converts the easier to call string format into a const wchar_t array
         //As it is what is used in the WNDCLASSEX creation
@@ -184,8 +184,7 @@ namespace Atlas
         wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
 
         //Register the window and check if it has been accompished successfully
-        if (!RegisterClassEx(&wc))
-            return false;
+        AT_ASSERT(RegisterClassEx(&wc), "The class could not be registered\n[Description]: ", TranslateErrorCode(GetLastError()));
 
         if (!s_Instance)
             s_Instance = this;
@@ -196,14 +195,13 @@ namespace Atlas
         windowSize.left = 0;
         windowSize.right = width;
 
-        AdjustWindowRectEx(&windowSize, WS_TILEDWINDOW, FALSE, 0);
+        AT_ASSERT(AdjustWindowRectEx(&windowSize, WS_TILEDWINDOW, FALSE, 0), "The window could not be resized\n[Description]: ", TranslateErrorCode(GetLastError()));
 
         //Create the window and save the handle to it
         m_Hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"MyWindowClass", wideName.c_str(), WS_TILEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, windowSize.right - windowSize.left, windowSize.bottom - windowSize.top, NULL, NULL, NULL, NULL);
 
         //Check if it was succesful
-        if (!m_Hwnd)
-            return false;
+        AT_ASSERT(m_Hwnd, "The window could not be created\n[Description]: ", TranslateErrorCode(GetLastError()));
 
         //Show and draw the window
         ShowWindow(m_Hwnd, SW_SHOW);
@@ -211,23 +209,18 @@ namespace Atlas
 
         //Highlight that the window is active
         m_Active = true;
-
-        return true;
     }
 
-    bool Window::Release()
+    void Window::Release()
     {
         //Show that the window is inactive
         m_Active = false;
 
         //Destroy the window
-        if (!DestroyWindow(m_Hwnd))
-            return false;
-
-        return true;
+        AT_ASSERT(DestroyWindow(m_Hwnd), "The window could not be destroyed\n[Description]: ", TranslateErrorCode(GetLastError()));
     }
 
-    bool Window::Broadcast()
+    void Window::Broadcast()
     {
         MSG msg;
         //Checks for all messages in the queue
@@ -240,7 +233,20 @@ namespace Atlas
 
         //Used to make sure the CPU isn't overloaded
         Sleep(0);
+    }
 
-        return true;
+    std::string Window::TranslateErrorCode(HRESULT hr)
+    {
+        //The buffer for the message is initialised and then filled
+        char* MsgBuf = nullptr;
+        DWORD MsgLen = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+            nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPSTR>(&MsgBuf), 0, nullptr);
+        //If the lenght is 0, the function failed
+        if (MsgLen == 0)
+            return "Unidentified error";
+        //Else, the string is saved into a variable and the returned
+        std::string errorString = MsgBuf;
+        LocalFree(MsgBuf);
+        return errorString;
     }
 }

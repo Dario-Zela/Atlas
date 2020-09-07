@@ -10,13 +10,13 @@ namespace Atlas
         Window(EventManager* eventManager);
 
         //Code to initiasise a window
-        bool Init(std::string name, uint width, uint height);
+        void Init(std::string name, uint width, uint height);
         
         //Code to destroy a window
-        bool Release();
+        void Release();
 
         //Sends the events to the window procedure
-        bool Broadcast();
+        void Broadcast();
 
         //Adds and event to the event queue
         void AddEvent(Event* e) { m_EventManager->AddEventToQueue(e); }
@@ -38,6 +38,11 @@ namespace Atlas
         //Is the window minimised
         bool m_Minimised;
     private:
+        //Reads errors during initialisation
+        //An exeption like the one for graphics could not be used as
+        //This occours before a try and except
+        std::string TranslateErrorCode(HRESULT hr);
+
         //Reference to the Window Handle
         HWND m_Hwnd;
         //Is the window Active
