@@ -9,15 +9,15 @@ namespace Atlas
 	{
 	public:
 		//Returns the keycode of the key
-		inline int GetKeyCode() const { return mKeyCode; }
+		inline int GetKeyCode() const { return m_KeyCode; }
 
 	protected:
 		KeyEvent(int keycode)
-			:mKeyCode(keycode)
+			:m_KeyCode(keycode)
 		{
 		}
 
-		int mKeyCode;
+		int m_KeyCode;
 	};
 
 	//A key pressed event 
@@ -26,24 +26,24 @@ namespace Atlas
 	public:
 		//It takes the keycode and if the key has been held
 		KeyPressedEvent(int keycode, bool held)
-			:KeyEvent(keycode), mHeld(held)
+			:KeyEvent(keycode), m_Held(held)
 		{
 		}
 
 		//Returns if the key was held
-		inline bool IsHeld() { return mHeld; }
+		inline bool IsHeld() { return m_Held; }
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << mKeyCode << " (" << mHeld << " repeats)";
+			ss << "KeyPressedEvent: " << m_KeyCode << ", is Held: " << (m_Held ? "True" : "False");
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
 
 	private:
-		bool mHeld;
+		bool m_Held;
 	};
 
 	//A key released event
@@ -58,7 +58,7 @@ namespace Atlas
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyReleasedEvent: " << mKeyCode;
+			ss << "KeyReleasedEvent: " << m_KeyCode;
 			return ss.str();
 		}
 

@@ -9,23 +9,23 @@ namespace Atlas
 	{
 	public:
 		WindowResizeEvent(uint width, uint height)
-			:mWidth(width), mHeight(height) {};
+			:m_Width(width), m_Height(height) {};
 
 		//Returns the current width and height of the client rectangle/window
-		inline uint GetWidth() { return mWidth; }
-		inline uint GetHeight() { return mHeight; }
+		inline uint GetWidth() { return m_Width; }
+		inline uint GetHeight() { return m_Height; }
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "WindowResizeEvent: Width = " << mWidth << ", Heght = " << mHeight;
+			ss << "WindowResizeEvent: Width = " << m_Width << ", Heght = " << m_Height;
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(WindowResize)
 
 	private:
-		uint mWidth, mHeight;
+		uint m_Width, m_Height;
 	};
 
 	//A window closed event

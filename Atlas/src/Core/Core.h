@@ -41,14 +41,14 @@ typedef unsigned int uint;
 #endif
 
 //Attempt is a try catch macro
-#define AT_ATTEMPT(x) try{x;} catch(std::exception& e) { AT_ERROR(e.what()); }
-#define AT_CORE_ATTEMPT(x) try{x;} catch(std::exception& e) { AT_CORE_ERROR(e.what()); }
+#define AT_ATTEMPT(x) try{x;} catch(std::exception& e) {AT_CRITICAL("[File]:{1}\n[Line]:{2}\n[Description]:{3}", __FILE__,__LINE__, e.what()); }
+#define AT_CORE_ATTEMPT(x) try{x;} catch(std::exception& e) { AT_CORE_CRITICAL("[File]:{1}\n[Line]:{2}\n[Description]:{3}", __FILE__,__LINE__, e.what()); }
 
 //Asserts break the debugger if a condition is false
 //And output the error
 #ifdef AT_ENABLE_ASSERTS
-#define AT_ASSERT(x,...) {if(!(x)) {AT_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-#define	AT_CORE_ASSERT(x,...) {if(!(x)) {AT_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#define AT_ASSERT(x,...) {if(!(x)) {AT_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#define	AT_CORE_ASSERT(x,...) {if(!(x)) {AT_CORE_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else
 #define AT_ASSERT(x,...)
 #define	AT_CORE_ASSERT(x,...)

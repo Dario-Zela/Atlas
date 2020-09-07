@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Core/TimeStep.h"
 #include "Core/Core.h"
+#include "Core/Exception.h"
 
 namespace Atlas
 {
@@ -47,26 +48,58 @@ namespace Atlas
 	
 	void Application::Run()
 	{
-		//The main loop
-		while (m_Window.isRunning())
+		//This checks if an exception has occoured
+		try
 		{
-			m_Window.Broadcast();			//All events are broadcast at the beginning
+			//The main loop
+			while (m_Window.isRunning())
+			{
+				m_Window.Broadcast();			//All events are broadcast at the beginning
 
-			//With the chrono libriary, find the time taken to complete the loop
-			auto now = std::chrono::system_clock::now();
-			TimeStep timeStep = std::chrono::duration<float>(now - m_LastFrameTime).count();
-			m_LastFrameTime = now;
+				//With the chrono libriary, find the time taken to complete the loop
+				TimeStep timeStep;
+				{
+					auto now = std::chrono::system_clock::now();
+					timeStep = std::chrono::duration<float>(now - m_LastFrameTime).count();
+					m_LastFrameTime = now;			//Save the current time
+				}
 
-			//Update the minimised flag
-			m_Minimised = m_Window.IsMinimised();
+				//Update the minimised flag
+				m_Minimised = m_Window.IsMinimised();
 
-			//If the window is not minimised, then update the layer
-			if (!m_Minimised)
-				for (Layer* layer : m_LayerStack)
-					layer->OnUpdate(timeStep);
+				//If the window is not minimised, then update the layer
+				if (!m_Minimised)
+					for (Layer* layer : m_LayerStack)
+					{
+						if (m_Window.isRunning()) //Keep on updating it while the window is alive
+							layer->OnUpdate(timeStep);
+						else
+							goto ForcedExit;
+					}
 
-			//Then run dispatch the events
-			m_EventManager.PropagateEvents(&m_LayerStack);
+				//Then run dispatch the events
+				m_EventManager.PropagateEvents(&m_LayerStack);
+			}
+
+			//Allows a forced exit that makes sure the
+			//Window is edited only when it is alive
+		ForcedExit:;
+		}
+		//The catches will output the error to the console and break the debug
+		catch (const AtlasException& e)
+		{
+			AT_CORE_CRITICAL("\n[Exception Type]: {0}", e.what());
+			__debugbreak();
+		}
+		catch (const std::exception& e)
+		{
+			AT_CORE_CRITICAL("\n[Exception Type]: {0}\n{1}", "Standard Exeption", e.what());
+			__debugbreak();
+		}
+		catch (...)
+		{
+			AT_CORE_CRITICAL("\n[Exception Type]: Unknown Exeption\n[Description]: Details Unavailable");
+			__debugbreak();
 		}
 	}
 

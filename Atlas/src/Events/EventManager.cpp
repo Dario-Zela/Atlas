@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "EventManager.h"
-#include "Events/MouseEvents.h"
 
 namespace Atlas
 {
@@ -15,13 +14,9 @@ namespace Atlas
 	{
 		while (!m_EventBacklog.empty())
 		{
+			//Get the event and remove it from the queue
 			Event* e = m_EventBacklog.front();
 			m_EventBacklog.pop();
-
-			AT_CORE_TRACE(e->ToString());
-			if (e->GetEventType() == EventType::MouseButtonPressed)
-				if (((MouseButtonPressedEvent*)e)->GetModifiers() & MK_CONTROL)
-					AT_CORE_TRACE("Works");
 
 			//As it is a stck it is run from back to front
 			for (auto it = stack->rbegin(); it != stack->rend(); it++)

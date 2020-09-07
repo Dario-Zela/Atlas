@@ -22,7 +22,7 @@ namespace Atlas
 		}
 		catch (std::exception&)		//If it fails, the application is killed and an error is reported
 		{
-			AT_ASSERT(false, "The log file was unaccessible,/n either because it doesn't exist /nor because it is incorrect");
+			AT_ASSERT(false, "The log file was unaccessible, either because it doesn't exist or because it is incorrect");
 		}
 	}
 

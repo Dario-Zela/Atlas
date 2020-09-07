@@ -37,6 +37,9 @@ namespace Atlas
 		void PopLayer(Layer* layer);
 		void PopOverlay(Layer* overlay);
 
+		//Adds events to the queue manually
+		void AddEventToQueue(Event* e) { m_Window.AddEvent(e); }
+
 	private:
 		//A buffer for layer and overlays that need to be
 		//Added and removed. This is done so that there aren't

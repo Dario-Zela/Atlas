@@ -26,7 +26,11 @@ namespace Atlas
 
         ~Window() = default;
 
+        //Checks if the window is still running
         bool isRunning() { return m_Active; };
+
+        //Gets the handle of the window
+        HWND GetWindowHandle() { return m_Hwnd; }
 
         //Reference to the Window
         static Window* s_Instance;

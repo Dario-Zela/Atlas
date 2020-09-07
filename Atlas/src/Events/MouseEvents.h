@@ -9,23 +9,23 @@ namespace Atlas
 	{
 	public:
 		MouseMovedEvent(uint x, uint y)
-			: mMouseX(x), mMouseY(y) { }
+			: m_MouseX(x), m_MouseY(y) { }
 
 		//Returns the new positions of the mouse
-		inline uint GetMouseX() const { return mMouseX; }
-		inline uint GetMouseY() const { return mMouseY; }
+		inline uint GetMouseX() const { return m_MouseX; }
+		inline uint GetMouseY() const { return m_MouseY; }
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseMovedEvent: X = " << mMouseX << ", Y = " << mMouseY;
+			ss << "MouseMovedEvent: X = " << m_MouseX << ", Y = " << m_MouseY;
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(MouseMoved)
 
 	protected:
-		uint mMouseX, mMouseY;
+		uint m_MouseX, m_MouseY;
 	};
 
 	//A mouse scrolled event
@@ -33,23 +33,23 @@ namespace Atlas
 	{
 	public:
 		MouseScrolledEvent(float xOffset, float yOffset)
-			:mXOffset(xOffset), mYOffset(yOffset) { }
+			:m_XOffset(xOffset), m_YOffset(yOffset) { }
 
 		//Stores vertical and horizontal deltas
-		inline float GetMouseXOffset() const { return mXOffset; }
-		inline float GetMouseYOffset() const { return mYOffset; }
+		inline float GetMouseXOffset() const { return m_XOffset; }
+		inline float GetMouseYOffset() const { return m_YOffset; }
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseScrolledEvent: XOffset = " << mXOffset << ", YOffset = " << mYOffset;
+			ss << "MouseScrolledEvent: XOffset = " << m_XOffset << ", YOffset = " << m_YOffset;
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(MouseScrolled)
 
 	protected:
-		float mXOffset, mYOffset;
+		float m_XOffset, m_YOffset;
 	};
 
 	//A Mouse button superclass to reduce the function declerations of the implementations
@@ -57,13 +57,13 @@ namespace Atlas
 	{
 	public:
 		//Returns the the button value that has been pressed
-		inline int GetMouseButton() const { return mButtonPressed; }
+		inline int GetMouseButton() const { return m_ButtonPressed; }
 
 	protected:
 		MouseButtonEvent(int button)
-			:mButtonPressed(button) { }
+			:m_ButtonPressed(button) { }
 
-		int mButtonPressed;
+		int m_ButtonPressed;
 	};
 
 	//A button pressed event
@@ -79,7 +79,7 @@ namespace Atlas
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonPressedEvent: " << mButtonPressed << ", is Double click: " << (m_DoubleClick ? "True" : "False");
+			ss << "MouseButtonPressedEvent: " << m_ButtonPressed << ", is Double click: " << (m_DoubleClick ? "True" : "False");
 			return ss.str();
 		}
 
@@ -104,7 +104,7 @@ namespace Atlas
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonReleasedEvent: " << mButtonPressed;
+			ss << "MouseButtonReleasedEvent: " << m_ButtonPressed;
 			return ss.str();
 		}
 
