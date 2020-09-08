@@ -7,8 +7,11 @@ namespace Atlas
 {
 	DxgiInfoManager::DxgiInfoManager(){}
 
+	//Initialises the queue
 	void DxgiInfoManager::Init()
 	{
+		//Declares the signature of the function DXGIGetDebugInterface so that it can be used later
+		//		OUTPUT				FUNCTION NAME			INPUTS
 		typedef HRESULT(WINAPI* DXGIGetDebugInterface)(REFIID, void**);
 
 		//Load the dll that contains the DXGIGetDebugInterface
@@ -16,7 +19,7 @@ namespace Atlas
 		if (modDxgiDebug)
 			AT_CHECK_GFX(GetLastError());
 
-		//Get the address
+		//Get the function
 		const auto DxgiGetDebugInterface = reinterpret_cast<DXGIGetDebugInterface>(reinterpret_cast<void*>(GetProcAddress(modDxgiDebug, "DXGIGetDebugInterface")));
 		if (DxgiGetDebugInterface)
 			AT_CHECK_GFX(GetLastError());

@@ -8,6 +8,8 @@ namespace wrl = Microsoft::WRL;
 
 namespace Atlas
 {
+	class VertexBuffer;
+
 	class Graphics
 	{
 	public:
@@ -19,6 +21,7 @@ namespace Atlas
 #ifdef AT_DEBUG
 		DxgiInfoManager m_InfoManager;
 #endif
+		friend class VertexBuffer;
 		wrl::ComPtr<IDXGISwapChain> m_SwapChain;
 		wrl::ComPtr<ID3D11Device> m_Device;
 		wrl::ComPtr<ID3D11DeviceContext> m_Context;

@@ -23,3 +23,9 @@ namespace Atlas
 }
 
 #define AT_CHECK_GFX(x) {HRESULT hr = x; if(FAILED(hr)) throw DX11Exception(__LINE__, __FILE__, hr);}
+
+#if AT_DEBUG
+#define AT_CHECK_GFX_INFO(x) m_InfoManager.Set(); {HRESULT hr = x; if(FAILED(hr)) throw DX11Exception(__LINE__, __FILE__, hr, m_InfoManager.GetMessages());} 
+#else
+#define AT_CHECK_GFX_INFO(x) AT_CHECK_GFX(x)
+#endif

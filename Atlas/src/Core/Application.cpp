@@ -39,9 +39,11 @@ namespace Atlas
 	Application::Application(std::string title, uint width, uint height)
 		: m_Minimised(false), m_EventManager(), m_Window(&m_EventManager)
 	{
+		AT_CORE_INFO("Initialising the window")
 		//Initialising the window and the instance of the application
 		m_Window.Init(title, width, height);
 		Application::s_Instance = this;
+		AT_CORE_INFO("Window Successfully initialised")
 	}
 
 	Application::~Application(){}
@@ -53,9 +55,11 @@ namespace Atlas
 		//This checks if an exception has occoured
 		try
 		{
+			AT_CORE_INFO("Initialising the graphics")
 			//The graphics are initialised here to get access to
 			//The debug information that it taken from the exception
 			m_Gfx.Init(m_Window.GetWindowHandle());
+			AT_CORE_INFO("Graphics Successfully initialised")
 
 			//The main loop
 			while (m_Window.isRunning())

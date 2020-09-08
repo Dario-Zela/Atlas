@@ -31,6 +31,9 @@ namespace Atlas
 	{
 		time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 		tm time = *std::localtime(&now);
-		return std::to_string(time.tm_hour) + ":" + std::to_string(time.tm_min) + ":" + std::to_string(time.tm_sec);
+		std::string times[] = { std::to_string(time.tm_hour), std::to_string(time.tm_min), std::to_string(time.tm_sec) };
+		for (int i = 0; i < 3; i++)
+			times[i] = times[i].length() == 1 ? "0" + times[i] : times[i];
+		return times[0] + ":" + times[1] + ":" + times[2];
 	}
 }
