@@ -11,7 +11,6 @@ namespace Atlas
 
     LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     {
-        
         switch (msg)
         {
             //Adds MouseMoved Events
@@ -146,12 +145,10 @@ namespace Atlas
                 Window::s_Instance->AddEvent(e); 
             }
         break;
-
             //All unused events are reassigned to the Default procedure
         default:
             return DefWindowProc(hwnd, msg, wparam, lparam);
         }
-
         return NULL;
     }
 

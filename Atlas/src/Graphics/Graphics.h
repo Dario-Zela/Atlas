@@ -8,20 +8,22 @@ namespace wrl = Microsoft::WRL;
 
 namespace Atlas
 {
-	class VertexBuffer;
-
 	class Graphics
 	{
 	public:
 		Graphics();
+		Graphics(const Graphics&) = delete;
+		Graphics& operator=(const Graphics&) = delete;
+		~Graphics() = default;
+
 		void Init(HWND hwnd);
-		void EndFrame();
+		void EndFrame(uint syncRate = 1);
 		void ClearScreen(float r, float g, float b, float a = 1.0f);
+		void DrawTriangle();
 	private:
 #ifdef AT_DEBUG
 		DxgiInfoManager m_InfoManager;
 #endif
-		friend class VertexBuffer;
 		wrl::ComPtr<IDXGISwapChain> m_SwapChain;
 		wrl::ComPtr<ID3D11Device> m_Device;
 		wrl::ComPtr<ID3D11DeviceContext> m_Context;

@@ -111,4 +111,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="TestVertex.hlsl" />
+    <FxCompile Include="TestPixel.hlsl" />
+  </ItemGroup>
 </Project>

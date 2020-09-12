@@ -4,6 +4,8 @@
 #include "Core/Core.h"
 #include "Core/Exception.h"
 
+#include "Input.h"
+
 namespace Atlas
 {
 	Application* Application::s_Instance = nullptr;
@@ -44,9 +46,15 @@ namespace Atlas
 		m_Window.Init(title, width, height);
 		Application::s_Instance = this;
 		AT_CORE_INFO("Window Successfully initialised")
+
+		//Set the graphics pointer to a new graphics instance
+		m_Gfx = new Graphics();
 	}
 
-	Application::~Application(){}
+	Application::~Application()
+	{
+		delete m_Gfx;
+	}
 	
 	static auto beg = std::chrono::system_clock::now();
 
@@ -58,9 +66,9 @@ namespace Atlas
 			AT_CORE_INFO("Initialising the graphics")
 			//The graphics are initialised here to get access to
 			//The debug information that it taken from the exception
-			m_Gfx.Init(m_Window.GetWindowHandle());
+			m_Gfx->Init(m_Window.GetWindowHandle());
 			AT_CORE_INFO("Graphics Successfully initialised")
-
+				
 			//The main loop
 			while (m_Window.isRunning())
 			{
@@ -73,6 +81,13 @@ namespace Atlas
 					timeStep = std::chrono::duration<float>(now - m_LastFrameTime).count();
 					m_LastFrameTime = now;			//Save the current time
 				}
+
+				float c = std::sin(std::chrono::duration<float>(beg - m_LastFrameTime).count()) / 2.0f + 0.5f;
+				m_Gfx->ClearScreen(c,c,0);
+				m_Gfx->DrawTriangle();
+				m_Gfx->EndFrame(1);
+				
+				SetWindowTitle("FPS: " + std::to_string(1.0f / timeStep));
 
 				//Update the minimised flag
 				m_Minimised = m_Window.IsMinimised();

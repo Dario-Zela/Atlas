@@ -29,7 +29,10 @@ namespace Atlas
 
 		//The rendering loop
 		void Run();
-	
+
+		//Allows the client to change the title of the screen dinamically
+		void SetWindowTitle(std::string Title) { SetWindowTextA(m_Window.GetWindowHandle(), Title.c_str()); }
+
 		//The functions that allow the implementation
 		//Of the application to add the initial layers
 		void PushLayer(Layer* layer);
@@ -72,6 +75,6 @@ namespace Atlas
 		std::chrono::time_point<std::chrono::system_clock> m_LastFrameTime;
 
 		//The graphics object
-		Graphics m_Gfx;
+		Graphics* m_Gfx;
 	};
 }
