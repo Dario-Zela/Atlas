@@ -10,17 +10,20 @@ namespace Atlas
 	class DxgiInfoManager
 	{
 	public:
-		DxgiInfoManager();
-		void Init();
+		static void Init();
+		static void Relese();
 		~DxgiInfoManager() = default;
 
 		//Set is called to filter messages from this point
-		void Set() noexcept;
+		static void Set() noexcept;
 		
 		//This gets the messages taken from the last Set call to now
-		std::vector<std::string> GetMessages() const;
+		static std::vector<std::string> GetMessages();
 	private:
-		unsigned long long m_Next = 0;
-		Microsoft::WRL::ComPtr<IDXGIInfoQueue> m_DxgiInfoQueue;
+		DxgiInfoManager() = default;
+
+		static DxgiInfoManager* s_Instance;
+		static unsigned long long m_Next;
+		static Microsoft::WRL::ComPtr<IDXGIInfoQueue> m_DxgiInfoQueue;
 	};
 }

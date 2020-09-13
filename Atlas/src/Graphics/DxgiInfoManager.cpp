@@ -5,11 +5,15 @@
 
 namespace Atlas
 {
-	DxgiInfoManager::DxgiInfoManager(){}
+	DxgiInfoManager* DxgiInfoManager::s_Instance = nullptr;
+	unsigned long long DxgiInfoManager::m_Next = 0;
+	Microsoft::WRL::ComPtr<IDXGIInfoQueue> DxgiInfoManager::m_DxgiInfoQueue = nullptr;
 
 	//Initialises the queue
 	void DxgiInfoManager::Init()
 	{
+		s_Instance = new DxgiInfoManager();
+
 		//Declares the signature of the function DXGIGetDebugInterface so that it can be used later
 		//		OUTPUT				FUNCTION NAME			INPUTS
 		typedef HRESULT(WINAPI* DXGIGetDebugInterface)(REFIID, void**);
@@ -27,6 +31,11 @@ namespace Atlas
 		//Get the queue
 		AT_CHECK_GFX(DxgiGetDebugInterface(__uuidof(IDXGIInfoQueue), &m_DxgiInfoQueue));
 	}
+
+	void DxgiInfoManager::Relese()
+	{
+		delete s_Instance;
+	}
 	
 	void DxgiInfoManager::Set() noexcept
 	{
@@ -35,7 +44,7 @@ namespace Atlas
 		m_Next = m_DxgiInfoQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);
 	}
 	
-	std::vector<std::string> DxgiInfoManager::GetMessages() const
+	std::vector<std::string> DxgiInfoManager::GetMessages()
 	{
 		std::vector<std::string> messages;
 		auto end = m_DxgiInfoQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);

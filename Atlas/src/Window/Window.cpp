@@ -158,6 +158,11 @@ namespace Atlas
 
     void Window::Init(std::string name, uint width, uint height)
     {
+        if (!s_Instance)
+            s_Instance = this;
+        else
+            return;
+
         //This converts the easier to call string format into a const wchar_t array
         //As it is what is used in the WNDCLASSEX creation
 
@@ -182,9 +187,6 @@ namespace Atlas
 
         //Register the window and check if it has been accompished successfully
         AT_ASSERT(RegisterClassEx(&wc), "The class could not be registered\n[Description]: ", TranslateErrorCode(GetLastError()));
-
-        if (!s_Instance)
-            s_Instance = this;
 
         RECT windowSize = RECT();
         windowSize.top = 0;

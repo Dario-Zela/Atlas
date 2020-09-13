@@ -13,7 +13,7 @@ namespace Atlas
 	public:
 		//Initialises the application
 		Application(std::string title, uint width, uint height);
-		~Application();
+		~Application() = default;
 
 		//Allows the user to close the application internally
 		inline void Quit() { m_Window.Release(); }
@@ -75,6 +75,6 @@ namespace Atlas
 		std::chrono::time_point<std::chrono::system_clock> m_LastFrameTime;
 
 		//The graphics object
-		Graphics* m_Gfx;
+		Graphics m_Gfx;
 	};
 }
