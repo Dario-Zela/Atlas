@@ -4,3 +4,12 @@
 #include "pch.h"
 #include "Core/Application.h"
 #include "Layer/Layer.h"
+#include "Core/TimeStep.h"
+#include "Events/Event.h"
+#include "Graphics/Graphics.h"
+
+#include "Core/Input.h"
+
+#include "Renderer/Renderer2D.h"
+#include "Renderer/OrthographicCamera.h"
+#include "Graphics/ViewPort.h"

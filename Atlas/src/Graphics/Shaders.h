@@ -6,13 +6,19 @@
 
 namespace Atlas
 {
+	//A wrapper over a vertex shader
 	class VertexShader
 	{
 	public:
+		//Get the shader .cso object
 		VertexShader(std::string path);
 
+		//Binds it
 		void Bind();
+		//Unbinds it
 		void Unbind();
+
+		//Getters for the shader and the blob
 		wrl::ComPtr<ID3D11VertexShader> GetVertexShader();
 		wrl::ComPtr<ID3DBlob> GetBlob();
 	private:
@@ -20,13 +26,19 @@ namespace Atlas
 		wrl::ComPtr<ID3DBlob> m_Blob;
 	};
 
+	//A wrapper over a pixel shader
 	class PixelShader
 	{
 	public:
+		//Get the shader .cso object
 		PixelShader(std::string path);
 
+		//Binds it
 		void Bind();
+		//Unbinds it
 		void Unbind();
+
+		//Getters for the shader and the blob
 		wrl::ComPtr<ID3D11PixelShader> GetPixelShader();
 		wrl::ComPtr<ID3DBlob> GetBlob();
 	private:

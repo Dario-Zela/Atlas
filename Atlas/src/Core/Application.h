@@ -8,6 +8,9 @@
 
 namespace Atlas
 {
+	//The application class
+	//Wrapps over the creation of the window and graphics
+	//It should be inherited to allow for a layer to be selected
 	class Application
 	{
 	public:

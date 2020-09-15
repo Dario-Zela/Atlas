@@ -4,13 +4,7 @@
 #include "Core/Core.h"
 #include "Core/Exception.h"
 
-#include "Input.h"
-
-#include "Graphics/Buffers.h"
-#include "Graphics/Shaders.h"
-#include "Graphics/InputLayout.h"
-#include "Graphics/ViewPort.h"
-#include "Core/Input.h"
+#include "Renderer/Renderer2D.h"
 
 namespace Atlas
 {
@@ -51,70 +45,39 @@ namespace Atlas
 		//Initialising the window and the instance of the application
 		m_Window.Init(title, width, height);
 		Application::s_Instance = this;
-		AT_CORE_INFO("Window Successfully initialised")
+		AT_CORE_INFO("Window Successfully initialised");
+
+		//Needed to check if there are any issues in the graphics initialisation
+		try 
+		{
+			AT_CORE_INFO("Initialising the graphics");
+			m_Gfx.Init(m_Window.GetWindowHandle());
+			AT_CORE_INFO("Graphics Successfully initialised");
+		}
+		//The catches will output the error to the console and break the debug
+		catch (const AtlasException& e)
+		{
+			AT_CORE_CRITICAL("\n[Exception Type]: {0}", e.what());
+			__debugbreak();
+		}
+		catch (const std::exception& e)
+		{
+			AT_CORE_CRITICAL("\n[Exception Type]: {0}\n{1}", "Standard Exeption", e.what());
+			__debugbreak();
+		}
+		catch (...)
+		{
+			AT_CORE_CRITICAL("\n[Exception Type]: Unknown Exeption\n[Description]: Details Unavailable");
+			__debugbreak();
+		}
 	}
-	
-	static auto beg = std::chrono::system_clock::now();
 
 	void Application::Run()
 	{
 		//This checks if an exception has occoured
 		try
 		{
-			AT_CORE_INFO("Initialising the graphics")
-			//The graphics are initialised here to get access to
-			//The debug information that it taken from the exception
-			m_Gfx.Init(m_Window.GetWindowHandle());
-			AT_CORE_INFO("Graphics Successfully initialised");
-			
-			struct Vertex
-			{
-				struct {
-					float x;
-					float y;
-				} pos;
-
-				struct {
-					byte r;
-					byte g;
-					byte b;
-					byte a;
-				} color;
-			};
-
-			Vertex data[] =
-			{
-				{{0, 0.5f}, {0, 0, 255, 255}},
-				{{0.5f, -0.5f}, {0, 255, 0, 255}},
-				{{-0.5f, -0.5f}, {255, 0, 0, 255}},
-
-				{{0, 0}, {255, 0, 255, 255}},
-			};
-
-			VertexBuffer vb((void*)data, sizeof(data), sizeof(Vertex));
-
-			const unsigned short indices[] =
-			{
-				3, 0, 1,
-				3, 1, 2,
-				3, 2, 0
-			};
-
-			IndexBuffer ib((unsigned short*)indices, sizeof(indices));
-
-			VertexShader vs("TestVertex.cso");
-			PixelShader ps("TestPixel.cso");
-
-			InputLayout il(
-				{ 
-					{"POSITION", DXGI_FORMAT_R32G32_FLOAT, 0, },
-					{"COLOR", DXGI_FORMAT_R8G8B8A8_UNORM, 0, } 
-				}, vs.GetBlob());
-
-			auto[w,h] = Input::GetWindowSize();
-
-			ViewPort vp(0, 0, w, h, 0, 1);
-
+			Renderer2D::Init();
 			//The main loop
 			while (m_Window.isRunning())
 			{
@@ -127,11 +90,6 @@ namespace Atlas
 					timeStep = std::chrono::duration<float>(now - m_LastFrameTime).count();
 					m_LastFrameTime = now;			//Save the current time
 				}
-
-				float c = std::sin(std::chrono::duration<float>(beg - m_LastFrameTime).count()) / 2.0f + 0.5f;
-				m_Gfx.ClearScreen(c,c,0);
-				m_Gfx.CleanDrawIndexed(vb, sizeof(Vertex), 0, ib, 0, vs, ps, il, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vp);
-				m_Gfx.EndFrame(1);
 				
 				SetWindowTitle("FPS: " + std::to_string(1.0f / timeStep));
 
@@ -155,6 +113,7 @@ namespace Atlas
 			//Allows a forced exit that makes sure the
 			//Window is edited only when it is alive
 		ForcedExit:;
+			Renderer2D::Shutdown();
 		}
 		//The catches will output the error to the console and break the debug
 		catch (const AtlasException& e)

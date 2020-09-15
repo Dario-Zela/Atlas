@@ -5,6 +5,7 @@
 
 namespace Atlas
 {
+	//Decleres static elements
 	DxgiInfoManager* DxgiInfoManager::s_Instance = nullptr;
 	unsigned long long DxgiInfoManager::m_Next = 0;
 	Microsoft::WRL::ComPtr<IDXGIInfoQueue> DxgiInfoManager::m_DxgiInfoQueue = nullptr;
@@ -12,7 +13,11 @@ namespace Atlas
 	//Initialises the queue
 	void DxgiInfoManager::Init()
 	{
-		s_Instance = new DxgiInfoManager();
+		//Sets the instance
+		if(!s_Instance)
+			s_Instance = new DxgiInfoManager();
+		else
+			return;
 
 		//Declares the signature of the function DXGIGetDebugInterface so that it can be used later
 		//		OUTPUT				FUNCTION NAME			INPUTS

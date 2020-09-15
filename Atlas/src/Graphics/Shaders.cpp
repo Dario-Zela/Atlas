@@ -15,17 +15,22 @@ namespace Atlas
 		for (char c : path)
 			widePath += (wchar_t)c;
 
+		//Reads the .cso objects and constructs the blob
 		AT_CHECK_GFX_INFO(D3DReadFileToBlob(widePath.c_str(), &m_Blob))
+		
+		//Converts the blob into a vertex shader
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateVertexShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_VertexShader))
 	}
 
 	void VertexShader::Bind()
 	{
+		//Binds it
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->VSSetShader(m_VertexShader.Get(), nullptr, 0))
 	}
 
 	void VertexShader::Unbind()
 	{
+		//Unbinds it
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->VSSetShader(nullptr, nullptr, 0))
 	}
 
@@ -51,17 +56,22 @@ namespace Atlas
 		for (char c : path)
 			widePath += (wchar_t)c;
 
+		//Reads the .cso objects and constructs the blob
 		AT_CHECK_GFX_INFO(D3DReadFileToBlob(widePath.c_str(), &m_Blob))
+
+		//Converts the blob into a vertex shader
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreatePixelShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_PixelShader))
 	}
 
 	void PixelShader::Bind()
 	{
+		//Binds it
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetShader(m_PixelShader.Get(), nullptr, 0))
 	}
 
 	void PixelShader::Unbind()
 	{
+		//Unbinds it
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetShader(nullptr, nullptr, 0))
 	}
 
