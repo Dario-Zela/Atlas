@@ -2,11 +2,6 @@
 #include "Graphics.h"
 #include "Graphics/DX11Exception.h"
 
-#include "Graphics/Buffers.h"
-#include "Graphics/Shaders.h"
-#include "Graphics/InputLayout.h"
-#include "Graphics/ViewPort.h"
-
 namespace Atlas
 {
 	Graphics* Graphics::s_Instance = nullptr;
@@ -73,65 +68,34 @@ namespace Atlas
 	{
 		//At the end of the frame, the swap chain presents the back buffer
 		//1 shows VSync
-		HRESULT result = m_SwapChain->Present(syncRate, 0);
-		AT_CHECK_GFX_INFO(result == DXGI_ERROR_DEVICE_REMOVED ? m_Device->GetDeviceRemovedReason() : result);
+		HRESULT result = s_Instance->m_SwapChain->Present(syncRate, 0);
+		AT_CHECK_GFX_INFO(result == DXGI_ERROR_DEVICE_REMOVED ? s_Instance->m_Device->GetDeviceRemovedReason() : result);
 	}
 
 	void Graphics::ClearScreen(float r, float g, float b, float a)
 	{
 		//The back buffer is filled with the color
 		float color[4] = { r, g, b, a };
-		AT_CHECK_GFX_INFO_VOID(m_Context->ClearRenderTargetView(m_Buffer.Get(), color));
+		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->ClearRenderTargetView(s_Instance->m_Buffer.Get(), color));
 	}
 
 	void Graphics::SetPrimitiveTopology(uint topology)
 	{
-		AT_CHECK_GFX_INFO_VOID(m_Context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)topology));
+		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)topology));
 	}
 
 	void Graphics::SetRenderTarget()
 	{
-		AT_CHECK_GFX_INFO_VOID(m_Context->OMSetRenderTargets(1, m_Buffer.GetAddressOf(), nullptr));
+		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->OMSetRenderTargets(1, s_Instance->m_Buffer.GetAddressOf(), nullptr));
 	}
 
 	void Graphics::DrawIndexed(uint indexCount)
 	{
-		AT_CHECK_GFX_INFO_VOID(m_Context->DrawIndexed(indexCount, 0, 0));
+		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->DrawIndexed(indexCount, 0, 0));
 	}
 
 	void Graphics::Draw(uint vertexCount)
 	{
-		AT_CHECK_GFX_INFO_VOID(m_Context->Draw(vertexCount, 0));
-	}
-
-	void Graphics::CleanDraw(VertexBuffer& vertexBuffer, uint stride, uint offset, uint count, VertexShader& vertexShader, PixelShader& pixelShader, InputLayout& inputLayout, uint topology, ViewPort viewPort)
-	{
-		vertexBuffer.Bind(stride, offset);
-		vertexShader.Bind();
-		pixelShader.Bind();
-		inputLayout.Bind();
-		SetPrimitiveTopology(topology);
-		viewPort.Bind();
-		SetRenderTarget();
-		Draw(count);
-		vertexShader.Unbind();
-		pixelShader.Unbind();
-		inputLayout.Unbind();
-	}
-
-	void Graphics::CleanDrawIndexed(VertexBuffer& vertexBuffer, uint stride, uint offset1, IndexBuffer& indexBuffer, uint offset2, VertexShader& vertexShader, PixelShader& pixelShader, InputLayout& inputLayout, uint topology, ViewPort viewPort)
-	{
-		vertexBuffer.Bind(stride, offset1);
-		indexBuffer.Bind(offset2);
-		vertexShader.Bind();
-		pixelShader.Bind();
-		inputLayout.Bind();
-		SetPrimitiveTopology(topology);
-		viewPort.Bind();
-		SetRenderTarget();
-		DrawIndexed(indexBuffer.GetCount());
-		vertexShader.Unbind();
-		pixelShader.Unbind();
-		inputLayout.Unbind();
+		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->Draw(vertexCount, 0));
 	}
 }

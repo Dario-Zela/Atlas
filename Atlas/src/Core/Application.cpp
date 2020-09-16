@@ -5,12 +5,12 @@
 #include "Core/Exception.h"
 
 #include "Input.h"
+#include "Test.h"
 
-#include "Graphics/Buffers.h"
-#include "Graphics/Shaders.h"
-#include "Graphics/InputLayout.h"
-#include "Graphics/ViewPort.h"
-#include "Core/Input.h"
+#include "Graphics/D3DWrappers/Buffers.h"
+#include "Graphics/D3DWrappers/Shaders.h"
+#include "Graphics/D3DWrappers/InputLayout.h"
+#include "Graphics/D3DWrappers/ViewPort.h"
 
 namespace Atlas
 {
@@ -66,54 +66,19 @@ namespace Atlas
 			//The debug information that it taken from the exception
 			m_Gfx.Init(m_Window.GetWindowHandle());
 			AT_CORE_INFO("Graphics Successfully initialised");
-			
-			struct Vertex
+
+			std::vector<std::unique_ptr<Box>> boxes;
 			{
-				struct {
-					float x;
-					float y;
-				} pos;
-
-				struct {
-					byte r;
-					byte g;
-					byte b;
-					byte a;
-				} color;
-			};
-
-			Vertex data[] =
-			{
-				{{0, 0.5f}, {0, 0, 255, 255}},
-				{{0.5f, -0.5f}, {0, 255, 0, 255}},
-				{{-0.5f, -0.5f}, {255, 0, 0, 255}},
-
-				{{0, 0}, {255, 0, 255, 255}},
-			};
-
-			VertexBuffer vb((void*)data, sizeof(data), sizeof(Vertex));
-
-			const unsigned short indices[] =
-			{
-				3, 0, 1,
-				3, 1, 2,
-				3, 2, 0
-			};
-
-			IndexBuffer ib((unsigned short*)indices, sizeof(indices));
-
-			VertexShader vs("TestVertex.cso");
-			PixelShader ps("TestPixel.cso");
-
-			InputLayout il(
-				{ 
-					{"POSITION", DXGI_FORMAT_R32G32_FLOAT, 0, },
-					{"COLOR", DXGI_FORMAT_R8G8B8A8_UNORM, 0, } 
-				}, vs.GetBlob());
-
-			auto[w,h] = Input::GetWindowSize();
-
-			ViewPort vp(0, 0, w, h, 0, 1);
+				std::mt19937 rng(std::random_device{}());
+				std::uniform_real_distribution<float> adist(0.0f, DirectX::XM_2PI);
+				std::uniform_real_distribution<float> ddist(0.0f, DirectX::XM_2PI);
+				std::uniform_real_distribution<float> odist(0.0f, DirectX::XM_PI * 0.3f);
+				std::uniform_real_distribution<float> rdist(6.0f, 20);
+				for (int i = 0; i < 20; i++)
+				{
+					boxes.push_back(std::make_unique<Box>(rng, adist, ddist, odist, rdist));
+				}
+			}
 
 			//The main loop
 			while (m_Window.isRunning())
@@ -127,13 +92,31 @@ namespace Atlas
 					timeStep = std::chrono::duration<float>(now - m_LastFrameTime).count();
 					m_LastFrameTime = now;			//Save the current time
 				}
-
 				float c = std::sin(std::chrono::duration<float>(beg - m_LastFrameTime).count()) / 2.0f + 0.5f;
-				m_Gfx.ClearScreen(c,c,0);
-				m_Gfx.CleanDrawIndexed(vb, sizeof(Vertex), 0, ib, 0, vs, ps, il, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vp);
-				m_Gfx.EndFrame(1);
 				
-				SetWindowTitle("FPS: " + std::to_string(1.0f / timeStep));
+				m_Gfx.ClearScreen(1, 0, 1);
+
+				for (auto& b : boxes)
+				{
+					b->Update(c / 25.0f);
+					b->Draw();
+				}
+				m_Gfx.EndFrame(1);
+	
+
+
+				/*
+				m_Gfx.ClearScreen(c, c, 0);
+				auto var = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationX(c * DirectX::XM_2PI) * DirectX::XMMatrixTranspose(transform));
+				vcb.Update((void*)&var, sizeof(var));
+				vcb.Bind();
+				box.Update(c / 4.0f);
+				box.Draw();
+				*/
+
+				#ifdef AT_DEBUG
+					SetWindowTitle("FPS: " + std::to_string(1.0f / timeStep));
+				#endif
 
 				//Update the minimised flag
 				m_Minimised = m_Window.IsMinimised();

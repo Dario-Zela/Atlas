@@ -97,9 +97,12 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Graphics\InputLayout.h" />
-    <ClInclude Include="src\Graphics\Shaders.h" />
-    <ClInclude Include="src\Graphics\Buffers.h" />
+    <ClInclude Include="src\Graphics\Bindable.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\InputLayout.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\Shaders.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\Buffers.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\TransformationConstantBuffer.h" />
+    <ClInclude Include="src\Graphics\Drawable.h" />
     <ClInclude Include="src\Graphics\DxgiInfoManager.h" />
     <ClInclude Include="src\Core\Exception.h" />
     <ClInclude Include="src\Core\Input.h" />
@@ -116,15 +119,18 @@
     <ClInclude Include="src\Core\Core.h" />
     <ClInclude Include="src\Graphics\Graphics.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Test.h" />
     <ClInclude Include="src\Window\Window.h" />
     <ClInclude Include="vendor\fmt\fmt.h" />
     <ClInclude Include="src\Graphics\DX11Exception.h" />
-    <ClInclude Include="src\Graphics\ViewPort.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\ViewPort.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Graphics\InputLayout.cpp" />
-    <ClCompile Include="src\Graphics\Shaders.cpp" />
-    <ClCompile Include="src\Graphics\Buffers.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\InputLayout.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\Shaders.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\Buffers.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\TransformationConstantBuffer.cpp" />
+    <ClCompile Include="src\Graphics\Drawable.cpp" />
     <ClCompile Include="src\Graphics\DxgiInfoManager.cpp" />
     <ClCompile Include="src\Core\Exception.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
@@ -138,9 +144,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Test.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
     <ClCompile Include="src\Graphics\DX11Exception.cpp" />
-    <ClCompile Include="src\Graphics\ViewPort.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\ViewPort.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Shaders\TestPixel.hlsl">

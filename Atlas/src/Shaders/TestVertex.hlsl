@@ -4,8 +4,13 @@ struct SV_OUT
 	float4 pos : SV_POSITION;
 };
 
-SV_OUT main( float2 pos : POSITION, float3 color : COLOR )
+cbuffer SV_IN
 {
-	SV_OUT vso = { float4(color, 1.0f),float4(pos, 0.0f, 1.0f) };
+	matrix transform;
+};
+
+SV_OUT main( float3 pos : POSITION, float3 color : COLOR )
+{
+	SV_OUT vso = { float4(color, 1.0f), mul(float4(pos, 1.0f) , transform) };
 	return vso;
 }

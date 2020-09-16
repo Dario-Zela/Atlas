@@ -6,7 +6,7 @@ namespace Atlas
 	//Vertex Shader
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	VertexShader::VertexShader(std::string path)
+	void VertexShader::Create(std::string path)
 	{
 		//This converts the easier to call string format into a const wchar_t array
 		//As it is what is used in the D3DReadFileToBlob function
@@ -24,11 +24,6 @@ namespace Atlas
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->VSSetShader(m_VertexShader.Get(), nullptr, 0))
 	}
 
-	void VertexShader::Unbind()
-	{
-		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->VSSetShader(nullptr, nullptr, 0))
-	}
-
 	wrl::ComPtr<ID3D11VertexShader> VertexShader::GetVertexShader()
 	{
 		return m_VertexShader;
@@ -42,7 +37,7 @@ namespace Atlas
 	//Pixel Shader
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	PixelShader::PixelShader(std::string path)
+	void PixelShader::Create(std::string path)
 	{
 		//This converts the easier to call string format into a const wchar_t array
 		//As it is what is used in the D3DReadFileToBlob function
@@ -58,11 +53,6 @@ namespace Atlas
 	void PixelShader::Bind()
 	{
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetShader(m_PixelShader.Get(), nullptr, 0))
-	}
-
-	void PixelShader::Unbind()
-	{
-		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetShader(nullptr, nullptr, 0))
 	}
 
 	wrl::ComPtr<ID3D11PixelShader> PixelShader::GetPixelShader()

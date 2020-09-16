@@ -3,7 +3,7 @@
 
 namespace Atlas
 {
-	InputLayout::InputLayout(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob)
+	void InputLayout::Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob)
 	{
 		uint size = (uint)layout.size();
 
@@ -21,11 +21,6 @@ namespace Atlas
 	void InputLayout::Bind()
 	{
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetInputLayout(m_InputLayout.Get()));
-	}
-
-	void InputLayout::Unbind()
-	{
-		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetInputLayout(nullptr));
 	}
 
 	inline wrl::ComPtr<ID3D11InputLayout> InputLayout::GetInputLayout() 

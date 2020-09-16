@@ -24,17 +24,14 @@ namespace Atlas
 		~Graphics() = default;
 
 		void Init(HWND hwnd);
-		void EndFrame(uint syncRate = 1);
-		void ClearScreen(float r, float g, float b, float a = 1.0f);
+		static void EndFrame(uint syncRate = 1);
+		static void ClearScreen(float r, float g, float b, float a = 1.0f);
+
+		static void SetPrimitiveTopology(uint topology);
+		static void SetRenderTarget();
 		
-		void SetPrimitiveTopology(uint topology);
-		void SetRenderTarget();
-
-		void Draw(uint vertexCount);
-		void DrawIndexed(uint indexCount);
-
-		void CleanDraw(VertexBuffer& vertexBuffer, uint stride, uint offset, uint count, VertexShader& vertexShader, PixelShader& pixelShader, InputLayout& inputLayout, uint topology, ViewPort viewPort);
-		void CleanDrawIndexed(VertexBuffer& vertexBuffer, uint stride, uint offset1, IndexBuffer& indexBuffer, uint offset2, VertexShader& vertexShader, PixelShader& pixelShader, InputLayout& inputLayout, uint topology, ViewPort viewPort);
+		static void Draw(uint vertexCount);
+		static void DrawIndexed(uint indexCount);
 
 		static wrl::ComPtr<IDXGISwapChain> GetSwapChain() { return s_Instance->m_SwapChain; }
 		static wrl::ComPtr<ID3D11Device> GetDevice() { return s_Instance->m_Device; }

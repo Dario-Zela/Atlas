@@ -1,18 +1,19 @@
 #pragma once
 #include "Graphics/Graphics.h"
+#include "Graphics/Bindable.h"
 #include <d3dcompiler.h>
 
 #pragma comment(lib, "D3DCompiler.lib")
 
 namespace Atlas
 {
-	class VertexShader
+	class VertexShader : public Bindable
 	{
 	public:
-		VertexShader(std::string path);
+		VertexShader() = default;
+		void Create(std::string path);
 
-		void Bind();
-		void Unbind();
+		void Bind() override;
 		wrl::ComPtr<ID3D11VertexShader> GetVertexShader();
 		wrl::ComPtr<ID3DBlob> GetBlob();
 	private:
@@ -20,13 +21,13 @@ namespace Atlas
 		wrl::ComPtr<ID3DBlob> m_Blob;
 	};
 
-	class PixelShader
+	class PixelShader : public Bindable
 	{
 	public:
-		PixelShader(std::string path);
+		PixelShader() = default;
+		void Create(std::string path);
 
-		void Bind();
-		void Unbind();
+		void Bind() override;
 		wrl::ComPtr<ID3D11PixelShader> GetPixelShader();
 		wrl::ComPtr<ID3DBlob> GetBlob();
 	private:

@@ -51,16 +51,25 @@
     <ClCompile Include="src\Graphics\DxgiInfoManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Buffers.cpp">
+    <ClCompile Include="src\Graphics\D3DWrappers\Buffers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\Shaders.cpp">
+    <ClCompile Include="src\Graphics\D3DWrappers\InputLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\InputLayout.cpp">
+    <ClCompile Include="src\Graphics\D3DWrappers\Shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\ViewPort.cpp">
+    <ClCompile Include="src\Graphics\D3DWrappers\ViewPort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Drawable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\D3DWrappers\TransformationConstantBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -122,16 +131,28 @@
     <ClInclude Include="src\Graphics\DxgiInfoManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Buffers.h">
+    <ClInclude Include="src\Graphics\D3DWrappers\Buffers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\Shaders.h">
+    <ClInclude Include="src\Graphics\D3DWrappers\ViewPort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\InputLayout.h">
+    <ClInclude Include="src\Graphics\D3DWrappers\InputLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\ViewPort.h">
+    <ClInclude Include="src\Graphics\D3DWrappers\Shaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Bindable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Drawable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\D3DWrappers\TransformationConstantBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

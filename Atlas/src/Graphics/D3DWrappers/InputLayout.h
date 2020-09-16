@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics/Graphics.h"
-#include "Graphics/Shaders.h"
+#include "Graphics/D3DWrappers/Shaders.h"
+#include "Graphics/Bindable.h"
 
 namespace Atlas
 {
@@ -20,13 +21,13 @@ namespace Atlas
 		uint m_Slot;
 	};
 
-	class InputLayout
+	class InputLayout : public Bindable
 	{
 	public:
-		InputLayout(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob);
+		InputLayout() = default;
+		void Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob);
 
-		void Bind();
-		void Unbind();
+		void Bind() override;
 		wrl::ComPtr<ID3D11InputLayout> GetInputLayout();
 	private:
 		wrl::ComPtr<ID3D11InputLayout> m_InputLayout;
