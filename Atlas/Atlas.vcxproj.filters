@@ -72,6 +72,9 @@
     <ClCompile Include="src\Graphics\D3DWrappers\TransformationConstantBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\BindableLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -153,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\D3DWrappers\TransformationConstantBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\BindableLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

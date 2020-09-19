@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Drawable.h"
+#include "Graphics/D3DWrappers/ViewPort.h"
 
 namespace Atlas 
 {
@@ -11,18 +12,20 @@ namespace Atlas
 		Graphics::DrawIndexed(m_IndexBuffer->GetCount());
 	}
 
-	void Drawable::AddBindable(Bindable& bindable)
+	void Drawable::AddBindable(std::shared_ptr<Bindable> bindable)
 	{
-		if (typeid(bindable) == typeid(IndexBuffer))
+		if (typeid(*bindable) == typeid(IndexBuffer))
 		{
 			AT_ASSERT(!m_IndexBuffer, "Attempted to add the index buffer twice");
 
-			m_Bindables.push_back(&bindable);
-			m_IndexBuffer = (IndexBuffer*)&bindable;
+			m_IndexBuffer = (IndexBuffer*)bindable.get();
+			m_Bindables.push_back(std::move(bindable));
 		}
 		else
 		{
-			m_Bindables.push_back(&bindable);
+			if (typeid(*bindable) == typeid(ViewPort))
+				auto x = 0;
+			m_Bindables.push_back(bindable);
 		}
 	}
 }

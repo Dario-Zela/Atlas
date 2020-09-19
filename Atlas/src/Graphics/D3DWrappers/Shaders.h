@@ -2,6 +2,7 @@
 #include "Graphics/Graphics.h"
 #include "Graphics/Bindable.h"
 #include <d3dcompiler.h>
+#include "Graphics/BindableLib.h"
 
 #pragma comment(lib, "D3DCompiler.lib")
 
@@ -10,8 +11,9 @@ namespace Atlas
 	class VertexShader : public Bindable
 	{
 	public:
-		VertexShader() = default;
-		void Create(std::string path);
+		VertexShader(std::string path);
+		static std::shared_ptr<VertexShader> Create(std::string path);
+		static std::string GenerateUID(std::string path);
 
 		void Bind() override;
 		wrl::ComPtr<ID3D11VertexShader> GetVertexShader();
@@ -24,8 +26,9 @@ namespace Atlas
 	class PixelShader : public Bindable
 	{
 	public:
-		PixelShader() = default;
-		void Create(std::string path);
+		PixelShader(std::string path);
+		static std::shared_ptr<PixelShader> Create(std::string path);
+		static std::string GenerateUID(std::string path);
 
 		void Bind() override;
 		wrl::ComPtr<ID3D11PixelShader> GetPixelShader();

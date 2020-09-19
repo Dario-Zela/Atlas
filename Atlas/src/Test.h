@@ -38,13 +38,6 @@ namespace Atlas
 		int dir;
 
 		//Values
-		VertexBuffer vb;
-		IndexBuffer ib;
-		VertexShader vs;
-		PixelShader ps;
-		VertexConstantBuffer vcb;
-		InputLayout il;
 		TransformationConstantBuffer tcb;
-		ViewPort vp;
 	};
 }

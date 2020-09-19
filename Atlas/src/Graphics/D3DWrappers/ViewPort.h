@@ -7,8 +7,9 @@ namespace Atlas
 	class ViewPort : public Bindable
 	{
 	public:
-		ViewPort() = default;
-		void Create(float x, float y, float width, float height, float zMin, float zMax);
+		ViewPort(float x, float y, float width, float height, float zMin, float zMax);
+		static std::shared_ptr<ViewPort> Create(float x, float y, float width, float height, float zMin, float zMax);
+		static std::string GenerateUID(uint x, uint y, uint width, uint height, uint zMin, uint zMax);
 
 		void Bind() override;
 		D3D11_VIEWPORT GetViewPort();

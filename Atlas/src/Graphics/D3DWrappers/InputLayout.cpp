@@ -1,9 +1,49 @@
 #include "pch.h"
 #include "InputLayout.h"
+#include "Graphics/BindableLib.h"
+#include "Graphics/DxgiInfoManager.h"
 
 namespace Atlas
 {
-	void InputLayout::Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob)
+	std::shared_ptr<InputLayout> InputLayout::Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob)
+	{
+		std::string layoutNames = "";
+		for (InputElement element : layout)
+		{
+			layoutNames += element.GetSemanticName();
+		}
+
+		std::string UID = GenerateUID(layoutNames);
+		auto test = BindableLib::Resolve(UID);
+
+		if (test)
+		{
+			return std::static_pointer_cast<InputLayout>(test);
+		}
+		else
+		{
+			auto inputLayout = std::make_shared<InputLayout>(layout, vertexBufferBlob);
+			BindableLib::Add(UID, inputLayout);
+			return std::static_pointer_cast<InputLayout>(BindableLib::Resolve(UID));
+		}
+	}
+
+	std::string InputLayout::GenerateUID(std::string layoutNames)
+	{
+		return std::string(typeid(InputLayout).name()) + '_' + layoutNames;
+	}
+
+	void InputLayout::Bind()
+	{
+		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetInputLayout(m_InputLayout.Get()));
+	}
+
+	inline wrl::ComPtr<ID3D11InputLayout> InputLayout::GetInputLayout() 
+	{ 
+		return m_InputLayout;
+	}
+
+	InputLayout::InputLayout(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob)
 	{
 		uint size = (uint)layout.size();
 
@@ -16,15 +56,5 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateInputLayout(elementDesc, size, vertexBufferBlob->GetBufferPointer(), vertexBufferBlob->GetBufferSize(), &m_InputLayout));
 
 		delete[] elementDesc;
-	}
-
-	void InputLayout::Bind()
-	{
-		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetInputLayout(m_InputLayout.Get()));
-	}
-
-	inline wrl::ComPtr<ID3D11InputLayout> InputLayout::GetInputLayout() 
-	{ 
-		return m_InputLayout;
 	}
 }

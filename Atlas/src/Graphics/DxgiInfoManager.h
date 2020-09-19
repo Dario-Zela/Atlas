@@ -10,8 +10,8 @@ namespace Atlas
 	class DxgiInfoManager
 	{
 	public:
-		static void Init();
-		static void Relese();
+		DxgiInfoManager() = default;
+		void Init();
 		~DxgiInfoManager() = default;
 
 		//Set is called to filter messages from this point
@@ -20,7 +20,6 @@ namespace Atlas
 		//This gets the messages taken from the last Set call to now
 		static std::vector<std::string> GetMessages();
 	private:
-		DxgiInfoManager() = default;
 
 		static DxgiInfoManager* s_Instance;
 		static unsigned long long m_Next;

@@ -6,6 +6,8 @@
 #include "Layer/Layer.h"
 #include "Graphics/Graphics.h"
 
+#include "Graphics/DxgiInfoManager.h"
+
 namespace Atlas
 {
 	class Application
@@ -76,5 +78,8 @@ namespace Atlas
 
 		//The graphics object
 		Graphics m_Gfx;
+
+		//The Graphics debug object
+		DxgiInfoManager m_InfoManager;
 	};
 }

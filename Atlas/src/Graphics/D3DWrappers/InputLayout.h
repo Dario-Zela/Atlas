@@ -24,8 +24,9 @@ namespace Atlas
 	class InputLayout : public Bindable
 	{
 	public:
-		InputLayout() = default;
-		void Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob);
+		InputLayout(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob);
+		static std::shared_ptr<InputLayout> Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob);
+		static std::string GenerateUID(std::string layoutNames);
 
 		void Bind() override;
 		wrl::ComPtr<ID3D11InputLayout> GetInputLayout();

@@ -24,23 +24,22 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 	const Vertex vertices[] =
 	{
 		{{-1.0f, -1.0f, -1.0f}, {255, 0, 0, 255}},
-		{{1.0f, -1.0f, -1.0f}, {255, 0, 0, 255}},
-		{{-1.0f, 1.0f, -1.0f}, {255, 0, 0, 255}},
-		{{1.0f, 1.0f, -1.0f}, {255, 0, 0, 255}},
-		{{-1.0f, -1.0f, 1.0f}, {255, 0, 0, 255}},
-		{{1.0f, -1.0f, 1.0f}, {255, 0, 0, 255}},
-		{{-1.0f, 1.0f, 1.0f}, {255, 0, 0, 255}},
+		{{1.0f, -1.0f, -1.0f}, {255, 255, 0, 255}},
+		{{-1.0f, 1.0f, -1.0f}, {255, 125, 0, 255}},
+		{{1.0f, 1.0f, -1.0f}, {255, 0, 255, 255}},
+		{{-1.0f, -1.0f, 1.0f}, {255, 0, 125, 255}},
+		{{1.0f, -1.0f, 1.0f}, {255, 255, 125, 255}},
+		{{-1.0f, 1.0f, 1.0f}, {255, 125, 255, 255}},
 		{{1.0f, 1.0f, 1.0f}, {255, 0, 0, 255}}
 	};
 
-	vb.Create((void*)&vertices, sizeof(vertices), sizeof(Vertex));
-	AddBindable(vb);
+	AddBindable(VertexBuffer::Create((void*)&vertices, sizeof(vertices), sizeof(Vertex)));
 
-	vs.Create("TestVertex.cso");
-	AddBindable(vs);
+	auto temp2 = VertexShader::Create("TestVertex.cso");
+	auto temp = temp2->GetBlob();
+	AddBindable(std::move(temp2));
 
-	ps.Create("TestPixel.cso");
-	AddBindable(ps);
+	AddBindable(PixelShader::Create("TestPixel.cso"));
 
 	const unsigned short indices[] =
 	{
@@ -52,33 +51,36 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 		0,1,4,	1,5,4
 	};
 
-	ib.Create((unsigned short*)&indices, sizeof(indices));
-	AddBindable(ib);
+	AddBindable(IndexBuffer::Create((unsigned short*)&indices, sizeof(indices)));
 
-	il.Create({
+	AddBindable(InputLayout::Create({
 		{"POSITION", DXGI_FORMAT_R32G32B32_FLOAT, 0},
-		{"COLOR", DXGI_FORMAT_R32G32B32A32_FLOAT,0}
-		}, vs.GetBlob());
+		{"COLOR", DXGI_FORMAT_R8G8B8A8_UNORM,0}
+		}, temp));
 
-	AddBindable(il);
 	Graphics::SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	Graphics::SetRenderTarget();
 
 	tcb.SetProjection(DirectX::XMMatrixPerspectiveLH(1, 3.0f / 4.0f, 1, 1000));
-	AddBindable(tcb);
 
-	vp.Create(0, 0, 1024, 700, 0, 1);
-	AddBindable(vp);
+	AddBindable(ViewPort::Create(0, 0, 1024, 700, 0, 1));
 }
 
 void Atlas::Box::Update(float timeStep)
 {
-	roll += drool * timeStep;
+	r += 0.5f * dir;
+	if (r < -30)
+		dir = 1;
+	if (r > 20)
+		dir = -1;
+
 	pitch += dpitch * timeStep;
-	yaw += dyaw * timeStep;
 	theta += dtheta * timeStep;
-	phi += dphi * timeStep;
-	chi += dchi * timeStep;
+	roll += drool * timeStep;
+	yaw += dyaw * timeStep ;
+	phi += dphi * timeStep ;
+	chi += dchi * timeStep ;
+	tcb.Bind();
 }
 
 DirectX::XMMATRIX Atlas::Box::GetTransformXM()

@@ -51,7 +51,16 @@ namespace Atlas
 		//Initialising the window and the instance of the application
 		m_Window.Init(title, width, height);
 		Application::s_Instance = this;
-		AT_CORE_INFO("Window Successfully initialised")
+		AT_CORE_INFO("Window Successfully initialised");
+
+		//Initialise the time
+		m_LastFrameTime = std::chrono::system_clock::now();
+
+		//If it is in debug mode
+		//Initialise the info manager
+		#ifdef AT_DEBUG
+			m_InfoManager.Init();
+		#endif  
 	}
 	
 	static auto beg = std::chrono::system_clock::now();
@@ -67,17 +76,16 @@ namespace Atlas
 			m_Gfx.Init(m_Window.GetWindowHandle());
 			AT_CORE_INFO("Graphics Successfully initialised");
 
+			std::mt19937 rng(std::random_device{}());
+			std::uniform_real_distribution<float> adist(0.0f, DirectX::XM_2PI);
+			std::uniform_real_distribution<float> ddist(0.0f, DirectX::XM_2PI);
+			std::uniform_real_distribution<float> odist(0.0f, DirectX::XM_PI * 0.3f);
+			std::uniform_real_distribution<float> rdist(6.0f, 20);
+
 			std::vector<std::unique_ptr<Box>> boxes;
+			for (int i = 0; i < 5; i++)
 			{
-				std::mt19937 rng(std::random_device{}());
-				std::uniform_real_distribution<float> adist(0.0f, DirectX::XM_2PI);
-				std::uniform_real_distribution<float> ddist(0.0f, DirectX::XM_2PI);
-				std::uniform_real_distribution<float> odist(0.0f, DirectX::XM_PI * 0.3f);
-				std::uniform_real_distribution<float> rdist(6.0f, 20);
-				for (int i = 0; i < 20; i++)
-				{
-					boxes.push_back(std::make_unique<Box>(rng, adist, ddist, odist, rdist));
-				}
+				boxes.push_back(std::make_unique<Box>(rng, adist, ddist, odist, rdist));
 			}
 
 			//The main loop
@@ -94,25 +102,14 @@ namespace Atlas
 				}
 				float c = std::sin(std::chrono::duration<float>(beg - m_LastFrameTime).count()) / 2.0f + 0.5f;
 				
-				m_Gfx.ClearScreen(1, 0, 1);
+				m_Gfx.ClearScreen(0, 0, 1);
 
 				for (auto& b : boxes)
 				{
-					b->Update(c / 25.0f);
+					b->Update(timeStep);
 					b->Draw();
 				}
 				m_Gfx.EndFrame(1);
-	
-
-
-				/*
-				m_Gfx.ClearScreen(c, c, 0);
-				auto var = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationX(c * DirectX::XM_2PI) * DirectX::XMMatrixTranspose(transform));
-				vcb.Update((void*)&var, sizeof(var));
-				vcb.Bind();
-				box.Update(c / 4.0f);
-				box.Draw();
-				*/
 
 				#ifdef AT_DEBUG
 					SetWindowTitle("FPS: " + std::to_string(1.0f / timeStep));
@@ -134,7 +131,6 @@ namespace Atlas
 				//Then run dispatch the events
 				m_EventManager.PropagateEvents(&m_LayerStack);
 			}
-
 			//Allows a forced exit that makes sure the
 			//Window is edited only when it is alive
 		ForcedExit:;

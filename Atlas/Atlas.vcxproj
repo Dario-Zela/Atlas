@@ -97,6 +97,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Graphics\BindableLib.h" />
     <ClInclude Include="src\Graphics\Bindable.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\InputLayout.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\Shaders.h" />
@@ -126,6 +127,7 @@
     <ClInclude Include="src\Graphics\D3DWrappers\ViewPort.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Graphics\BindableLib.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\InputLayout.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Shaders.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Buffers.cpp" />

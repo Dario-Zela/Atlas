@@ -2,6 +2,7 @@
 #include <DirectXMath.h>
 #include "Graphics/Graphics.h"
 #include "Graphics/Bindable.h"
+#include "Graphics/BindableLib.h"
 #include "Graphics/D3DWrappers/Buffers.h"
 
 namespace Atlas
@@ -14,12 +15,12 @@ namespace Atlas
 		virtual ~Drawable() = default;
 
 		void Draw() const;
-		void AddBindable(Bindable& bindable);
+		void AddBindable(std::shared_ptr<Bindable> bindable);
 
 		virtual DirectX::XMMATRIX GetTransformXM() = 0;
 		virtual void Update(float timeStep) = 0;
 	private:
-		std::vector<Bindable*> m_Bindables;
-		const IndexBuffer* m_IndexBuffer = nullptr;
+		std::vector<std::shared_ptr<Bindable>> m_Bindables;
+		IndexBuffer* m_IndexBuffer;
 	};
 }

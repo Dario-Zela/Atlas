@@ -12,7 +12,10 @@ namespace Atlas
 	//Initialises the queue
 	void DxgiInfoManager::Init()
 	{
-		s_Instance = new DxgiInfoManager();
+		if (!s_Instance)
+			s_Instance = this;
+		else
+			return;
 
 		//Declares the signature of the function DXGIGetDebugInterface so that it can be used later
 		//		OUTPUT				FUNCTION NAME			INPUTS
@@ -32,11 +35,6 @@ namespace Atlas
 		AT_CHECK_GFX(DxgiGetDebugInterface(__uuidof(IDXGIInfoQueue), &m_DxgiInfoQueue));
 	}
 
-	void DxgiInfoManager::Relese()
-	{
-		delete s_Instance;
-	}
-	
 	void DxgiInfoManager::Set() noexcept
 	{
 		//This sets the current index of the Debug queue

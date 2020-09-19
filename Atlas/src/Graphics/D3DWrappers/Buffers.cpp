@@ -1,12 +1,16 @@
 #include "pch.h"
 #include "Buffers.h"
+#include "Graphics/BindableLib.h"
+
+#include "Graphics/DxgiInfoManager.h"
 
 namespace Atlas
 {
 	//Vertex Buffer
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void VertexBuffer::Create(void* data, uint sizeData, uint sizeVertex)
+	VertexBuffer::VertexBuffer(void* data, uint sizeData, uint sizeVertex)
+		: m_Stride(sizeVertex)
 	{
 		D3D11_BUFFER_DESC bufferDesc = {};
 		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -16,12 +20,33 @@ namespace Atlas
 		bufferDesc.ByteWidth = sizeData;
 		bufferDesc.StructureByteStride = sizeVertex;
 
-		m_Stride = sizeVertex;
 
 		D3D11_SUBRESOURCE_DATA vertexData;
 		vertexData.pSysMem = data;
 
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, &vertexData, &m_VertexBuffer))
+	}
+
+	std::shared_ptr<VertexBuffer> VertexBuffer::Create(void* data, uint sizeData, uint sizeVertex)
+	{
+		std::string UID = GenerateUID(sizeVertex);
+		auto test = BindableLib::Resolve(UID);
+
+		if (test)
+		{
+			return std::static_pointer_cast<VertexBuffer>(test);
+		}
+		else
+		{
+			auto vertexBuffer = std::make_shared<VertexBuffer>(data, sizeData, sizeVertex);
+			BindableLib::Add(UID, vertexBuffer);
+			return std::static_pointer_cast<VertexBuffer>(BindableLib::Resolve(UID));
+		}
+	}
+
+	std::string VertexBuffer::GenerateUID(uint stride)
+	{
+		return std::string(typeid(VertexBuffer).name()) + '_' + std::to_string(stride);
 	}
 
 	void VertexBuffer::Bind()
@@ -38,9 +63,8 @@ namespace Atlas
 	//Index Buffer
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void IndexBuffer::Create(unsigned short* data, uint size)
+	IndexBuffer::IndexBuffer(unsigned short* data, uint size)
 	{
-
 		D3D11_BUFFER_DESC bufferDesc = {};
 		bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -53,6 +77,28 @@ namespace Atlas
 		indexData.pSysMem = data;
 
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, &indexData, &m_IndexBuffer))
+	}
+
+	std::shared_ptr<IndexBuffer> IndexBuffer::Create(unsigned short* data, uint size)
+	{
+		std::string UID = GenerateUID(size);
+		auto test = BindableLib::Resolve(UID);
+
+		if (test)
+		{
+			return std::static_pointer_cast<IndexBuffer>(test);
+		}
+		else
+		{
+			auto indexBuffer = std::make_shared<IndexBuffer>(data, size);
+			BindableLib::Add(UID, indexBuffer);
+			return std::static_pointer_cast<IndexBuffer>(BindableLib::Resolve(UID));
+		}
+	}
+
+	std::string IndexBuffer::GenerateUID(uint size)
+	{
+		return std::string(typeid(IndexBuffer).name()) + '_' + std::to_string(size);
 	}
 
 	void IndexBuffer::Bind()
@@ -76,7 +122,7 @@ namespace Atlas
 	//Constant Buffer
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	void ConstantBuffer::Create(void* data, uint sizeData)
+	ConstantBuffer::ConstantBuffer(void* data, uint sizeData)
 	{
 		D3D11_BUFFER_DESC bufferDesc = {};
 		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -92,7 +138,7 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, &vertexData, &m_ConstantBuffer))
 	}
 
-	void ConstantBuffer::Create(uint sizeData)
+	ConstantBuffer::ConstantBuffer(uint sizeData)
 	{
 		D3D11_BUFFER_DESC bufferDesc = {};
 		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -105,6 +151,40 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, nullptr, &m_ConstantBuffer))
 	}
 
+	std::shared_ptr<ConstantBuffer> ConstantBuffer::Create(void* data, uint sizeData)
+	{
+		std::string UID = GenerateUID(sizeData);
+		auto test = BindableLib::Resolve(UID);
+
+		if (test)
+		{
+			return std::static_pointer_cast<ConstantBuffer>(test);
+		}
+		else
+		{
+			auto constantBuffer = std::make_shared<ConstantBuffer>(data, sizeData);
+			BindableLib::Add(UID, constantBuffer);
+			return std::static_pointer_cast<ConstantBuffer>(BindableLib::Resolve(UID));
+		}
+	}
+
+	std::shared_ptr<ConstantBuffer> ConstantBuffer::Create(uint sizeData)
+	{
+		std::string UID = GenerateUID(sizeData);
+		auto test = BindableLib::Resolve(UID);
+
+		if (test)
+		{
+			return std::static_pointer_cast<ConstantBuffer>(test);
+		}
+		else
+		{
+			auto constantBuffer = std::make_shared<ConstantBuffer>(sizeData);
+			BindableLib::Add(UID, constantBuffer);
+			return std::static_pointer_cast<ConstantBuffer>(BindableLib::Resolve(UID));
+		}
+	}
+
 	void ConstantBuffer::Update(void* data, uint sizeData)
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -114,6 +194,11 @@ namespace Atlas
 		memcpy(mappedResource.pData, data, sizeData);
 		
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->Unmap(m_ConstantBuffer.Get(), 0));
+	}
+
+	std::string ConstantBuffer::GenerateUID(uint sizeData)
+	{
+		return std::string(typeid(ConstantBuffer).name()) + '_' + std::to_string(sizeData);
 	}
 
 	//Vertex Shader Constant Buffer

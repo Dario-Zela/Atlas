@@ -6,7 +6,7 @@ struct SV_OUT
 
 cbuffer SV_IN
 {
-	matrix transform;
+	matrix transform; 
 };
 
 SV_OUT main( float3 pos : POSITION, float3 color : COLOR )

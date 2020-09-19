@@ -12,7 +12,7 @@ namespace Atlas
 		void SetProjection(DirectX::XMMATRIX projection);
 		void Bind() override;
 	private:
-		VertexConstantBuffer m_VertexBuffer;
+		std::unique_ptr<VertexConstantBuffer> m_VertexBuffer;
 		Drawable& m_Parent;
 		DirectX::XMMATRIX m_Projection;
 	};
