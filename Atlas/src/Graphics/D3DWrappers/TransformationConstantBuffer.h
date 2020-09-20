@@ -8,8 +8,8 @@ namespace Atlas
 	class TransformationConstantBuffer : public Bindable
 	{
 	public:
-		TransformationConstantBuffer(Drawable& parent);
-		void SetProjection(DirectX::XMMATRIX projection);
+		TransformationConstantBuffer(Drawable& parent, DirectX::XMMATRIX projection);
+		static std::shared_ptr<TransformationConstantBuffer> Create(Drawable& parent, DirectX::XMMATRIX projection);
 		void Bind() override;
 	private:
 		std::unique_ptr<VertexConstantBuffer> m_VertexBuffer;

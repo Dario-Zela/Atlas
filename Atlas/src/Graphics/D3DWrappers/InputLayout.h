@@ -8,17 +8,15 @@ namespace Atlas
 	class InputElement
 	{
 	public:
-		InputElement(std::string semanticName, uint type, uint slot)
-			: m_SemanticName(semanticName), m_Type(type), m_Slot(slot) {}
+		InputElement(std::string semanticName, uint type)
+			: m_SemanticName(semanticName), m_Type(type) {}
 
 		std::string& GetSemanticName() { return m_SemanticName; }
 		uint GetType() { return m_Type; }
-		uint GetSlot() { return m_Slot; }
 
 	private:
 		std::string m_SemanticName;
 		uint m_Type;
-		uint m_Slot;
 	};
 
 	class InputLayout : public Bindable

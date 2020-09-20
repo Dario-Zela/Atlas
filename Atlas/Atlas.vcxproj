@@ -102,6 +102,7 @@
     <ClInclude Include="src\Graphics\D3DWrappers\InputLayout.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\Shaders.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\Buffers.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\SimpleMeshCreator.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\TransformationConstantBuffer.h" />
     <ClInclude Include="src\Graphics\Drawable.h" />
     <ClInclude Include="src\Graphics\DxgiInfoManager.h" />

@@ -36,8 +36,5 @@ namespace Atlas
 		float dphi;
 		float dchi;
 		int dir;
-
-		//Values
-		TransformationConstantBuffer tcb;
 	};
 }

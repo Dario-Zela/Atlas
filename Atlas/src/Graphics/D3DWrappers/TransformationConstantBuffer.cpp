@@ -3,16 +3,17 @@
 
 namespace Atlas
 {
-	TransformationConstantBuffer::TransformationConstantBuffer(Drawable& parent)
+	TransformationConstantBuffer::TransformationConstantBuffer(Drawable& parent, DirectX::XMMATRIX projection)
 		:m_Parent(parent), m_VertexBuffer(nullptr)
 	{
 		m_VertexBuffer = std::make_unique<VertexConstantBuffer>((uint)sizeof(DirectX::XMMATRIX));
+		m_Projection = projection;
 	}
 
-	void TransformationConstantBuffer::SetProjection(DirectX::XMMATRIX projection)
+	std::shared_ptr<TransformationConstantBuffer> TransformationConstantBuffer::Create(Drawable& parent, DirectX::XMMATRIX projection)
 	{
-		m_Projection = projection;
-	} 
+		return std::make_shared<TransformationConstantBuffer>(parent, projection);
+	}
 
 	void TransformationConstantBuffer::Bind()
 	{
