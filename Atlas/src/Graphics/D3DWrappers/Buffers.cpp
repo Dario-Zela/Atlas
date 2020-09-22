@@ -27,9 +27,9 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, &vertexData, &m_VertexBuffer))
 	}
 
-	std::shared_ptr<VertexBuffer> VertexBuffer::Create(void* data, uint sizeData, uint sizeVertex)
+	std::shared_ptr<VertexBuffer> VertexBuffer::Create(void* data, uint sizeData, uint sizeVertex, std::string tag)
 	{
-		std::string UID = GenerateUID(sizeVertex);
+		std::string UID = GenerateUID(sizeVertex, tag);
 		auto test = BindableLib::Resolve(UID);
 
 		if (test)
@@ -44,9 +44,9 @@ namespace Atlas
 		}
 	}
 
-	std::string VertexBuffer::GenerateUID(uint stride)
+	std::string VertexBuffer::GenerateUID(uint stride, std::string tag)
 	{
-		return std::string(typeid(VertexBuffer).name()) + '_' + std::to_string(stride);
+		return std::string(typeid(VertexBuffer).name()) + '_' + std::to_string(stride) + tag;
 	}
 
 	void VertexBuffer::Bind()
@@ -79,9 +79,9 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, &indexData, &m_IndexBuffer))
 	}
 
-	std::shared_ptr<IndexBuffer> IndexBuffer::Create(unsigned short* data, uint size)
+	std::shared_ptr<IndexBuffer> IndexBuffer::Create(unsigned short* data, uint size, std::string tag)
 	{
-		std::string UID = GenerateUID(size);
+		std::string UID = GenerateUID(size, tag);
 		auto test = BindableLib::Resolve(UID);
 
 		if (test)
@@ -96,9 +96,9 @@ namespace Atlas
 		}
 	}
 
-	std::string IndexBuffer::GenerateUID(uint size)
+	std::string IndexBuffer::GenerateUID(uint size, std::string tag)
 	{
-		return std::string(typeid(IndexBuffer).name()) + '_' + std::to_string(size);
+		return std::string(typeid(IndexBuffer).name()) + '_' + std::to_string(size) + tag;
 	}
 
 	void IndexBuffer::Bind()

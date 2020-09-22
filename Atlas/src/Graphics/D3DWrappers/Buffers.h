@@ -8,9 +8,9 @@ namespace Atlas
 	{
 	public:
 		VertexBuffer(void* data, uint sizeData, uint sizeVertex);
-		static std::shared_ptr<VertexBuffer> Create(void* data, uint sizeData, uint sizeVertex);
+		static std::shared_ptr<VertexBuffer> Create(void* data, uint sizeData, uint sizeVertex, std::string tag = "");
 
-		static std::string GenerateUID(uint stride);
+		static std::string GenerateUID(uint stride, std::string tag);
 		void Bind() override;
 		wrl::ComPtr<ID3D11Buffer> GetVertexBuffer();
 	private:
@@ -22,9 +22,9 @@ namespace Atlas
 	{
 	public:
 		IndexBuffer(unsigned short* data, uint size);
-		static std::shared_ptr<IndexBuffer> Create(unsigned short* data, uint size);
+		static std::shared_ptr<IndexBuffer> Create(unsigned short* data, uint size, std::string tag = "");
 
-		static std::string GenerateUID(uint size);
+		static std::string GenerateUID(uint size, std::string tag);
 		void Bind() override;
 		wrl::ComPtr<ID3D11Buffer> GetIndexBuffer();
 		uint GetCount() const;

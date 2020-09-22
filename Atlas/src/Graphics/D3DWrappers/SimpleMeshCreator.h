@@ -30,10 +30,13 @@ namespace Atlas
 				DirectX::XMStoreFloat3(&vertex.pos, DirectX::XMVector3Transform(position, transform));
 			}
 		}
+		
 		std::vector<IMovable> GetVertecies() { return m_Vertecies; }
 		std::vector<unsigned short> GetIndecies() { return m_Indecies; }
+		
 		uint GetVerteciesSize() { return (uint)m_Vertecies.size(); }
 		uint GetIndeciesSize() { return (uint)m_Indecies.size(); }
+
 	private:
 		std::vector<IMovable> m_Vertecies;
 		std::vector<unsigned short> m_Indecies;
@@ -403,4 +406,15 @@ namespace Atlas
 			return MakeTessalated(12, 24);
 		}
 	};
+
+	static std::tuple<IndexedTriangleList, std::string> GetRandom(std::mt19937& rng)
+	{
+		switch (rng() % 4)
+		{
+		case 0: return { Cube::Make(), "Cube" };
+		case 1: return { Prism::Make(), "Prism" };
+		case 2: return { Cone::Make(), "Cone" };
+		case 3: return { Sphere::Make(), "Sphere" };
+		}
+	}
 }

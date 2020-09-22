@@ -83,7 +83,7 @@ namespace Atlas
 			std::uniform_real_distribution<float> rdist(6.0f, 20);
 
 			std::vector<std::unique_ptr<Box>> boxes;
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 800; i++)
 			{
 				boxes.push_back(std::make_unique<Box>(rng, adist, ddist, odist, rdist));
 			}
