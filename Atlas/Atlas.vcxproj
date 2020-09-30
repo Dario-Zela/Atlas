@@ -62,7 +62,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\src;$(ProjectDir)vendor\fmt%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\src;$(ProjectDir)vendor\fmt;$(ProjectDir)vendor\stb%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -81,7 +81,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\src;$(ProjectDir)vendor\fmt%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\src;$(ProjectDir)vendor\fmt;$(ProjectDir)vendor\stb%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -97,13 +97,17 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Graphics\D3DWrappers\Blendable.h" />
     <ClInclude Include="src\Graphics\BindableLib.h" />
     <ClInclude Include="src\Graphics\Bindable.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\InputLayout.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\Sampler.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\Shaders.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\Buffers.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\SimpleMeshCreator.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\Texture.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\TransformationConstantBuffer.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\Vertex.h" />
     <ClInclude Include="src\Graphics\Drawable.h" />
     <ClInclude Include="src\Graphics\DxgiInfoManager.h" />
     <ClInclude Include="src\Core\Exception.h" />
@@ -126,12 +130,16 @@
     <ClInclude Include="vendor\fmt\fmt.h" />
     <ClInclude Include="src\Graphics\DX11Exception.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\ViewPort.h" />
+    <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Graphics\D3DWrappers\Blendable.cpp" />
     <ClCompile Include="src\Graphics\BindableLib.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\InputLayout.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\Sampler.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Shaders.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Buffers.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\Texture.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\TransformationConstantBuffer.cpp" />
     <ClCompile Include="src\Graphics\Drawable.cpp" />
     <ClCompile Include="src\Graphics\DxgiInfoManager.cpp" />
@@ -151,6 +159,7 @@
     <ClCompile Include="src\Window\Window.cpp" />
     <ClCompile Include="src\Graphics\DX11Exception.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\ViewPort.cpp" />
+    <ClCompile Include="vendor\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Shaders\TestPixel.hlsl">

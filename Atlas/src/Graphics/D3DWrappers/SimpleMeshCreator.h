@@ -66,6 +66,45 @@ namespace Atlas
 						0,4,2,	2,4,6,
 						0,1,4,	1,5,4 } };
 		}
+
+		static IndexedTriangleList MakeIndipendentFaces()
+		{
+			constexpr float side = 0.5f;
+			std::vector<IMovable> verticies(24);
+
+			verticies[0].pos = { -side, -side, -side };
+			verticies[1].pos = { side, -side, -side };
+			verticies[2].pos = { -side,  side, -side };
+			verticies[3].pos = { side,  side, -side };
+			verticies[4].pos = { -side, -side,  side };
+			verticies[5].pos = { side, -side,  side };
+			verticies[6].pos = { -side,  side,  side };
+			verticies[7].pos = { side,  side,  side };
+			verticies[8].pos = { -side, -side, -side };
+			verticies[9].pos = { -side, side, -side };
+			verticies[10].pos = { -side,  -side, side };
+			verticies[11].pos = { -side,  side, side };
+			verticies[12].pos = { side, -side,  -side };
+			verticies[13].pos = { side, side, -side };
+			verticies[14].pos = { side,  -side,  side };
+			verticies[15].pos = { side,  side,  side };
+			verticies[16].pos = { -side, -side, -side };
+			verticies[17].pos = { side, -side, -side };
+			verticies[18].pos = { -side,  -side, side };
+			verticies[19].pos = { side,  -side, side };
+			verticies[20].pos = { -side, side,  -side };
+			verticies[21].pos = { side, side,  -side };
+			verticies[22].pos = { -side,  side,  side };
+			verticies[23].pos = { side,  side,  side };
+
+			return { std::move(verticies), {
+						0,2,1,		2,3,1,
+						4,5,7,		4,7,6,
+						8,10,9,		10,11,9,
+						12,13,15,	12,15,14,
+						16,17,18,	18,17,19,
+						20,23,21,	20,22,23} };
+		}
 	};
 
 	struct Plane

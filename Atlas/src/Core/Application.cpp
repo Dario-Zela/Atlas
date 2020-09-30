@@ -7,11 +7,6 @@
 #include "Input.h"
 #include "Test.h"
 
-#include "Graphics/D3DWrappers/Buffers.h"
-#include "Graphics/D3DWrappers/Shaders.h"
-#include "Graphics/D3DWrappers/InputLayout.h"
-#include "Graphics/D3DWrappers/ViewPort.h"
-
 namespace Atlas
 {
 	Application* Application::s_Instance = nullptr;
@@ -82,10 +77,11 @@ namespace Atlas
 			std::uniform_real_distribution<float> odist(0.0f, DirectX::XM_PI * 0.3f);
 			std::uniform_real_distribution<float> rdist(6.0f, 20);
 
-			std::vector<std::unique_ptr<Box>> boxes;
-			for (int i = 0; i < 800; i++)
+			std::unique_ptr<Box> box = std::make_unique<Box>(rng, adist, ddist, odist, rdist);
+			std::vector<std::unique_ptr<EmptyBox>> boxes;
+			for (int i = 0; i < 199; i++)
 			{
-				boxes.push_back(std::make_unique<Box>(rng, adist, ddist, odist, rdist));
+				boxes.push_back(std::make_unique<EmptyBox>());
 			}
 
 			//The main loop
@@ -103,14 +99,14 @@ namespace Atlas
 				float c = std::sin(std::chrono::duration<float>(beg - m_LastFrameTime).count()) / 2.0f + 0.5f;
 				
 				m_Gfx.ClearScreen(0, 0, 1);
-
+				/*
 				for (auto& b : boxes)
 				{
 					b->Update(timeStep);
 					b->Draw();
 				}
 				m_Gfx.EndFrame(1);
-
+				*/
 				#ifdef AT_DEBUG
 					SetWindowTitle("FPS: " + std::to_string(1.0f / timeStep));
 				#endif

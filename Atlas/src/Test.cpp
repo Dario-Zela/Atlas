@@ -1,11 +1,15 @@
 #include "pch.h"
 #include "Test.h"
 #include "Graphics/D3DWrappers/SimpleMeshCreator.h"
+#include "Graphics/D3DWrappers/Texture.h"
+#include "Graphics/D3DWrappers/Sampler.h"
+
+#include "Graphics/D3DWrappers/Blendable.h"
 
 Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, std::uniform_real_distribution<float> ddist, std::uniform_real_distribution<float> odist, std::uniform_real_distribution<float> rdist)
-    :r(rdist(rng)), drool(ddist(rng)), dpitch(ddist(rng)), dyaw(ddist(rng)), dphi(odist(rng)), dtheta(odist(rng)), dchi(odist(rng)), chi(adist(rng)), theta(adist(rng)), phi(odist(rng))
+    : r(rdist(rng)), drool(ddist(rng)), dpitch(ddist(rng)), dyaw(ddist(rng)), dphi(odist(rng)), dtheta(odist(rng)), dchi(odist(rng)), chi(adist(rng)), theta(adist(rng)), phi(odist(rng))
 {
-	struct Col
+	struct Color
 	{
 		byte r;
 		byte g;
@@ -15,7 +19,7 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 
 	struct Vector : IMovable
 	{
-		Col color;
+		Color col;
 	};
 
 	///*
@@ -23,28 +27,32 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 	//*/
 
 	/*
-	auto val = Sphere::MakeTessalated(3, 3);
-	std::string tag = "Sphere";
+	auto val = Cube::MakeIndipendentFaces();
+	std::string tag = "Cube";
 	*/
-	
-	val.Transform(DirectX::XMMatrixScaling(2, 2, 2));
+
 	std::vector<Vector> vec;
 
-	uint i = 0;
-	Col color = { rng() % 256, rng() % 256, rng() % 256, 255 };
-	for (auto v : val.GetVertecies()) 
+	for (auto v : val.GetVertecies())
 	{
-		vec.emplace_back();
-		vec.back().pos = v.pos;
-		vec.back().color = color;
-		i++;
-		if (i == 3)
-		{
-			i = 0;
-			color = { rng() % 256, rng() % 256, rng() % 256, 255 };
-		}
+		Vector v2 = { v.pos, { rng()%256, rng() % 256, rng() % 256, 255 } };
+		vec.emplace_back(v2);
 	}
-	AddBindable(VertexBuffer::Create(vec.data(), (uint)vec.size() * sizeof(Vector), (uint)sizeof(Vector), tag));
+
+	AddBindable(VertexBuffer::Create(vec.data(), vec.size() * (uint)sizeof(Vector), (uint)sizeof(Vector), tag));
+
+	//AddBindable(Texture::Create(R"(assets\Textures\Test.bmp)"));
+
+	/*
+	if(rng() %2 == 1)
+		AddBindable(Texture::Create(R"(assets\Textures\Test2.png)"));
+	else
+		AddBindable(Texture::Create(R"(assets\Textures\Test.bmp)"));
+	*/
+
+	//AddBindable(Sampler::Create());
+
+	AddBindable(Blendable::Create(true, 0));
 
 	auto temp2 = VertexShader::Create("TestVertex.cso");
 	auto temp = temp2->GetBlob();
@@ -56,7 +64,7 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 
 	AddBindable(InputLayout::Create({
 		{"POSITION", DXGI_FORMAT_R32G32B32_FLOAT},
-		{"COLOR", DXGI_FORMAT_B8G8R8A8_UNORM}
+		{"COLOR", DXGI_FORMAT_R8G8B8A8_UNORM}
 		}, temp));
 
 	Graphics::SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
