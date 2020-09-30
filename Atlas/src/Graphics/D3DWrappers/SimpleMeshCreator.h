@@ -456,4 +456,14 @@ namespace Atlas
 		case 3: return { Sphere::Make(), "Sphere" };
 		}
 	}
+	static std::tuple<IndexedTriangleList, std::string> GetRandomIndipendent(std::mt19937& rng)
+	{
+		switch (rng() % 4)
+		{
+		case 0: return { Cube::MakeIndipendentFaces(), "Cube" };
+		case 1: return { Prism::Make(), "Prism" };
+		case 2: return { Cone::MakeTessalatedIndipendentFaces(24), "Cone" };
+		case 3: return { Sphere::Make(), "Sphere" };
+		}
+	}
 }

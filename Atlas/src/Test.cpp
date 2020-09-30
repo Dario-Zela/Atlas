@@ -9,48 +9,41 @@
 Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, std::uniform_real_distribution<float> ddist, std::uniform_real_distribution<float> odist, std::uniform_real_distribution<float> rdist)
     : r(rdist(rng)), drool(ddist(rng)), dpitch(ddist(rng)), dyaw(ddist(rng)), dphi(odist(rng)), dtheta(odist(rng)), dchi(odist(rng)), chi(adist(rng)), theta(adist(rng)), phi(odist(rng))
 {
-	struct Color
-	{
-		byte r;
-		byte g;
-		byte b;
-		byte a;
-	};
-
 	struct Vector : IMovable
 	{
-		Color col;
+		struct {
+			float x;
+			float y;
+		} texCoords;
 	};
 
 	///*
-	auto [val, tag] = GetRandom(rng);
+	auto [val, tag] = GetRandomIndipendent(rng);
 	//*/
+	val.Transform(DirectX::XMMatrixScaling(2, 2, 2));
+
+	std::vector<Vector> vec;
 
 	/*
 	auto val = Cube::MakeIndipendentFaces();
 	std::string tag = "Cube";
 	*/
 
-	std::vector<Vector> vec;
-
 	for (auto v : val.GetVertecies())
 	{
-		Vector v2 = { v.pos, { rng()%256, rng() % 256, rng() % 256, 255 } };
-		vec.emplace_back(v2);
+		vec.push_back({ v.pos, { (v.pos.x + 1) / 2, (v.pos.y + 1) / 2 } });
 	}
 
 	AddBindable(VertexBuffer::Create(vec.data(), vec.size() * (uint)sizeof(Vector), (uint)sizeof(Vector), tag));
 
-	//AddBindable(Texture::Create(R"(assets\Textures\Test.bmp)"));
+	//AddBindable(Texture::Create(R"(assets\Textures\Test2.png)"));
 
-	/*
 	if(rng() %2 == 1)
 		AddBindable(Texture::Create(R"(assets\Textures\Test2.png)"));
 	else
 		AddBindable(Texture::Create(R"(assets\Textures\Test.bmp)"));
-	*/
 
-	//AddBindable(Sampler::Create());
+	AddBindable(Sampler::Create());
 
 	AddBindable(Blendable::Create(true, 0));
 
@@ -64,7 +57,7 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 
 	AddBindable(InputLayout::Create({
 		{"POSITION", DXGI_FORMAT_R32G32B32_FLOAT},
-		{"COLOR", DXGI_FORMAT_R8G8B8A8_UNORM}
+		{"TEXTURECOORDS", DXGI_FORMAT_R32G32_FLOAT}
 		}, temp));
 
 	Graphics::SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
