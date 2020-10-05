@@ -5,47 +5,60 @@
 #include "Graphics/D3DWrappers/Sampler.h"
 
 #include "Graphics/D3DWrappers/Blendable.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, std::uniform_real_distribution<float> ddist, std::uniform_real_distribution<float> odist, std::uniform_real_distribution<float> rdist)
     : r(rdist(rng)), drool(ddist(rng)), dpitch(ddist(rng)), dyaw(ddist(rng)), dphi(odist(rng)), dtheta(odist(rng)), dchi(odist(rng)), chi(adist(rng)), theta(adist(rng)), phi(odist(rng))
 {
-	struct Vector : IMovable
+	struct Color
 	{
-		struct {
-			float x;
-			float y;
-		} texCoords;
+		byte r;
+		byte g;
+		byte b;
+		byte a;
 	};
 
-	///*
-	auto [val, tag] = GetRandomIndipendent(rng);
-	//*/
-	val.Transform(DirectX::XMMatrixScaling(2, 2, 2));
+	struct Vector
+	{
+		DirectX::XMFLOAT3 pos;
+		Color col;
+	};
 
 	std::vector<Vector> vec;
+	auto tag = "Model";
 
-	/*
-	auto val = Cube::MakeIndipendentFaces();
-	std::string tag = "Cube";
-	*/
+	Assimp::Importer imp;
+	const auto model = imp.ReadFile(R"(assets\Models\201906_KeyVR_Webinar_Scenes\201906_KeyVR_BoatCollection.ksp)", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_OptimizeMeshes);
+	//201906_KeyVR_Webinar_Scenes\201906_KeyVR_BoatCollection.ksp
+	
+	const auto mesh = model->mMeshes[0];
+	vec.reserve(mesh->mNumVertices);
 
-	for (auto v : val.GetVertecies())
+	Color color = { (byte)(rng() % 256), (byte)(rng() % 256), (byte)(rng()%256), 255 };
+	
+	for (uint i = 0; i < mesh->mNumVertices; i++)
 	{
-		vec.push_back({ v.pos, { (v.pos.x + 1) / 2, (v.pos.y + 1) / 2 } });
+		vec.push_back({
+			{ mesh->mVertices[i].x * 2, mesh->mVertices[i].y * 2, mesh->mVertices[i].z * 2 },
+			color });
+			
+		color = { (byte)(rng() % 256), (byte)(rng() % 256), (byte)(rng() % 256), 255 };
 	}
 
 	AddBindable(VertexBuffer::Create(vec.data(), vec.size() * (uint)sizeof(Vector), (uint)sizeof(Vector), tag));
 
-	//AddBindable(Texture::Create(R"(assets\Textures\Test2.png)"));
+	std::vector<unsigned short> indicies;
+	indicies.reserve(mesh->mNumFaces * 3);
 
-	if(rng() %2 == 1)
-		AddBindable(Texture::Create(R"(assets\Textures\Test2.png)"));
-	else
-		AddBindable(Texture::Create(R"(assets\Textures\Test.bmp)"));
-
-	AddBindable(Sampler::Create());
-
-	AddBindable(Blendable::Create(true, 0));
+	for (uint i = 0; i < mesh->mNumFaces; i++)
+	{
+		const auto& face = mesh->mFaces[i];
+		indicies.push_back(face.mIndices[0]);
+		indicies.push_back(face.mIndices[1]);
+		indicies.push_back(face.mIndices[2]);
+	}
 
 	auto temp2 = VertexShader::Create("TestVertex.cso");
 	auto temp = temp2->GetBlob();
@@ -53,11 +66,11 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 
 	AddBindable(PixelShader::Create("TestPixel.cso"));
 
-	AddBindable(IndexBuffer::Create(val.GetIndecies().data(), (uint)val.GetIndeciesSize() * sizeof(unsigned short), tag));
+	AddBindable(IndexBuffer::Create(indicies.data(), (uint)indicies.size() * sizeof(unsigned short), tag));
 
 	AddBindable(InputLayout::Create({
 		{"POSITION", DXGI_FORMAT_R32G32B32_FLOAT},
-		{"TEXTURECOORDS", DXGI_FORMAT_R32G32_FLOAT}
+		{"COLOR", DXGI_FORMAT_R8G8B8A8_UNORM}
 		}, temp));
 
 	Graphics::SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
