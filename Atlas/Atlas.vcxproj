@@ -216,6 +216,7 @@
     <ClCompile Include="src\Graphics\D3DWrappers\Blendable.cpp" />
     <ClCompile Include="src\Graphics\BindableLib.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\InputLayout.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\Mesh.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Sampler.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Shaders.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Buffers.cpp" />

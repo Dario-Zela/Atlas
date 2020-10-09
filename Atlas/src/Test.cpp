@@ -30,9 +30,8 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 	auto tag = "Model";
 
 	Assimp::Importer imp;
-	const auto model = imp.ReadFile(R"(assets\Models\201906_KeyVR_Webinar_Scenes\201906_KeyVR_BoatCollection.ksp)", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_OptimizeMeshes);
-	//201906_KeyVR_Webinar_Scenes\201906_KeyVR_BoatCollection.ksp
-	
+	const auto model = imp.ReadFile(R"(D:\uploads_files_1839214_helicopter.obj)", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+
 	const auto mesh = model->mMeshes[0];
 	vec.reserve(mesh->mNumVertices);
 
@@ -41,13 +40,13 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 	for (uint i = 0; i < mesh->mNumVertices; i++)
 	{
 		vec.push_back({
-			{ mesh->mVertices[i].x * 2, mesh->mVertices[i].y * 2, mesh->mVertices[i].z * 2 },
+			{ mesh->mVertices[i].x * 4, mesh->mVertices[i].y * 4, mesh->mVertices[i].z * 4 },
 			color });
 			
 		color = { (byte)(rng() % 256), (byte)(rng() % 256), (byte)(rng() % 256), 255 };
 	}
 
-	AddBindable(VertexBuffer::Create(vec.data(), vec.size() * (uint)sizeof(Vector), (uint)sizeof(Vector), tag));
+	AddBindable(VertexBuffer::Create(vec.data(), (uint)vec.size() * (uint)sizeof(Vector), (uint)sizeof(Vector), tag));
 
 	std::vector<unsigned short> indicies;
 	indicies.reserve(mesh->mNumFaces * 3);
