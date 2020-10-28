@@ -18,7 +18,7 @@ namespace Atlas
 		void AddBindable(std::shared_ptr<Bindable> bindable);
 
 		virtual DirectX::XMMATRIX GetTransformXM() = 0;
-		virtual void Update(float timeStep) = 0;
+		virtual void Update(float timeStep) {}
 	private:
 		std::vector<std::shared_ptr<Bindable>> m_Bindables;
 		IndexBuffer* m_IndexBuffer;

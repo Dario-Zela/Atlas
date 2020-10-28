@@ -5,7 +5,8 @@
 
 namespace Atlas
 {
-    Sampler::Sampler()
+    Sampler::Sampler(int slot)
+        : m_Slot(slot)
     {
         D3D11_SAMPLER_DESC desc = {};
         desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -16,9 +17,9 @@ namespace Atlas
         AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateSamplerState(&desc, &m_Sampler));
     }
 
-    std::shared_ptr<Sampler> Sampler::Create()
+    std::shared_ptr<Sampler> Sampler::Create(int slot)
     {
-        std::string UID = GenerateUID();
+        std::string UID = GenerateUID(slot);
         auto test = BindableLib::Resolve(UID);
 
         if (test)
@@ -27,19 +28,19 @@ namespace Atlas
         }
         else
         {
-            auto vertexShader = std::make_shared<Sampler>();
+            auto vertexShader = std::make_shared<Sampler>(slot);
             BindableLib::Add(UID, vertexShader);
             return std::static_pointer_cast<Sampler>(BindableLib::Resolve(UID));
         }
     }
 
-    std::string Sampler::GenerateUID()
+    std::string Sampler::GenerateUID(int slot)
     {
-        return std::string(typeid(Sampler).name());
+        return std::string(typeid(Sampler).name()) + "_" + std::to_string(slot);
     }
 
     void Sampler::Bind()
     {
-        AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetSamplers(0, 1, m_Sampler.GetAddressOf()));
+        AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetSamplers(m_Slot, 1, m_Sampler.GetAddressOf()));
     }
 }

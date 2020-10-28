@@ -6,7 +6,8 @@
 
 namespace Atlas 
 {
-    Texture::Texture(std::string path)
+    Texture::Texture(std::string path, uint slot)
+        : m_Slot(slot)
     {
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
@@ -45,9 +46,9 @@ namespace Atlas
 		stbi_image_free(data);
     }
 
-    std::shared_ptr<Texture> Texture::Create(std::string path)
+    std::shared_ptr<Texture> Texture::Create(std::string path, uint slot)
     {
-        std::string UID = GenerateUID(path);
+        std::string UID = GenerateUID(path, slot);
         auto test = BindableLib::Resolve(UID);
 
         if (test)
@@ -56,19 +57,19 @@ namespace Atlas
         }
         else
         {
-            auto vertexShader = std::make_shared<Texture>(path);
+            auto vertexShader = std::make_shared<Texture>(path, slot);
             BindableLib::Add(UID, vertexShader);
             return std::static_pointer_cast<Texture>(BindableLib::Resolve(UID));
         }
     }
 
-    std::string Texture::GenerateUID(std::string path)
+    std::string Texture::GenerateUID(std::string path, uint slot)
     {
-        return std::string(typeid(Texture).name()) + '_' + path;
+        return std::string(typeid(Texture).name()) + '_' + path + std::to_string(slot);
     }
 
     void Texture::Bind()
     {
-        AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetShaderResources(0, 1, m_Texture.GetAddressOf()));
+        AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetShaderResources(m_Slot, 1, m_Texture.GetAddressOf()));
     }
 }
