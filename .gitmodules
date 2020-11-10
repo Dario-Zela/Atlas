@@ -1,3 +1,0 @@
-[submodule "Atlas\\vendor\\assimp"]
-	path = Atlas\\vendor\\assimp
-	url = https://github.com/assimp/assimp
