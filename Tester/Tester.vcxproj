@@ -93,6 +93,9 @@
     <ProjectReference Include="..\Atlas\Atlas.vcxproj">
       <Project>{a8ced65b-1875-42b0-bb75-65b981921d18}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Atlas\vendor\assimp\bin\code\assimp.vcxproj">
+      <Project>{3b957431-7160-38f0-8917-851015c5c0fa}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

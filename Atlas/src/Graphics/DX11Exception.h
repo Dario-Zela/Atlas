@@ -22,8 +22,6 @@ namespace Atlas
 	};
 }
 
-//A bunch of functions used to identify errors and throw exeptions
-//Available only if the function inherits the DX11Exception class
 #if AT_DEBUG
 #define AT_CHECK_GFX(x) {HRESULT hr = x; if(FAILED(hr)) throw DX11Exception(__LINE__, __FILE__, hr);}
 #define AT_CHECK_GFX_INFO(x) DxgiInfoManager::Set(); {HRESULT hr = x; if(FAILED(hr)) throw DX11Exception(__LINE__, __FILE__, hr, DxgiInfoManager::GetMessages());}

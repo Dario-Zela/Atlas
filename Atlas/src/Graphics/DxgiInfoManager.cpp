@@ -5,7 +5,6 @@
 
 namespace Atlas
 {
-	//Decleres static elements
 	DxgiInfoManager* DxgiInfoManager::s_Instance = nullptr;
 	unsigned long long DxgiInfoManager::m_Next = 0;
 	Microsoft::WRL::ComPtr<IDXGIInfoQueue> DxgiInfoManager::m_DxgiInfoQueue = nullptr;
@@ -13,9 +12,8 @@ namespace Atlas
 	//Initialises the queue
 	void DxgiInfoManager::Init()
 	{
-		//Sets the instance
-		if(!s_Instance)
-			s_Instance = new DxgiInfoManager();
+		if (!s_Instance)
+			s_Instance = this;
 		else
 			return;
 
@@ -37,11 +35,6 @@ namespace Atlas
 		AT_CHECK_GFX(DxgiGetDebugInterface(__uuidof(IDXGIInfoQueue), &m_DxgiInfoQueue));
 	}
 
-	void DxgiInfoManager::Relese()
-	{
-		delete s_Instance;
-	}
-	
 	void DxgiInfoManager::Set() noexcept
 	{
 		//This sets the current index of the Debug queue

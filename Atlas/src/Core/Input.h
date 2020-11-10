@@ -40,7 +40,7 @@ namespace Atlas
 		//This returns if a mouse button has been pressed
 		//As it uses the same code as the key pressed
 		//It redirects to it
-		static bool IsButtonPressed(int buttonCode)
+		static bool IsMouseButtonPressed(int buttonCode)
 		{
 			return IsKeyPressed(buttonCode);
 		}
@@ -51,5 +51,25 @@ namespace Atlas
 			Window* window = Window::s_Instance;
 			return GetAsyncKeyState(keyCode) < 0;
 		}
+
+		static float GetHScrool()
+		{
+			return m_HScroll;
+		}
+
+		static float GetVScrool()
+		{
+			return m_VScroll;
+		}
+
+		static void SetScroll(float hScroll, float vScroll)
+		{
+			m_HScroll = hScroll;
+			m_VScroll = vScroll;
+		}
+
+	private:
+		static float m_HScroll;
+		static float m_VScroll;
 	};
 }

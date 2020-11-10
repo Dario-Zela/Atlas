@@ -6,11 +6,10 @@
 #include "Layer/Layer.h"
 #include "Graphics/Graphics.h"
 
+#include "Graphics/DxgiInfoManager.h"
+
 namespace Atlas
 {
-	//The application class
-	//Wrapps over the creation of the window and graphics
-	//It should be inherited to allow for a layer to be selected
 	class Application
 	{
 	public:
@@ -79,5 +78,8 @@ namespace Atlas
 
 		//The graphics object
 		Graphics m_Gfx;
+
+		//The Graphics debug object
+		DxgiInfoManager m_InfoManager;
 	};
 }

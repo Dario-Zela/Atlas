@@ -4,7 +4,10 @@
 #include "Core/Core.h"
 #include "Core/Exception.h"
 
-#include "Renderer/Renderer2D.h"
+#include "Input.h"
+#include "Test.h"
+#include "Graphics/D3DWrappers/Mesh.h"
+#include "Core/Camera.h"
 
 namespace Atlas
 {
@@ -47,29 +50,14 @@ namespace Atlas
 		Application::s_Instance = this;
 		AT_CORE_INFO("Window Successfully initialised");
 
-		//Needed to check if there are any issues in the graphics initialisation
-		try 
-		{
-			AT_CORE_INFO("Initialising the graphics");
-			m_Gfx.Init(m_Window.GetWindowHandle());
-			AT_CORE_INFO("Graphics Successfully initialised");
-		}
-		//The catches will output the error to the console and break the debug
-		catch (const AtlasException& e)
-		{
-			AT_CORE_CRITICAL("\n[Exception Type]: {0}", e.what());
-			__debugbreak();
-		}
-		catch (const std::exception& e)
-		{
-			AT_CORE_CRITICAL("\n[Exception Type]: {0}\n{1}", "Standard Exeption", e.what());
-			__debugbreak();
-		}
-		catch (...)
-		{
-			AT_CORE_CRITICAL("\n[Exception Type]: Unknown Exeption\n[Description]: Details Unavailable");
-			__debugbreak();
-		}
+		//Initialise the time
+		m_LastFrameTime = std::chrono::system_clock::now();
+
+		//If it is in debug mode
+		//Initialise the info manager
+		#ifdef AT_DEBUG
+			m_InfoManager.Init();
+		#endif  
 	}
 
 	void Application::Run()
@@ -77,11 +65,39 @@ namespace Atlas
 		//This checks if an exception has occoured
 		try
 		{
-			Renderer2D::Init();
+			AT_CORE_INFO("Initialising the graphics")
+			//The graphics are initialised here to get access to
+			//The debug information that it taken from the exception
+			m_Gfx.Init(m_Window.GetWindowHandle());
+			AT_CORE_INFO("Graphics Successfully initialised");
+
+			Model model(R"(C:\Users\Dario\Desktop\Dario\Atlas\Tester\assets\Models\sponza\glTF\Sponza.gltf)");
+			ModelDrawSettings settings;
+			settings.pixelShaderPath = "TestPixel.cso";
+			settings.vertexShaderPath = "TestVertex.cso";
+			settings.viewMatrix = DirectX::XMMatrixPerspectiveLH(1, 3.0f / 4.0f, 1, 100000);
+			settings.proprietiesFlags = (uint)(MeshProprietiesFlags::TEXTURE_COORDINATES | MeshProprietiesFlags::COLOR_DIFFUSE | MeshProprietiesFlags::SHININESS);
+			settings.textureFlags = (uint)MeshTextureFlags::DIFFUSE;
+			settings.addAnisotropicFiltering = true;
+			settings.addMipMapping = true;
+			settings.maxAnisotropy = 7;
+			Graphics::BindDefaultViewPort();
+
+			float* objRot = new float[3]();
+			GUI gui;
+			gui.Init();
+			gui.AddSliderFloat3("Rot", objRot, -DirectX::XM_2PI, DirectX::XM_2PI, 0.1f);
+
+			Camera camera(1000, -1000, 1);
+
+			//Flushes the BindableLib to remove unused Bindables
+			float timeUntilFlush = 10;
+
 			//The main loop
 			while (m_Window.isRunning())
 			{
 				m_Window.Broadcast();			//All events are broadcast at the beginning
+				camera.Update();
 
 				//With the chrono libriary, find the time taken to complete the loop
 				TimeStep timeStep;
@@ -89,9 +105,23 @@ namespace Atlas
 					auto now = std::chrono::system_clock::now();
 					timeStep = std::chrono::duration<float>(now - m_LastFrameTime).count();
 					m_LastFrameTime = now;			//Save the current time
+					timeUntilFlush -= timeStep;
+					if (timeUntilFlush < 0)
+					{
+						BindableLib::Flush();
+						timeUntilFlush = 10;
+					}
 				}
 				
-				SetWindowTitle("FPS: " + std::to_string(1.0f / timeStep));
+				m_Gfx.ClearScreen(0, 0, 1);
+				DirectX::XMMATRIX trans = DirectX::XMMatrixRotationRollPitchYaw(objRot[0], objRot[1], objRot[2]) * camera.GetTransform();
+				model.Draw(settings, trans);
+
+				m_Gfx.EndFrame(1);
+
+				#ifdef AT_DEBUG
+					SetWindowTitle("FPS: " + std::to_string(1.0f / timeStep));
+				#endif
 
 				//Update the minimised flag
 				m_Minimised = m_Window.IsMinimised();
@@ -106,14 +136,15 @@ namespace Atlas
 							goto ForcedExit;
 					}
 
+				//Reset the value of the scrooling
+				Input::SetScroll(0, 0);
+
 				//Then run dispatch the events
 				m_EventManager.PropagateEvents(&m_LayerStack);
 			}
-
 			//Allows a forced exit that makes sure the
 			//Window is edited only when it is alive
 		ForcedExit:;
-			Renderer2D::Shutdown();
 		}
 		//The catches will output the error to the console and break the debug
 		catch (const AtlasException& e)

@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "EventManager.h"
+#include "Events/MouseEvents.h"
+#include "Core/Input.h"
 
 namespace Atlas
 {
@@ -7,6 +9,11 @@ namespace Atlas
 	void EventManager::AddEventToQueue(Event* e)
 	{
 		m_EventBacklog.push(e);
+		if (e->GetEventType() == EventType::MouseScrolled)
+		{
+			auto scroll = ((MouseScrolledEvent*)e);
+			Input::SetScroll(scroll->GetMouseXOffset(), scroll->GetMouseYOffset());
+		}
 	}
 
 	//Propagates the events through the layer stack

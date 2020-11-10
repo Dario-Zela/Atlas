@@ -12,14 +12,14 @@ namespace Atlas
 		virtual ~Layer() = default;
 
 		//The OnAttach is called when the layer is added
-		virtual void OnAttach() = 0;
+		virtual void OnAttach() {}
 		//The OnDetach when it is popped
-		virtual void OnDetach() = 0;
+		virtual void OnDetach() {}
 		//This is executed each frame
-		virtual void OnUpdate(TimeStep time) = 0;
+		virtual void OnUpdate(TimeStep time) {}
 		//This is a redirector to functions that use
 		//The instances of the events
-		virtual void OnEvent(Event& e) = 0;
+		virtual void OnEvent(Event& e) {}
 
 		//Gets the dubug name
 		inline const std::string& GetName() const { return m_DebugName; }

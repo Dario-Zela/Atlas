@@ -1,30 +1,27 @@
 #include "pch.h"
 #include "Graphics.h"
 #include "Graphics/DX11Exception.h"
+#include "Core/Input.h"
+#include "Graphics/BindableLib.h"
 
-#include "Graphics/Buffers.h"
-#include "Graphics/Shaders.h"
-#include "Graphics/InputLayout.h"
-#include "Graphics/ViewPort.h"
+#include "Graphics/DxgiInfoManager.h"
 
 namespace Atlas
 {
-	//Decleres the instance
 	Graphics* Graphics::s_Instance = nullptr;
+
+	Graphics::~Graphics()
+	{
+		BindableLib::Relese();
+	}
 
 	void Graphics::Init(HWND hwnd)
 	{
-		//Sets the instance
 		if (!s_Instance)
 			s_Instance = this;
 		else
 			return;
 
-		//If it is in debug mode
-		//Initialise the info manager
-#ifdef AT_DEBUG
-		DxgiInfoManager::Init();
-#endif  
 		//Define the descriptor for the swapchain
 		DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
 		swapChainDesc.BufferDesc.Width = 0;			//Takes the values of the window
@@ -65,10 +62,59 @@ namespace Atlas
 			&m_Context
 		))
 
-		//This gets the back buffer render target
+		//This gets the back buffer render target 
 		wrl::ComPtr<ID3D11Resource> backBuffer = nullptr;
-		AT_CHECK_GFX_INFO(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer))
-		AT_CHECK_GFX_INFO(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Buffer))
+		AT_CHECK_GFX_INFO(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
+		AT_CHECK_GFX_INFO(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Buffer));
+
+		//Set up the z-Buffer
+
+		//Create the depth state
+		D3D11_DEPTH_STENCIL_DESC desc = {};
+		desc.DepthEnable = TRUE;
+		desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		desc.DepthFunc = D3D11_COMPARISON_LESS;
+
+		wrl::ComPtr<ID3D11DepthStencilState> depthState;
+		AT_CHECK_GFX_INFO(m_Device->CreateDepthStencilState(&desc, &depthState));
+		
+		//Bind the state
+		AT_CHECK_GFX_INFO_VOID(m_Context->OMSetDepthStencilState(depthState.Get(), 1));
+
+		//Create the texture
+		wrl::ComPtr<ID3D11Texture2D> depthTexture = {};
+		D3D11_TEXTURE2D_DESC descTex;
+		auto [width, height] = Input::GetWindowSize();
+		descTex.Width = (uint)width;
+		descTex.Height = (uint)height;
+		descTex.MipLevels = 1;
+		descTex.ArraySize = 1;
+		descTex.Format = DXGI_FORMAT_D32_FLOAT;
+		descTex.SampleDesc.Count = 1;
+		descTex.SampleDesc.Quality = 0;
+		descTex.Usage = D3D11_USAGE_DEFAULT;
+		descTex.CPUAccessFlags = 0;
+		descTex.MiscFlags = 0;
+		descTex.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		AT_CHECK_GFX_INFO(m_Device->CreateTexture2D(&descTex, nullptr, &depthTexture));
+
+		//Create Texture View
+		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
+		descDSV.Format = DXGI_FORMAT_D32_FLOAT;
+		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		descDSV.Texture2D.MipSlice = 0;
+		AT_CHECK_GFX_INFO(m_Device->CreateDepthStencilView(depthTexture.Get(), &descDSV, &m_DepthStencilView));
+
+		//Set the default window
+		m_FullScreenPort.TopLeftX = 0;
+		m_FullScreenPort.TopLeftY = 0;
+		m_FullScreenPort.Width = (float)width;
+		m_FullScreenPort.Height = (float)height;
+		m_FullScreenPort.MinDepth = 0;
+		m_FullScreenPort.MaxDepth = 1;
+
+		//Initialise the Bindable library
+		BindableLib::Init();
 	}
 
 	void Graphics::EndFrame(uint syncRate)
@@ -84,70 +130,38 @@ namespace Atlas
 		//The back buffer is filled with the color
 		float color[4] = { r, g, b, a };
 		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->ClearRenderTargetView(s_Instance->m_Buffer.Get(), color));
+
+		//The Depth Stencil is cleared
+		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->ClearDepthStencilView(s_Instance->m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1, 0));
 	}
 
 	void Graphics::SetPrimitiveTopology(uint topology)
 	{
-		//The primitive topology is set
 		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)topology));
 	}
 
 	void Graphics::SetRenderTarget()
 	{
-		//The render target is set
-		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->OMSetRenderTargets(1, s_Instance->m_Buffer.GetAddressOf(), nullptr));
+		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->OMSetRenderTargets(1, s_Instance->m_Buffer.GetAddressOf(), s_Instance->m_DepthStencilView.Get()));
 	}
 
 	void Graphics::DrawIndexed(uint indexCount)
 	{
-		//Indexed drawing wrapper
 		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->DrawIndexed(indexCount, 0, 0));
+	}
+
+	void Graphics::BindDefaultViewPort()
+	{
+		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->RSSetViewports(1, &s_Instance->m_FullScreenPort));
+	}
+
+	bool Graphics::IsInitialised()
+	{
+		return s_Instance;
 	}
 
 	void Graphics::Draw(uint vertexCount)
 	{
-		//Regular drawing wrapper
 		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->Draw(vertexCount, 0));
-	}
-
-	void Graphics::CleanDraw(VertexBuffer& vertexBuffer, uint stride, uint offset, uint count, VertexShader& vertexShader, PixelShader& pixelShader, InputLayout& inputLayout, uint topology, ViewPort viewPort)
-	{
-		//All items are bound
-		vertexBuffer.Bind(stride, offset);
-		vertexShader.Bind();
-		pixelShader.Bind();
-		inputLayout.Bind();
-		SetPrimitiveTopology(topology);
-		viewPort.Bind();
-		SetRenderTarget();
-
-		//The items are drawn
-		Draw(count);
-
-		//Items that can be unbound are unbound
-		vertexShader.Unbind();
-		pixelShader.Unbind();
-		inputLayout.Unbind();
-	}
-
-	void Graphics::CleanDrawIndexed(VertexBuffer& vertexBuffer, uint stride, uint offset1, IndexBuffer& indexBuffer, uint offset2, VertexShader& vertexShader, PixelShader& pixelShader, InputLayout& inputLayout, uint topology, ViewPort viewPort)
-	{
-		//All items are bound
-		vertexBuffer.Bind(stride, offset1);
-		indexBuffer.Bind(offset2);
-		vertexShader.Bind();
-		pixelShader.Bind();
-		inputLayout.Bind();
-		SetPrimitiveTopology(topology);
-		viewPort.Bind();
-		SetRenderTarget();
-
-		//The items are drawn
-		DrawIndexed(indexBuffer.GetCount());
-
-		//Items that can be unbound are unbound
-		vertexShader.Unbind();
-		pixelShader.Unbind();
-		inputLayout.Unbind();
 	}
 }
