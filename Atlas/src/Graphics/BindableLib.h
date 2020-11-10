@@ -12,6 +12,7 @@ namespace Atlas
 
 		static std::shared_ptr<Bindable> Resolve(const std::string& UID);
 		static void Add(std::string UID, std::shared_ptr<Bindable> bindable);
+		static void Flush();
 	private:
 		static std::unordered_map<std::string, std::shared_ptr<Bindable>> Get() { return *m_Library; }
 		static std::unordered_map<std::string, std::shared_ptr<Bindable>>* m_Library;

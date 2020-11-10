@@ -16,6 +16,7 @@ namespace Atlas
 
 		void Draw() const;
 		void AddBindable(std::shared_ptr<Bindable> bindable);
+		void ClearBindables() { m_Bindables.clear(); m_IndexBuffer = nullptr; }
 
 		virtual DirectX::XMMATRIX GetTransformXM() = 0;
 		virtual void Update(float timeStep) {}

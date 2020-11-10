@@ -30,7 +30,7 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 	auto tag = "Model";
 
 	Assimp::Importer imp;
-	const auto model = imp.ReadFile(R"(C:\dev\Atlas\Tester\assets\Models\33-cottage_blender\cottage_blender.blend)", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+	const auto model = imp.ReadFile(R"(C:\Users\Dario\Desktop\Dario\Atlas\Tester\assets\Models\33-cottage_blender\cottage_blender.blend)", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 	//(D:\uploads_files_1839214_helicopter.obj
 
 	const auto mesh = model->mMeshes[0];
@@ -77,8 +77,8 @@ Atlas::Box::Box(std::mt19937& rng, std::uniform_real_distribution<float> adist, 
 	Graphics::SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	Graphics::SetRenderTarget();
 
-	AddBindable(TransformationConstantBuffer::Create(*this, DirectX::XMMatrixPerspectiveLH(1, 3.0f / 4.0f, 1, 1000)));
-
+	//AddBindable(TransformationConstantBuffer::Create(*this, DirectX::XMMatrixPerspectiveLH(1, 3.0f / 4.0f, 1, 1000)));
+	AddBindable(TransformationConstantBuffer::Create(*this, DirectX::XMMatrixIdentity()));
 	AddBindable(ViewPort::Create(0, 0, 1024, 700, 0, 1));
 }
 

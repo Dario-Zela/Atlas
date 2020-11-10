@@ -18,18 +18,22 @@ namespace Atlas
 		std::string pixelShaderPath;
 		bool addBlending = false;
 		bool reSet = false;
+		bool addMipMapping = false;
+		bool addAnisotropicFiltering = false;
+		uint maxAnisotropy = 0;
+		DirectX::XMMATRIX viewMatrix;
 	};
 
 	enum class MeshTextureFlags
 	{
-		NONE = 1 << 0,		  
-		DIFFUSE = 1 << 1,		          
-		SPECULAR = 1 << 2,		           
-		AMBIENT = 1 << 3,		          
-		EMISSIVE = 1 << 4,		           
-		HEIGHT = 1 << 5,              
-		NORMALS = 1 << 6,             
-		SHININESS = 1 << 7,               
+		NONE = 1 << 0,
+		DIFFUSE = 1 << 1,
+		SPECULAR = 1 << 2,
+		AMBIENT = 1 << 3,
+		EMISSIVE = 1 << 4,
+		HEIGHT = 1 << 5,
+		NORMALS = 1 << 6,
+		SHININESS = 1 << 7,
 		OPACITY = 1 << 8,
 		DISPLACEMENT = 1 << 9,
 		LIGHTMAP = 1 << 10,
@@ -40,12 +44,14 @@ namespace Atlas
 		METALNESS = 1 << 15,
 		DIFFUSE_ROUGHNESS = 1 << 16,
 		AMBIENT_OCCLUSION = 1 << 17,
-		UNKNOWN = 1 << 18,
+		UNKNOWN = 1 << 18
 	};
 
 	inline MeshTextureFlags operator|(MeshTextureFlags a, MeshTextureFlags b) { return (MeshTextureFlags)((uint)a | (uint)b); }
 
-	#define MAX_MESH_TEXTURE_FLAGS_SIZE 18
+	inline uint operator|=(uint a, MeshTextureFlags b) { return (a | (uint)b); }
+
+	#define MAX_MESH_TEXTURE_FLAGS_SIZE 19
 
 	enum class MeshProprietiesFlags
 	{
@@ -55,9 +61,24 @@ namespace Atlas
 		COLORS = 1 << 3,
 		TANGENTS = 1 << 4,
 		BITANGENTS = 1 << 5,
+		COLOR_DIFFUSE = 1 << 6,
+		COLOR_SPECULAR = 1 << 7,
+		COLOR_AMBIENT = 1 << 8,
+		COLOR_EMISSIVE = 1 << 9,
+		COLOR_TRANSPARENT = 1 << 10,
+		WIREFRAME = 1 << 11,
+		TWOSIDED = 1 << 12,
+		SHADING_MODEL = 1 << 13,
+		BLEND_FUNC = 1 << 14,
+		OPACITY = 1 << 15,
+		SHININESS = 1 << 16,
+		SHININESS_STRENGTH = 1 << 17,
+		REFRACTI = 1 << 18,
 	};
 
 	inline MeshProprietiesFlags operator|(MeshProprietiesFlags a, MeshProprietiesFlags b) { return (MeshProprietiesFlags)((uint)a | (uint)b); }
+
+	inline uint operator|=(uint a, MeshProprietiesFlags b) { return (a | (uint)b); }
 
 	class Mesh : Drawable
 	{
@@ -65,10 +86,13 @@ namespace Atlas
 		Mesh(aiMesh* mesh, aiMaterial** materials, std::filesystem::path path);
 
 		void Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings);
-		DirectX::XMMATRIX GetTransformXM() override { return m_Transform; }
+		DirectX::XMMATRIX GetTransformXM() override 
+		{ 
+			return m_Transform;
+		}
 
 	private:
-		std::shared_ptr<Texture> GetTexture(aiTextureType textureType, int slot);
+		std::shared_ptr<Texture> GetTexture(aiTextureType textureType, int slot, ModelDrawSettings& settings);
 
 		std::vector<DirectX::XMFLOAT3> m_VertexPositions;
 		std::vector<DirectX::XMFLOAT2> m_NormalCoordinates;
@@ -77,7 +101,7 @@ namespace Atlas
 		std::vector<DirectX::XMFLOAT3> m_Tangents;
 		std::vector<DirectX::XMFLOAT3> m_Bitangents;
 		std::string m_Name;
-		aiMaterial m_Material;
+		aiMaterial* m_Material;
 		std::string m_Filepath;
 
 		DirectX::XMMATRIX m_Transform;
@@ -109,10 +133,12 @@ namespace Atlas
 	public:
 		Model(std::string path);
 
-		void Draw(ModelDrawSettings& settings);
+		void Draw(ModelDrawSettings& settings, DirectX::XMMATRIX transform);
 		std::unique_ptr<Node> ParseNode(aiNode* node);
 	private:
+		DirectX::XMMATRIX m_Camera;
 		std::unique_ptr<Node> m_RootNode;
 		std::vector<std::unique_ptr<Mesh>> m_Meshes;
+		Assimp::Importer m_Importer;
 	};
 }

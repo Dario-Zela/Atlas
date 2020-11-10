@@ -7,9 +7,9 @@ namespace Atlas
 	class Sampler : public Bindable
 	{
 	public:
-		Sampler(int slot);
-		static std::shared_ptr<Sampler> Create(int slot = 0);
-		static std::string GenerateUID(int slot);
+		Sampler(int slot, bool mipMapping, bool Anisotropy, uint maxAnisotropy);
+		static std::shared_ptr<Sampler> Create(bool mipMapping, bool Anisotropy, uint maxAnisotropy, int slot = 0);
+		static std::string GenerateUID(int slot, bool mipMapping, bool Anisotropy, uint maxAnisotropy);
 
 		void Bind();
 	private:

@@ -32,4 +32,15 @@ namespace Atlas
     {
         (*m_Library)[UID] = std::move(bindable);
     }
+
+    void BindableLib::Flush()
+    {
+        for (auto pairs : *m_Library)
+        {
+            if (pairs.second.use_count() == 1)
+            {
+                m_Library->erase(pairs.first);
+            }
+        }
+    }
 }

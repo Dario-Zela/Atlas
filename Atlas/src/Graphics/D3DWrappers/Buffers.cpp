@@ -129,7 +129,7 @@ namespace Atlas
 		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		bufferDesc.MiscFlags = 0;
-		bufferDesc.ByteWidth = sizeData;
+		bufferDesc.ByteWidth = sizeData + (16 - sizeData % 16);
 		bufferDesc.StructureByteStride = 0;
 
 		D3D11_SUBRESOURCE_DATA vertexData;
@@ -145,7 +145,7 @@ namespace Atlas
 		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		bufferDesc.MiscFlags = 0;
-		bufferDesc.ByteWidth = sizeData;
+		bufferDesc.ByteWidth = sizeData + (16 - sizeData % 16);
 		bufferDesc.StructureByteStride = 0;
 
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, nullptr, &m_ConstantBuffer))

@@ -6,6 +6,8 @@
 
 #include "Input.h"
 #include "Test.h"
+#include "Graphics/D3DWrappers/Mesh.h"
+#include "Core/Camera.h"
 
 namespace Atlas
 {
@@ -57,8 +59,6 @@ namespace Atlas
 			m_InfoManager.Init();
 		#endif  
 	}
-	
-	static auto beg = std::chrono::system_clock::now();
 
 	void Application::Run()
 	{
@@ -71,22 +71,33 @@ namespace Atlas
 			m_Gfx.Init(m_Window.GetWindowHandle());
 			AT_CORE_INFO("Graphics Successfully initialised");
 
-			std::mt19937 rng(std::random_device{}());
-			std::uniform_real_distribution<float> adist(0.0f, DirectX::XM_2PI);
-			std::uniform_real_distribution<float> ddist(0.0f, DirectX::XM_2PI);
-			std::uniform_real_distribution<float> odist(0.0f, DirectX::XM_PI * 0.3f);
-			std::uniform_real_distribution<float> rdist(6.0f, 20);
+			Model model(R"(C:\Users\Dario\Desktop\Dario\Atlas\Tester\assets\Models\sponza\glTF\Sponza.gltf)");
+			ModelDrawSettings settings;
+			settings.pixelShaderPath = "TestPixel.cso";
+			settings.vertexShaderPath = "TestVertex.cso";
+			settings.viewMatrix = DirectX::XMMatrixPerspectiveLH(1, 3.0f / 4.0f, 1, 100000);
+			settings.proprietiesFlags = (uint)(MeshProprietiesFlags::TEXTURE_COORDINATES | MeshProprietiesFlags::COLOR_DIFFUSE | MeshProprietiesFlags::SHININESS);
+			settings.textureFlags = (uint)MeshTextureFlags::DIFFUSE;
+			settings.addAnisotropicFiltering = true;
+			settings.addMipMapping = true;
+			settings.maxAnisotropy = 7;
+			Graphics::BindDefaultViewPort();
 
-			std::vector<std::unique_ptr<Box>> boxes;
-			for (int i = 0; i < 20; i++)
-			{
-				boxes.push_back(std::make_unique<Box>(rng, adist, ddist, odist, rdist));
-			}
+			float* objRot = new float[3]();
+			GUI gui;
+			gui.Init();
+			gui.AddSliderFloat3("Rot", objRot, -DirectX::XM_2PI, DirectX::XM_2PI, 0.1f);
+
+			Camera camera(1000, -1000, 1);
+
+			//Flushes the BindableLib to remove unused Bindables
+			float timeUntilFlush = 10;
 
 			//The main loop
 			while (m_Window.isRunning())
 			{
 				m_Window.Broadcast();			//All events are broadcast at the beginning
+				camera.Update();
 
 				//With the chrono libriary, find the time taken to complete the loop
 				TimeStep timeStep;
@@ -94,17 +105,18 @@ namespace Atlas
 					auto now = std::chrono::system_clock::now();
 					timeStep = std::chrono::duration<float>(now - m_LastFrameTime).count();
 					m_LastFrameTime = now;			//Save the current time
+					timeUntilFlush -= timeStep;
+					if (timeUntilFlush < 0)
+					{
+						BindableLib::Flush();
+						timeUntilFlush = 10;
+					}
 				}
-				float c = std::sin(std::chrono::duration<float>(beg - m_LastFrameTime).count()) / 2.0f + 0.5f;
 				
 				m_Gfx.ClearScreen(0, 0, 1);
+				DirectX::XMMATRIX trans = DirectX::XMMatrixRotationRollPitchYaw(objRot[0], objRot[1], objRot[2]) * camera.GetTransform();
+				model.Draw(settings, trans);
 
-				for (auto& b : boxes)
-				{
-					if(!Input::IsButtonPressed(VK_SPACE))
-						b->Update(timeStep);
-					b->Draw();
-				}
 				m_Gfx.EndFrame(1);
 
 				#ifdef AT_DEBUG
@@ -123,6 +135,9 @@ namespace Atlas
 						else
 							goto ForcedExit;
 					}
+
+				//Reset the value of the scrooling
+				Input::SetScroll(0, 0);
 
 				//Then run dispatch the events
 				m_EventManager.PropagateEvents(&m_LayerStack);

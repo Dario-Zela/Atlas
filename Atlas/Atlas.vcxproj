@@ -97,6 +97,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\Camera.h" />
+    <ClInclude Include="src\Window\GUI.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\Blendable.h" />
     <ClInclude Include="src\Graphics\BindableLib.h" />
     <ClInclude Include="src\Graphics\Bindable.h" />
@@ -213,6 +215,9 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Camera.cpp" />
+    <ClCompile Include="src\Core\Input.cpp" />
+    <ClCompile Include="src\Window\GUI.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Blendable.cpp" />
     <ClCompile Include="src\Graphics\BindableLib.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\InputLayout.cpp" />
