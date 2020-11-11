@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Mesh.h"
+#include "Scene.h"
 #include <filesystem>
 
 #include "Graphics/D3DWrappers/Buffers.h"
@@ -15,9 +15,11 @@ namespace Atlas
 {
 	Mesh::Mesh(aiMesh* mesh, aiMaterial** materials, std::filesystem::path path)
 	{
+		//Reserve the space for the vertex positions
 		m_VertexPositions.reserve(mesh->mNumVertices);
 		bool attributes[] = { mesh->HasTextureCoords(0), mesh->HasNormals(), mesh->HasVertexColors(0), mesh->HasTangentsAndBitangents() };
 
+		//If they are present, reserve space for normals, colors, tangents and bitangents
 		if (attributes[0])
 			m_TextureCoordinates.reserve(mesh->mNumVertices);
 
@@ -33,6 +35,7 @@ namespace Atlas
 			m_Bitangents.reserve(mesh->mNumVertices);
 		}
 
+		//Add the data
 		for (uint i = 0; i < mesh->mNumVertices; i++)
 		{
 			m_VertexPositions.push_back(*reinterpret_cast<DirectX::XMFLOAT3*>(&mesh->mVertices[i]));
@@ -52,15 +55,18 @@ namespace Atlas
 			}
 		}
 
+		//Save the material and filepath if it is present
 		if (mesh->mMaterialIndex >= 0)
 		{
 			m_Material = materials[mesh->mMaterialIndex];
 			m_Filepath = path.parent_path().string() + "\\";
 		}
 
+		//Save the name
 		m_Name = mesh->mName.C_Str();
 
-		m_Indecies.reserve((uint)mesh->mNumFaces * (uint)3);
+		//Add the indicies
+		m_Indecies.reserve((size_t)mesh->mNumFaces * 3);
 
 		for (uint i = 0; i < mesh->mNumFaces; i++)
 		{
@@ -73,31 +79,45 @@ namespace Atlas
 
 	void Mesh::Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings)
 	{
+		//If the mesh has already been drawn
+		//And the settings do not make it need to be redrawn
+		//Only update the transform and draw the shape
 		if (m_Set && !settings.reSet)
 		{
 			m_Transform = accumulatedTransform;
 		}
 		else
 		{
+			//Else clear the bindables
 			ClearBindables();
 
+			//Create the input elements and add position
 			std::vector<InputElement> elements;
 			elements.push_back({ "POSITION", DXGI_FORMAT_R32G32B32_FLOAT });
 
+			//Add a stride for the vertex and a stride for the constant buffer
 			uint strideVertex = sizeof(DirectX::XMFLOAT3);
 			uint strideCBuff = 0;
 			std::vector<float> cbuffData;
 			bool proprieties[5];
 
-			for (uint i = 1; i < 19; i++)
+			//Iterate over every propriety
+			for (uint i = 1; i < MAX_MESH_FLAGS_SIZE; i++)
 			{
+				//If it is one of the major ones
+				//Clear the proprieties value
 				if (i < 6)
 				{
 					proprieties[i - 1] = false;
 				}
 
+				//If the propriety has been activated
 				if ((settings.proprietiesFlags & (1 << i)) != 0)
 				{
+					//(if i < 6)
+					//Add it to the elements 
+					//Set the proprieties flag to true
+					//Update the stride
 					switch (i)
 					{
 						case 1:
@@ -135,6 +155,10 @@ namespace Atlas
 							strideVertex += sizeof(DirectX::XMFLOAT3);
 						}
 							break;
+					
+					//(if i >= 6)
+					//Get the data and push it into the vector
+					//Update the stride
 						case 6:
 						{
 							aiColor3D data;
@@ -205,7 +229,7 @@ namespace Atlas
 							int data;
 							m_Material->Get(AI_MATKEY_ENABLE_WIREFRAME, data);
 
-							cbuffData.push_back(data);
+							cbuffData.push_back((const float)data);
 							strideCBuff += sizeof(int);
 						}
 							break;
@@ -214,7 +238,7 @@ namespace Atlas
 							int data;
 							m_Material->Get(AI_MATKEY_TWOSIDED, data);
 
-							cbuffData.push_back(data);
+							cbuffData.push_back((float)data);
 							strideCBuff += sizeof(int);
 						}
 							break;
@@ -223,7 +247,7 @@ namespace Atlas
 							int data;
 							m_Material->Get(AI_MATKEY_SHADING_MODEL, data);
 							
-							cbuffData.push_back(data);
+							cbuffData.push_back((float)data);
 							strideCBuff += sizeof(int);
 						}
 							break;
@@ -232,7 +256,7 @@ namespace Atlas
 							int data;
 							m_Material->Get(AI_MATKEY_BLEND_FUNC, data);
 
-							cbuffData.push_back(data);
+							cbuffData.push_back((float)data);
 							strideCBuff += sizeof(int);
 						}
 							break;
@@ -241,7 +265,7 @@ namespace Atlas
 							float data;
 							m_Material->Get(AI_MATKEY_OPACITY, data);
 
-							cbuffData.push_back(data);
+							cbuffData.push_back((float)data);
 							strideCBuff += sizeof(float);
 						}
 							break;
@@ -249,7 +273,6 @@ namespace Atlas
 						{
 							float data;
 							m_Material->Get(AI_MATKEY_SHININESS, data);
-							AT_TRACE("{0}", data);
 
 							cbuffData.push_back(data);
 							strideCBuff += sizeof(float);
@@ -277,10 +300,13 @@ namespace Atlas
 				}
 			}
 
+			//If the stide is not 0 add a vertex constant buffer
 			if (strideCBuff != 0) AddBindable(VertexConstantBuffer::Create(cbuffData.data(), strideCBuff));
 
 			{
+				//Create a vector for the data
 				std::vector<float> data;
+				//If the data is selected, it is added to the vertex
 				for (int i = 0; i < m_VertexPositions.size(); i++)
 				{
 					data.push_back(m_VertexPositions[i].x);
@@ -322,22 +348,27 @@ namespace Atlas
 					}
 				}
 
+				//And then a vertex buffer is created and added
 				AddBindable(VertexBuffer::Create(data.data(), (uint)data.size() * sizeof(float), strideVertex, m_Name));
 			}
 
+			//The index buffer is created
 			AddBindable(IndexBuffer::Create(m_Indecies.data(), (uint)m_Indecies.size() * sizeof(unsigned short), m_Name));
 
+			//Checks that the textures are added propperly
 			AT_CORE_ASSERT(!(settings.textureFlags > 0 && !proprieties[1]), "Tried to request textures without adding texture coordinates");
 			AT_CORE_ASSERT(!(settings.textureFlags == 0 && proprieties[1]), "Tried to request textures without specifying what textures");
 
+			//Add ther respective textures
 			if (proprieties[1] && settings.textureFlags > 0)
 			{
+				//The slot is incremented to allow for more then one texture at a time
 				int slot = 0;
-				for (int i = 0; i < MAX_MESH_TEXTURE_FLAGS_SIZE; i++)
+				for (int i = 0; i < MAX_MESH_FLAGS_SIZE; i++)
 				{
-					//std::shared_ptr<Texture> texture = GetTexture((aiTextureType)i, slot);
 					if ((settings.textureFlags & 1 << i) == 1 << i)
 					{
+						//Texture and sampler are bound
 						AddBindable(GetTexture((aiTextureType)i, slot, settings));
 						AddBindable(Sampler::Create(settings.addMipMapping, settings.addAnisotropicFiltering, settings.maxAnisotropy, slot));
 						slot++;
@@ -345,23 +376,27 @@ namespace Atlas
 				}
 			}
 
-			if (settings.addBlending)
-				AddBindable(Blendable::Create(true, 0));
+			//Blending is added if selected
+			AddBindable(Blendable::Create(settings.addBlending, 0));
 
+			//The shaders are checked to be valid
 			AT_CORE_ASSERT(!(settings.vertexShaderPath == ""), "No valid vertex shader");
 			AT_CORE_ASSERT(!(settings.pixelShaderPath == ""), "No valid pixel shader");
 
+			//The vertex shader, pixel shader and input layout is selected
 			auto shader = VertexShader::Create(settings.vertexShaderPath);
 			auto blob = shader->GetBlob();
 			AddBindable(shader);
 
 			AddBindable(PixelShader::Create(settings.pixelShaderPath));
 
-			AddBindable(InputLayout::Create(elements, blob));
+			AddBindable(InputLayout::Create(elements, blob, settings.vertexShaderPath));
 
+			//The default topology and render target are selected
 			Graphics::SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			Graphics::SetRenderTarget();
 
+			//If the view matrix is available, it is added to the transformation constant buffer
 			if (DirectX::XMMatrixIsNaN(settings.viewMatrix))
 			{
 				AddBindable(TransformationConstantBuffer::Create(*this, DirectX::XMMatrixIdentity()));
@@ -370,10 +405,12 @@ namespace Atlas
 			{
 				AddBindable(TransformationConstantBuffer::Create(*this, settings.viewMatrix));
 			}
-
+			
+			//Make the set flag to true
 			m_Set = true;
 		}
 
+		//Draw the data
 		Drawable::Draw();
 	}
 
@@ -381,10 +418,12 @@ namespace Atlas
 	{
 		aiString path;
 
+		//If the material has the appropriate texture, it is added
 		if (m_Material->GetTexture(textureType,0, &path) == aiReturn::aiReturn_SUCCESS)
 		{
 			return std::move(Texture::Create(m_Filepath + path.C_Str(), settings.addMipMapping, slot));
 		}
+		//Else the user is warned and a white texture is used
 		else
 		{
 			AT_CRITICAL("The Mesh " + m_Name + " doesn't have the selected texture type:" + std::to_string((uint)textureType) + "So it has been replaced with a blank texture to avoid failure");
@@ -396,12 +435,14 @@ namespace Atlas
 	Node::Node(const std::string& name, std::vector<Mesh*> meshes, const DirectX::XMMATRIX& tranform)
 		: m_Name(name), m_Meshes(std::move(meshes))
 	{
+		//Store the original transforms
 		DirectX::XMStoreFloat4x4(&m_Transform, tranform);
 		DirectX::XMStoreFloat4x4(&m_AppliedTransform, DirectX::XMMatrixIdentity());
 	}
 
 	void Node::SetAppliedTranform(const DirectX::XMMATRIX& tranform)
 	{
+		//Sets the applied tranform
 		DirectX::XMStoreFloat4x4(&m_AppliedTransform, tranform);
 	}
 
@@ -412,60 +453,79 @@ namespace Atlas
 
 	void Node::Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings)
 	{
+		//Calculate the accumulated treansform
 		DirectX::XMMATRIX transform = DirectX::XMLoadFloat4x4(&m_Transform) * DirectX::XMLoadFloat4x4(&m_AppliedTransform) * accumulatedTransform;
 
+		//Draw each mesh
 		for (auto mesh : m_Meshes)
 		{
 			mesh->Draw(transform, settings);
 		}
+		//Then draw each child
 		for (auto& child : m_Children)
 		{
 			child->Draw(transform, settings);
 		}
 	}
 
-	Model::Model(std::string path)
+	Scene::Scene(std::string path)
 	{
+		//Get the scene with triangles only, and calculating tangents and bitangents when necessary.
 		auto scene = m_Importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
-		AT_ASSERT(scene, m_Importer.GetErrorString());
+		AT_ASSERT(scene, m_Importer.GetErrorString());	//If the result is invalid, the error is outputted
 
+		//Reserve the space for the meshes
 		m_Meshes.reserve(scene->mNumMeshes);
 
+		//Then create them
 		for (uint i = 0; i < scene->mNumMeshes; i++)
 		{
 			m_Meshes.push_back(std::move(std::make_unique<Mesh>(scene->mMeshes[i], scene->mMaterials, path)));
 		}
 
+		//If there is a camera store it
 		if (scene->HasCameras())
 		{
 			aiMatrix4x4 camera;
 			scene->mCameras[0]->GetCameraMatrix(camera);
 			m_Camera = DirectX::XMLoadFloat4x4(reinterpret_cast<DirectX::XMFLOAT4X4*>(&camera));
 		}
+		//Else, set it to identity
 		else
 		{
 			m_Camera = DirectX::XMMatrixIdentity();
 		}
 		
+		//If the scene has embedded textures, warn the user that they cannot be accessed
 		if (scene->HasTextures())
 		{
 			AT_WARN("The model posseses embedded textures, which cannot be accessed by the library")
 		}
 
+		//Then get the root node
 		m_RootNode = ParseNode(scene->mRootNode);
 	}
 
-	void Model::Draw(ModelDrawSettings& settings, DirectX::XMMATRIX transform)
+	void Scene::Draw(ModelDrawSettings& settings, DirectX::XMMATRIX transform)
 	{
 		auto trans = m_Camera * transform;
+		//Draw the root node
 		m_RootNode->Draw(trans, settings);
 	}
 
-	std::unique_ptr<Node> Model::ParseNode(aiNode* node)
+	void Scene::Draw(ModelDrawSettings& settings)
 	{
+		//Draw the root node
+		m_RootNode->Draw(m_Camera, settings);
+	}
+
+	std::unique_ptr<Node> Scene::ParseNode(aiNode* node)
+	{
+		//Get the transform
 		DirectX::XMMATRIX transform = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(
 			reinterpret_cast<DirectX::XMFLOAT4X4*>(&node->mTransformation)));
 
+		//Add a reference to the meshes that the node possessed
 		std::vector<Mesh*> nodeMeshes;
 		nodeMeshes.reserve(node->mNumMeshes);
 		for (uint i = 0; i < node->mNumMeshes; i++)
@@ -474,13 +534,16 @@ namespace Atlas
 			nodeMeshes.push_back(m_Meshes.at(meshIdx).get());
 		}
 
+		//Make the node
 		std::unique_ptr<Node> returnNode = std::make_unique<Node>(node->mName.C_Str(), std::move(nodeMeshes), transform);
 
+		//Recursively add it's children
 		for (uint i = 0; i < node->mNumChildren; i++)
 		{
 			returnNode->AddChild(ParseNode(node->mChildren[i]));
 		}
 
+		//Return the node
 		return returnNode;
 	}
 }

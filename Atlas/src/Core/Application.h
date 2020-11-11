@@ -37,11 +37,11 @@ namespace Atlas
 
 		//The functions that allow the implementation
 		//Of the application to add the initial layers
-		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* overlay);
+		void PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
+		void PushOverlay(Layer* overlay) { m_LayerStack.PushOverlay(overlay); }
 
-		void PopLayer(Layer* layer);
-		void PopOverlay(Layer* overlay);
+		void PopLayer(Layer* layer) { m_LayerStack.PopLayer(layer); }
+		void PopOverlay(Layer* overlay) { m_LayerStack.PopOverlay(overlay); }
 
 		//Adds events to the queue manually
 		void AddEventToQueue(Event* e) { m_Window.AddEvent(e); }

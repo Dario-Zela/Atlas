@@ -52,16 +52,19 @@ namespace Atlas
 			return GetAsyncKeyState(keyCode) < 0;
 		}
 
+		//This returns the horizontal scrool
 		static float GetHScrool()
 		{
 			return m_HScroll;
 		}
 
+		//This returns the vertical scrool
 		static float GetVScrool()
 		{
 			return m_VScroll;
 		}
 
+		//A function that sets the scroll values
 		static void SetScroll(float hScroll, float vScroll)
 		{
 			m_HScroll = hScroll;

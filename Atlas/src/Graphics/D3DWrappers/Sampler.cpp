@@ -8,40 +8,49 @@ namespace Atlas
     Sampler::Sampler(int slot, bool mipMapping, bool Anisotropy, uint maxAnisotropy)
         : m_Slot(slot)
     {
-        D3D11_SAMPLER_DESC desc = {};
-        desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-        desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-        desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+        //The descriptor for the sampler 
+        D3D11_SAMPLER_DESC samplerDescriptor = {};
+        samplerDescriptor.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+        samplerDescriptor.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+        samplerDescriptor.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
         if (Anisotropy) 
         {
-            desc.Filter = D3D11_FILTER_ANISOTROPIC;
-            AT_ASSERT(maxAnisotropy < D3D11_MAX_MAXANISOTROPY && maxAnisotropy > 0, "Your level of Anisotropy is too high for your GPU, scale it down")
-            desc.MaxAnisotropy = maxAnisotropy;
+            //If it has anisotropy, add anisotropic filtering and set the max anisotropy
+            samplerDescriptor.Filter = D3D11_FILTER_ANISOTROPIC;
+            //Checks that the max anisotropy is appropriate
+            AT_ASSERT(maxAnisotropy < D3D11_MAX_MAXANISOTROPY && maxAnisotropy > 0, "Your level of anisotropy is invalid")
+            samplerDescriptor.MaxAnisotropy = maxAnisotropy;
         } 
         else
         {
-            desc.Filter = D3D11_FILTER_ANISOTROPIC;
+            //Else use linear mapping
+            samplerDescriptor.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
         }
         
         if (mipMapping) 
         {
-            desc.MipLODBias = 0;
-            desc.MaxLOD = D3D11_FLOAT32_MAX;
-            desc.MinLOD = 0;
+            //If there is mip mapping add the level of detail
+            samplerDescriptor.MipLODBias = 0;
+            samplerDescriptor.MaxLOD = D3D11_FLOAT32_MAX;
+            samplerDescriptor.MinLOD = 0;
         }
 
-        AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateSamplerState(&desc, &m_Sampler));
+        //Create the sampler element
+        AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateSamplerState(&samplerDescriptor, &m_Sampler));
     }
 
     std::shared_ptr<Sampler> Sampler::Create(bool mipMapping, bool Anisotropy, uint maxAnisotropy, int slot)
     {
+        //Get the UID and get the pointer to the data
         std::string UID = GenerateUID(slot, mipMapping, Anisotropy, maxAnisotropy);
         auto test = BindableLib::Resolve(UID);
 
+        //If it isn't nullptr, cast it and return it
         if (test)
         {
             return std::static_pointer_cast<Sampler>(test);
         }
+        //else create a sampler and add it to the library before returning it
         else
         {
             auto vertexShader = std::make_shared<Sampler>(slot, mipMapping, Anisotropy, maxAnisotropy);
@@ -58,6 +67,7 @@ namespace Atlas
 
     void Sampler::Bind()
     {
+        //Binds the sampler
         AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetSamplers(m_Slot, 1, m_Sampler.GetAddressOf()));
     }
 }

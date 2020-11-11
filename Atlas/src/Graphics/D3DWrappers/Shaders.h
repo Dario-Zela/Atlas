@@ -8,15 +8,25 @@
 
 namespace Atlas
 {
+	//Wrappers over the d3d11 shaders
+
 	class VertexShader : public Bindable
 	{
 	public:
+		//Constructor for a vertex shader
+		//Takes a path to the cso object
 		VertexShader(std::string path);
+
+		//The wrapper over the constructor to get a shared ptr
 		static std::shared_ptr<VertexShader> Create(std::string path);
+
+		//Generates the unique identifier for the input layout
 		static std::string GenerateUID(std::string path);
 
-		void Bind() override;
-		wrl::ComPtr<ID3D11VertexShader> GetVertexShader();
+		void Bind() override;	//Binds the layout
+		
+		//Gets the blob from the vertex shader
+		//Required for the input layer
 		wrl::ComPtr<ID3DBlob> GetBlob();
 	private:
 		wrl::ComPtr<ID3D11VertexShader> m_VertexShader;
@@ -26,13 +36,17 @@ namespace Atlas
 	class PixelShader : public Bindable
 	{
 	public:
+		//Constructor for a pixel shader
+		//Takes a path to the cso object
 		PixelShader(std::string path);
+		
+		//The wrapper over the constructor to get a shared ptr
 		static std::shared_ptr<PixelShader> Create(std::string path);
+		
+		//Generates the unique identifier for the input layout
 		static std::string GenerateUID(std::string path);
 
-		void Bind() override;
-		wrl::ComPtr<ID3D11PixelShader> GetPixelShader();
-		wrl::ComPtr<ID3DBlob> GetBlob();
+		void Bind() override;	//Binds the layout
 	private:
 		wrl::ComPtr<ID3D11PixelShader> m_PixelShader;
 		wrl::ComPtr<ID3DBlob> m_Blob;

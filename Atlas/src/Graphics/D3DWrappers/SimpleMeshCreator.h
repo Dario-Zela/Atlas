@@ -5,58 +5,53 @@
 
 namespace Atlas
 {
-	class IMovable
-	{
-	public:
-		DirectX::XMFLOAT3 pos;
-	};
-
+	//A wrapper over a list of indexed triangles, used to get a shape
 	class IndexedTriangleList
 	{
 	public:
-		IndexedTriangleList() = default;
-		IndexedTriangleList(std::vector<IMovable> verteciesIn, std::vector<unsigned short> indeciesIn)
+		//Constructor, takes a vector of verticies and a vector of indicies
+		IndexedTriangleList(std::vector<DirectX::XMFLOAT3> verteciesIn, std::vector<unsigned short> indeciesIn)
 			:m_Vertecies(std::move(verteciesIn)), m_Indecies(std::move(indeciesIn))
 		{
 			AT_CORE_ASSERT(m_Vertecies.size() > 2, "Too few vertecies");
 			AT_CORE_ASSERT(m_Indecies.size() % 3 == 0, "The objects rappresented are not triangles");
 		}
 
-		void Transform(DirectX::FXMMATRIX transform)
+		//Allows you to transfom all of the verticies by a matrix
+		void Transform(DirectX::XMMATRIX transform)
 		{
 			for (auto& vertex : m_Vertecies)
 			{
-				const DirectX::XMVECTOR position = DirectX::XMLoadFloat3(&vertex.pos);
-				DirectX::XMStoreFloat3(&vertex.pos, DirectX::XMVector3Transform(position, transform));
+				const DirectX::XMVECTOR position = DirectX::XMLoadFloat3(&vertex);
+				DirectX::XMStoreFloat3(&vertex, DirectX::XMVector3Transform(position, transform));
 			}
 		}
 		
-		std::vector<IMovable> GetVertecies() { return m_Vertecies; }
+		//Getters for the data
+		std::vector<DirectX::XMFLOAT3> GetVertecies() { return m_Vertecies; }
 		std::vector<unsigned short> GetIndecies() { return m_Indecies; }
 		
-		uint GetVerteciesSize() { return (uint)m_Vertecies.size(); }
-		uint GetIndeciesSize() { return (uint)m_Indecies.size(); }
-
 	private:
-		std::vector<IMovable> m_Vertecies;
+		std::vector<DirectX::XMFLOAT3> m_Vertecies;
 		std::vector<unsigned short> m_Indecies;
 	};
 
+	//Creates a cube
 	struct Cube
 	{
 		static IndexedTriangleList Make()
 		{
 			constexpr float side = 0.5f;
-			std::vector<IMovable> verticies(8);
+			std::vector<DirectX::XMFLOAT3> verticies(8);
 
-			verticies[0].pos = { -side, -side, -side };
-			verticies[1].pos = {  side, -side, -side };
-			verticies[2].pos = { -side,  side, -side };
-			verticies[3].pos = {  side,  side, -side };
-			verticies[4].pos = { -side, -side,  side };
-			verticies[5].pos = {  side, -side,  side };
-			verticies[6].pos = { -side,  side,  side };
-			verticies[7].pos = {  side,  side,  side };
+			verticies[0] = { -side, -side, -side };
+			verticies[1] = {  side, -side, -side };
+			verticies[2] = { -side,  side, -side };
+			verticies[3] = {  side,  side, -side };
+			verticies[4] = { -side, -side,  side };
+			verticies[5] = {  side, -side,  side };
+			verticies[6] = { -side,  side,  side };
+			verticies[7] = {  side,  side,  side };
 
 			return { std::move(verticies), {
 						0,2,1,	2,3,1,
@@ -70,32 +65,32 @@ namespace Atlas
 		static IndexedTriangleList MakeIndipendentFaces()
 		{
 			constexpr float side = 0.5f;
-			std::vector<IMovable> verticies(24);
+			std::vector<DirectX::XMFLOAT3> verticies(24);
 
-			verticies[0].pos = { -side, -side, -side };
-			verticies[1].pos = { side, -side, -side };
-			verticies[2].pos = { -side,  side, -side };
-			verticies[3].pos = { side,  side, -side };
-			verticies[4].pos = { -side, -side,  side };
-			verticies[5].pos = { side, -side,  side };
-			verticies[6].pos = { -side,  side,  side };
-			verticies[7].pos = { side,  side,  side };
-			verticies[8].pos = { -side, -side, -side };
-			verticies[9].pos = { -side, side, -side };
-			verticies[10].pos = { -side,  -side, side };
-			verticies[11].pos = { -side,  side, side };
-			verticies[12].pos = { side, -side,  -side };
-			verticies[13].pos = { side, side, -side };
-			verticies[14].pos = { side,  -side,  side };
-			verticies[15].pos = { side,  side,  side };
-			verticies[16].pos = { -side, -side, -side };
-			verticies[17].pos = { side, -side, -side };
-			verticies[18].pos = { -side,  -side, side };
-			verticies[19].pos = { side,  -side, side };
-			verticies[20].pos = { -side, side,  -side };
-			verticies[21].pos = { side, side,  -side };
-			verticies[22].pos = { -side,  side,  side };
-			verticies[23].pos = { side,  side,  side };
+			verticies[0] = { -side, -side, -side };
+			verticies[1] = { side, -side, -side };
+			verticies[2] = { -side,  side, -side };
+			verticies[3] = { side,  side, -side };
+			verticies[4] = { -side, -side,  side };
+			verticies[5] = { side, -side,  side };
+			verticies[6] = { -side,  side,  side };
+			verticies[7] = { side,  side,  side };
+			verticies[8] = { -side, -side, -side };
+			verticies[9] = { -side, side, -side };
+			verticies[10] = { -side,  -side, side };
+			verticies[11] = { -side,  side, side };
+			verticies[12] = { side, -side,  -side };
+			verticies[13] = { side, side, -side };
+			verticies[14] = { side,  -side,  side };
+			verticies[15] = { side,  side,  side };
+			verticies[16] = { -side, -side, -side };
+			verticies[17] = { side, -side, -side };
+			verticies[18] = { -side,  -side, side };
+			verticies[19] = { side,  -side, side };
+			verticies[20] = { -side, side,  -side };
+			verticies[21] = { side, side,  -side };
+			verticies[22] = { -side,  side,  side };
+			verticies[23] = { side,  side,  side };
 
 			return { std::move(verticies), {
 						0,2,1,		2,3,1,
@@ -107,8 +102,11 @@ namespace Atlas
 		}
 	};
 
+	//Creates a plane
 	struct Plane
 	{
+		//This is a tesselated plane
+		//This allows for more vertecies
 		static IndexedTriangleList MakeTessalated(uint divisionsX, uint divisionsY)
 		{
 			AT_CORE_ASSERT(divisionsX != 0, "Cannot make a plane with 0 tessellation");
@@ -118,7 +116,7 @@ namespace Atlas
 			constexpr float height = 2.0f;
 			const uint nVerteciesX = divisionsX + 1;
 			const uint nVerteciesY = divisionsY + 1;
-			std::vector<IMovable> vertecies(nVerteciesX * nVerteciesY);
+			std::vector<DirectX::XMFLOAT3> vertecies(nVerteciesX * nVerteciesY);
 
 			{
 				const float divisionSizeX = width / (float)divisionsX;
@@ -131,13 +129,13 @@ namespace Atlas
 					for (uint x = 0; x < nVerteciesX; x++, i++)
 					{
 						const auto vertex = DirectX::XMVectorAdd(boottomLeftVertex, DirectX::XMVectorSet((float)x * divisionSizeX, yPos, 0, 0));
-						DirectX::XMStoreFloat3(&vertecies[i].pos, vertex);
+						DirectX::XMStoreFloat3(&vertecies[i], vertex);
 					}
 				}
 			}
 
 			std::vector<unsigned short> indecies;
-			indecies.reserve(divisionsX * divisionsY * divisionsX * divisionsY * 6);
+			indecies.reserve((size_t)divisionsX * divisionsY * divisionsX * divisionsY * 6);
 			{
 				const auto getIndex = [nVerteciesX](size_t x, size_t y)
 				{
@@ -158,12 +156,14 @@ namespace Atlas
 			return { std::move(vertecies), std::move(indecies) };
 		}
 
+		//The default has only 4 vertecies
 		static IndexedTriangleList Make()
 		{
 			return MakeTessalated(1, 1);
 		}
 	};
 
+	//Creates a cone
 	struct Cone
 	{
 		static IndexedTriangleList MakeTessalated(uint baseDivisions)
@@ -172,24 +172,24 @@ namespace Atlas
 
 			const auto base = DirectX::XMVectorSet(1, 0, -1, 0);
 			const float longitudeAngle = DirectX::XM_2PI / baseDivisions;
-			std::vector<IMovable> vertecies;
+			std::vector<DirectX::XMFLOAT3> vertecies;
 
 			//The base
 			for (uint iBase = 0; iBase < baseDivisions; iBase++)
 			{
 				vertecies.emplace_back();
 				auto vertex = DirectX::XMVector3Transform(base, DirectX::XMMatrixRotationZ(longitudeAngle * iBase));
-				DirectX::XMStoreFloat3(&vertecies.back().pos, vertex);
+				DirectX::XMStoreFloat3(&vertecies.back(), vertex);
 			}
 
 			//The centre
 			vertecies.emplace_back();
-			vertecies.back().pos = { 0,0,-1 };
+			vertecies.back() = { 0,0,-1 };
 			const unsigned short iCenter = (unsigned short)(vertecies.size() - 1);
 
 			//The top
 			vertecies.emplace_back();
-			vertecies.back().pos = { 0,0,1 };
+			vertecies.back() = { 0,0,1 };
 			const unsigned short iTop = (unsigned short)(vertecies.size() - 1);
 
 			//Base Indecies
@@ -212,13 +212,14 @@ namespace Atlas
 			return { std::move(vertecies), std::move(indecies) };
 		}
 
+		//This makes all faces indipendent from each other
 		static IndexedTriangleList MakeTessalatedIndipendentFaces(uint baseDivisions)
 		{
 			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertecies");
 
 			const auto base = DirectX::XMVectorSet(1, 0, -1, 0);
 			const float longitudeAngle = DirectX::XM_2PI / baseDivisions;
-			std::vector<IMovable> vertecies;
+			std::vector<DirectX::XMFLOAT3> vertecies;
 
 			//The cone
 			const unsigned short iCone = (unsigned short)vertecies.size();
@@ -229,25 +230,25 @@ namespace Atlas
 					longitudeAngle * (((iBase + 1) == baseDivisions ? 0 : (iBase + 1))) };
 
 				vertecies.emplace_back();
-				vertecies.back().pos = { 0, 0, 1 };
+				vertecies.back() = { 0, 0, 1 };
 				for (auto theta : thetas) 
 				{
 					vertecies.emplace_back();
 					auto vertex = DirectX::XMVector3Transform(base, DirectX::XMMatrixRotationZ(theta));
-					DirectX::XMStoreFloat3(&vertecies.back().pos, vertex);
+					DirectX::XMStoreFloat3(&vertecies.back(), vertex);
 				}
 			}
 
 			//The base
 			const auto iBaseCentre = (unsigned short)vertecies.size();
 			vertecies.emplace_back();
-			vertecies.back().pos = { 0,0,-1 };
+			vertecies.back() = { 0,0,-1 };
 			const unsigned short iBaseEdge = (unsigned short)vertecies.size();
 			for (uint iBase = 0; iBase < baseDivisions; iBase++)
 			{
 				vertecies.emplace_back();
 				auto vertex = DirectX::XMVector3Transform(base, DirectX::XMMatrixRotationZ(longitudeAngle * iBase));
-				DirectX::XMStoreFloat3(&vertecies.back().pos, vertex);
+				DirectX::XMStoreFloat3(&vertecies.back(), vertex);
 			}
 
 			//Cone Indecies
@@ -268,12 +269,14 @@ namespace Atlas
 			return { std::move(vertecies), std::move(indecies) };
 		}
 
+		//The default is a 24 tesselations cone
 		static IndexedTriangleList Make()
 		{
 			return MakeTessalated(24);
 		}
 	};
 
+	//Creates a prism
 	struct Prism
 	{
 		static IndexedTriangleList MakeTessalated(uint baseDivisions)
@@ -283,16 +286,16 @@ namespace Atlas
 			const auto base = DirectX::XMVectorSet(1, 0, -1, 0);
 			const auto offset= DirectX::XMVectorSet(0, 0, 2, 0);
 			const float longitudeAngle = DirectX::XM_2PI / baseDivisions;
-			std::vector<IMovable> vertecies;
+			std::vector<DirectX::XMFLOAT3> vertecies;
 
 			//Near Centre
 			vertecies.emplace_back();
-			vertecies.back().pos = { 0,0,-1 };
+			vertecies.back() = { 0,0,-1 };
 			const auto iCentreNear = (unsigned short)(vertecies.size() - 1);
 
 			//Far Centre
 			vertecies.emplace_back();
-			vertecies.back().pos = { 0,0, 1 };
+			vertecies.back() = { 0,0, 1 };
 			const auto iCentreFar = (unsigned short)(vertecies.size() - 1);
 
 			//Base
@@ -302,7 +305,7 @@ namespace Atlas
 				{
 					vertecies.emplace_back();
 					auto vertex = DirectX::XMVector3Transform(base, DirectX::XMMatrixRotationZ(longitudeAngle * iBase));
-					DirectX::XMStoreFloat3(&vertecies.back().pos, vertex);
+					DirectX::XMStoreFloat3(&vertecies.back(), vertex);
 				}
 				
 				//Far base
@@ -310,7 +313,7 @@ namespace Atlas
 					vertecies.emplace_back();
 					auto vertex = DirectX::XMVector3Transform(base, DirectX::XMMatrixRotationZ(longitudeAngle * iBase));
 					vertex = DirectX::XMVectorAdd(vertex, offset);
-					DirectX::XMStoreFloat3(&vertecies.back().pos, vertex);
+					DirectX::XMStoreFloat3(&vertecies.back(), vertex);
 				}
 			}
 
@@ -344,12 +347,14 @@ namespace Atlas
 			return { std::move(vertecies), std::move(indecies) };
 		}
 
+		//The default is a 24 tesselations prism
 		static IndexedTriangleList Make()
 		{
 			return MakeTessalated(24);
 		}
 	};
 
+	//Creates a sphere
 	struct Sphere
 	{
 		static IndexedTriangleList MakeTessalated(uint latitudeDivisions, uint longitudeDivisions)
@@ -362,7 +367,7 @@ namespace Atlas
 			const float latitudeAngle = DirectX::XM_PI / (float)latitudeDivisions;
 			const float longitudeAngle = DirectX::XM_2PI / (float)longitudeDivisions;
 
-			std::vector<IMovable> vertecies;
+			std::vector<DirectX::XMFLOAT3> vertecies;
 
 			for (uint iLatitude = 1; iLatitude < latitudeDivisions; iLatitude++)
 			{
@@ -373,18 +378,18 @@ namespace Atlas
 				{
 					vertecies.emplace_back();
 					auto vertex = DirectX::XMVector3Transform(latitudeBase, DirectX::XMMatrixRotationZ(longitudeAngle * iLongitude));
-					DirectX::XMStoreFloat3(&vertecies.back().pos, vertex);
+					DirectX::XMStoreFloat3(&vertecies.back(), vertex);
 				}
 			}
 
 			//Add the caps
 			const auto iNorthPole = (unsigned short)vertecies.size();
 			vertecies.emplace_back();
-			DirectX::XMStoreFloat3(&vertecies.back().pos, base);
+			DirectX::XMStoreFloat3(&vertecies.back(), base);
 
 			const auto iSouthPole = (unsigned short)vertecies.size();
 			vertecies.emplace_back();
-			DirectX::XMStoreFloat3(&vertecies.back().pos, DirectX::XMVectorNegate(base));
+			DirectX::XMStoreFloat3(&vertecies.back(), DirectX::XMVectorNegate(base));
 
 			const auto getIndex = [latitudeDivisions, longitudeDivisions](unsigned short iLatitude, unsigned short iLongitude)
 			{ return (unsigned short)(iLatitude * longitudeDivisions + iLongitude); };
@@ -440,12 +445,14 @@ namespace Atlas
 			return { std::move(vertecies), std::move(indecies) };
 		}
 
+		//The default is a 12 x 24 tesselations sphere
 		static IndexedTriangleList Make()
 		{
 			return MakeTessalated(12, 24);
 		}
 	};
 
+	//Gets a random shape
 	static std::tuple<IndexedTriangleList, std::string> GetRandom(std::mt19937& rng)
 	{
 		switch (rng() % 4)
@@ -456,6 +463,8 @@ namespace Atlas
 		case 3: return { Sphere::Make(), "Sphere" };
 		}
 	}
+
+	//Gets a random shape with indipendent verticies
 	static std::tuple<IndexedTriangleList, std::string> GetRandomIndipendent(std::mt19937& rng)
 	{
 		switch (rng() % 4)

@@ -10,6 +10,7 @@
 
 namespace Atlas
 {
+	//Settings that define how a model should be drawn
 	struct ModelDrawSettings
 	{
 		uint proprietiesFlags = 0;
@@ -24,6 +25,7 @@ namespace Atlas
 		DirectX::XMMATRIX viewMatrix;
 	};
 
+	//The texture creation flags
 	enum class MeshTextureFlags
 	{
 		NONE = 1 << 0,
@@ -47,12 +49,7 @@ namespace Atlas
 		UNKNOWN = 1 << 18
 	};
 
-	inline MeshTextureFlags operator|(MeshTextureFlags a, MeshTextureFlags b) { return (MeshTextureFlags)((uint)a | (uint)b); }
-
-	inline uint operator|=(uint a, MeshTextureFlags b) { return (a | (uint)b); }
-
-	#define MAX_MESH_TEXTURE_FLAGS_SIZE 19
-
+	//The mesh propriety flags
 	enum class MeshProprietiesFlags
 	{
 		NONE = 1 << 0,
@@ -76,24 +73,39 @@ namespace Atlas
 		REFRACTI = 1 << 18,
 	};
 
+	//////////////////////////////////////////////////////////////////
+	//Overrided operators to simplify adding proprieties
+	
+	inline MeshTextureFlags operator|(MeshTextureFlags a, MeshTextureFlags b) { return (MeshTextureFlags)((uint)a | (uint)b); }
+
+	inline uint operator|=(uint a, MeshTextureFlags b) { return (a | (uint)b); }
+
+	//The maximum number of flags
+	#define MAX_MESH_FLAGS_SIZE 19
+
 	inline MeshProprietiesFlags operator|(MeshProprietiesFlags a, MeshProprietiesFlags b) { return (MeshProprietiesFlags)((uint)a | (uint)b); }
 
 	inline uint operator|=(uint a, MeshProprietiesFlags b) { return (a | (uint)b); }
 
+	//////////////////////////////////////////////////////////////////
+
+	//A wrapper over an aimesh
 	class Mesh : Drawable
 	{
 	public:
+		//Constructor, takes in an aimesh, aimaterial array and the path to the mesh
 		Mesh(aiMesh* mesh, aiMaterial** materials, std::filesystem::path path);
 
+		//The draw function that takes the accumulated tranforms and the settings
 		void Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings);
-		DirectX::XMMATRIX GetTransformXM() override 
-		{ 
-			return m_Transform;
-		}
-
+		
+		//The transform of the tranform constant buffer
+		DirectX::XMMATRIX GetTransformXM() override { return m_Transform; }
 	private:
+		//A function that gets the texture path from a type, a slot and the settings
 		std::shared_ptr<Texture> GetTexture(aiTextureType textureType, int slot, ModelDrawSettings& settings);
 
+		//The data of the mesh
 		std::vector<DirectX::XMFLOAT3> m_VertexPositions;
 		std::vector<DirectX::XMFLOAT2> m_NormalCoordinates;
 		std::vector<DirectX::XMFLOAT2> m_TextureCoordinates;
@@ -103,23 +115,33 @@ namespace Atlas
 		std::string m_Name;
 		aiMaterial* m_Material;
 		std::string m_Filepath;
-
+		
+		//The transform
 		DirectX::XMMATRIX m_Transform;
 
 		std::vector<unsigned short> m_Indecies;
 
+		//If the mesh has previously been constructed
 		bool m_Set;
  	};
 
+	//A wrapper over an aiNode
+	//It rappressents a node in a scene graph
 	class Node
 	{
 	public:
+		//Constructor, takes in the name of the node, the associated meshes and the tranform
 		Node(const std::string& name, std::vector<Mesh*> meshes, const DirectX::XMMATRIX& tranform);
+
+		//Setters and getters on the applied tranform
 		void SetAppliedTranform(const DirectX::XMMATRIX& tranform);
 		DirectX::XMFLOAT4X4& GetAppliedTranfrom();
-		void AddChild(std::unique_ptr<Node> child) { m_Children.push_back(std::move(child)); }
-		void Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings);
 
+		//Adds a child node to node
+		void AddChild(std::unique_ptr<Node> child) { m_Children.push_back(std::move(child)); }
+
+		//Draws the meshes associated with the node
+		void Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings);
 	private:
 		std::string m_Name;
 		std::vector<std::unique_ptr<Node>> m_Children;
@@ -128,12 +150,20 @@ namespace Atlas
 		DirectX::XMFLOAT4X4 m_AppliedTransform;
 	};
 
-	class Model
+	//A wrapper over the aiScene
+	//It rappresents a scene graph
+	class Scene
 	{
 	public:
-		Model(std::string path);
+		//Constructor, requires the path to the model
+		Scene(std::string path);
 
+		//Draws the scene with a draw settings and a transform
 		void Draw(ModelDrawSettings& settings, DirectX::XMMATRIX transform);
+		//Draws the scene only wirg draw settings
+		void Draw(ModelDrawSettings& settings);
+
+		//Add nodes recurcively
 		std::unique_ptr<Node> ParseNode(aiNode* node);
 	private:
 		DirectX::XMMATRIX m_Camera;

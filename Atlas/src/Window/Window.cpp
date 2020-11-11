@@ -163,13 +163,6 @@ namespace Atlas
         else
             return;
 
-        //This converts the easier to call string format into a const wchar_t array
-        //As it is what is used in the WNDCLASSEX creation
-
-        std::wstring wideName = L"";
-        for(char c : name)
-            wideName += (wchar_t)c;
-
         //Set the style of the window
         WNDCLASSEX wc;
         wc.cbClsExtra = NULL;
@@ -197,7 +190,7 @@ namespace Atlas
         AT_ASSERT(AdjustWindowRectEx(&windowSize, WS_TILEDWINDOW, FALSE, 0), "The window could not be resized\n[Description]: ", TranslateErrorCode(GetLastError()));
 
         //Create the window and save the handle to it
-        m_Hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"MyWindowClass", wideName.c_str(), WS_TILEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, windowSize.right - windowSize.left, windowSize.bottom - windowSize.top, NULL, NULL, NULL, NULL);
+        m_Hwnd = CreateWindowExA(WS_EX_APPWINDOW, "MyWindowClass", name.c_str(), WS_TILEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, windowSize.right - windowSize.left, windowSize.bottom - windowSize.top, NULL, NULL, NULL, NULL);
 
         //Check if it was succesful
         AT_ASSERT(m_Hwnd, "The window could not be created\n[Description]: ", TranslateErrorCode(GetLastError()));
