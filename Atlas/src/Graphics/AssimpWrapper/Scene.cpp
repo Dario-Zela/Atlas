@@ -454,7 +454,7 @@ namespace Atlas
 	void Node::Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings)
 	{
 		//Calculate the accumulated treansform
-		DirectX::XMMATRIX transform = DirectX::XMLoadFloat4x4(&m_Transform) * DirectX::XMLoadFloat4x4(&m_AppliedTransform) * accumulatedTransform;
+		DirectX::XMMATRIX transform = DirectX::XMLoadFloat4x4(&m_Transform) * DirectX::XMLoadFloat4x4(&m_AppliedTransform) * accumulatedTransform ;
 
 		//Draw each mesh
 		for (auto mesh : m_Meshes)
@@ -506,7 +506,7 @@ namespace Atlas
 		m_RootNode = ParseNode(scene->mRootNode);
 	}
 
-	void Scene::Draw(ModelDrawSettings& settings, DirectX::XMMATRIX transform)
+	void Scene::Draw(ModelDrawSettings& settings, DirectX::XMMATRIX& transform)
 	{
 		auto trans = m_Camera * transform;
 		//Draw the root node
@@ -517,6 +517,12 @@ namespace Atlas
 	{
 		//Draw the root node
 		m_RootNode->Draw(m_Camera, settings);
+	}
+
+	void Scene::ApplyTransform(std::string nodeName, DirectX::XMMATRIX& transform)
+	{
+		AT_ASSERT(m_Nodes.find(nodeName) != m_Nodes.end(), "The selected node doesn't exist")
+		m_Nodes[nodeName]->SetAppliedTranform(transform);
 	}
 
 	std::unique_ptr<Node> Scene::ParseNode(aiNode* node)
@@ -536,6 +542,8 @@ namespace Atlas
 
 		//Make the node
 		std::unique_ptr<Node> returnNode = std::make_unique<Node>(node->mName.C_Str(), std::move(nodeMeshes), transform);
+
+		m_Nodes[node->mName.C_Str()] = returnNode.get();
 
 		//Recursively add it's children
 		for (uint i = 0; i < node->mNumChildren; i++)

@@ -9,7 +9,7 @@ namespace Atlas
 	{
 	public:
 		//Initialises the gui with a name
-		void Init(std::string windowName = "GUI");
+		void Init(std::string windowName = "GUI", uint width = 500, uint height = 400);
 		
 		//Broadcasts messages from the gui to the sliders
 		void Broadcast();
@@ -21,10 +21,10 @@ namespace Atlas
 		void AddSliderFloat4(std::string name, float* val, float min, float max, float scale);
 
 		//Uint sliders
-		void AddSliderUint(std::string name, UINT* val, UINT min, UINT max, UINT scale);
-		void AddSliderUint2(std::string name, UINT* val, UINT min, UINT max, UINT scale);
-		void AddSliderUint3(std::string name, UINT* val, UINT min, UINT max, UINT scale);
-		void AddSliderUint4(std::string name, UINT* val, UINT min, UINT max, UINT scale);
+		void AddSliderUint(std::string name, uint* val, uint min, uint max, uint scale);
+		void AddSliderUint2(std::string name, uint* val, uint min, uint max, uint scale);
+		void AddSliderUint3(std::string name, uint* val, uint min, uint max, uint scale);
+		void AddSliderUint4(std::string name, uint* val, uint min, uint max, uint scale);
 
 		//Init sliders
 		void AddSliderInt(std::string name, int* val, int min, int max, int scale);

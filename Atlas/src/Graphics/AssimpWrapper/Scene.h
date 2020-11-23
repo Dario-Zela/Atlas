@@ -58,19 +58,18 @@ namespace Atlas
 		COLORS = 1 << 3,
 		TANGENTS = 1 << 4,
 		BITANGENTS = 1 << 5,
-		COLOR_DIFFUSE = 1 << 6,
-		COLOR_SPECULAR = 1 << 7,
-		COLOR_AMBIENT = 1 << 8,
-		COLOR_EMISSIVE = 1 << 9,
-		COLOR_TRANSPARENT = 1 << 10,
-		WIREFRAME = 1 << 11,
-		TWOSIDED = 1 << 12,
-		SHADING_MODEL = 1 << 13,
-		BLEND_FUNC = 1 << 14,
-		OPACITY = 1 << 15,
-		SHININESS = 1 << 16,
-		SHININESS_STRENGTH = 1 << 17,
-		REFRACTI = 1 << 18,
+		COLOR_DIFFUSE = 1 << 6,					//Diffuse color of the material. This is typically scaled by the amount of incoming diffuse light (e.g. using gouraud shading)	
+		COLOR_SPECULAR = 1 << 7,				//Specular color of the material. This is typically scaled by the amount of incoming specular light (e.g. using phong shading)	
+		COLOR_AMBIENT = 1 << 8,					//Ambient color of the material. This is typically scaled by the amount of ambient light	
+		COLOR_EMISSIVE = 1 << 9,				//Emissive color of the material. This is the amount of light emitted by the object. In real time applications it will usually not affect surrounding objects, but raytracing applications may wish to treat emissive objects as light sources.	
+		COLOR_TRANSPARENT = 1 << 10,			//Defines the transparent color of the material, this is the color to be multiplied with the color of translucent light to construct the final 'destination color' for a particular position in the screen buffer.
+		WIREFRAME = 1 << 11,					//Specifies whether wireframe rendering must be turned on for the material. 0 for false, !0 for true.
+		TWOSIDED = 1 << 12,						//Specifies whether meshes using this material must be rendered without backface culling. 0 for false, !0 for true.
+		SHADING_MODEL = 1 << 13,				//One of the shadingMode enumerated values. Defines the library shading model to use for (real time) rendering to approximate the original look of the material as closely as possible.
+		OPACITY = 1 << 14,						//Defines the opacity of the material in a range between 0-1
+		SHININESS = 1 << 15,					//Defines the shininess of a phong-shaded material. This is actually the exponent of the phong specular equation
+		SHININESS_STRENGTH = 1 << 16,			//Scales the specular color of the material.
+		REFRACTI = 1 << 17,						//Defines the Index Of Refraction for the material. That's not supported by most file formats.
 	};
 
 	//////////////////////////////////////////////////////////////////
@@ -159,9 +158,13 @@ namespace Atlas
 		Scene(std::string path);
 
 		//Draws the scene with a draw settings and a transform
-		void Draw(ModelDrawSettings& settings, DirectX::XMMATRIX transform);
+		void Draw(ModelDrawSettings& settings, DirectX::XMMATRIX& transform);
 		//Draws the scene only wirg draw settings
 		void Draw(ModelDrawSettings& settings);
+
+		//A way to apply a transform to a specific node
+		//By using it's name
+		void ApplyTransform(std::string nodeName, DirectX::XMMATRIX& transform);
 
 		//Add nodes recurcively
 		std::unique_ptr<Node> ParseNode(aiNode* node);
@@ -170,5 +173,6 @@ namespace Atlas
 		std::unique_ptr<Node> m_RootNode;
 		std::vector<std::unique_ptr<Mesh>> m_Meshes;
 		Assimp::Importer m_Importer;
+		std::unordered_map<std::string, Node*> m_Nodes;
 	};
 }

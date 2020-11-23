@@ -110,7 +110,7 @@ namespace Atlas
 		return NULL;
 	}
 
-	void GUI::Init(std::string windowName)
+	void GUI::Init(std::string windowName, uint width, uint height)
 	{
 		//Create the window descriptor
 		WNDCLASSEX wc;
@@ -132,9 +132,9 @@ namespace Atlas
 
 		RECT windowSize = RECT();
 		windowSize.top = 0;
-		windowSize.bottom = 400;
+		windowSize.bottom = height;
 		windowSize.left = 0;
-		windowSize.right = 500;
+		windowSize.right = width;
 
 		//Adjust the window size
 		AdjustWindowRectEx(&windowSize, WS_TILEDWINDOW, FALSE, 0);
