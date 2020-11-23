@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Scene.h"
 #include <filesystem>
+#include <array>
+#include <streambuf>
 
 #include "Graphics/D3DWrappers/Buffers.h"
 #include "Graphics/D3DWrappers/InputLayout.h"
@@ -8,11 +10,27 @@
 #include "Graphics/D3DWrappers/ViewPort.h"
 #include "Graphics/D3DWrappers/TransformationConstantBuffer.h"
 #include "Graphics/D3DWrappers/Sampler.h"
+#include "Graphics/D3DWrappers/Vertex.h"
 
 #include "Graphics/D3DWrappers/Blendable.h"
 
 namespace Atlas
 {
+	struct ProprietiesData
+	{
+		std::tuple<std::string, uint, int> Data[6] =
+		{
+			{ "POSITION", DXGI_FORMAT_R32G32B32_FLOAT, sizeof(DirectX::XMFLOAT3)},
+			{"NORMALS", DXGI_FORMAT_R32G32_FLOAT, sizeof(DirectX::XMFLOAT2)},
+			{"TEXTURE_COORDS", DXGI_FORMAT_R32G32_FLOAT, sizeof(DirectX::XMFLOAT2)},
+			{"COLORS", DXGI_FORMAT_R32G32B32A32_FLOAT, sizeof(DirectX::XMFLOAT4)},
+			{"TANGENTS", DXGI_FORMAT_R32G32B32_FLOAT, sizeof(DirectX::XMFLOAT3)},
+			{"BITANGENTS", DXGI_FORMAT_R32G32B32_FLOAT, sizeof(DirectX::XMFLOAT3)}
+		};
+	};
+
+	static ProprietiesData s_ProprietiesData;
+
 	Mesh::Mesh(aiMesh* mesh, aiMaterial** materials, std::filesystem::path path)
 	{
 		//Reserve the space for the vertex positions
@@ -91,72 +109,89 @@ namespace Atlas
 			//Else clear the bindables
 			ClearBindables();
 
-			//Create the input elements and add position
-			std::vector<InputElement> elements;
-			elements.push_back({ "POSITION", DXGI_FORMAT_R32G32B32_FLOAT });
-
-			//Add a stride for the vertex and a stride for the constant buffer
-			uint strideVertex = sizeof(DirectX::XMFLOAT3);
-			uint strideCBuff = 0;
-			std::vector<float> cbuffData;
+			//Create the vertex and a reference to needed
+			//settings
+			Vertex vertex;
 			bool proprieties[5];
 
-			//Iterate over every propriety
-			for (uint i = 1; i < MAX_MESH_FLAGS_SIZE; i++)
+			vertex.AddAtribute(s_ProprietiesData.Data[0]);
+
+			//Iterate over every vertex element
+			for (uint i = 1; i < 6; i++)
 			{
-				//If it is one of the major ones
-				//Clear the proprieties value
-				if (i < 6)
+				proprieties[i - 1] = false;
+
+				//And add the appropriate data
+				if ((settings.proprietiesFlags & (1 << i)) != 0)
 				{
-					proprieties[i - 1] = false;
+					vertex.AddAtribute(s_ProprietiesData.Data[i]);
+					proprieties[i - 1] = true;
+				}
+			}
+
+			{
+				//Create a vector for the data
+				//If the data is selected, it is added to the vertex
+				for (int i = 0; i < m_VertexPositions.size(); i++)
+				{
+					std::vector<float> data;
+					data.push_back(m_VertexPositions[i].x);
+					data.push_back(m_VertexPositions[i].y);
+					data.push_back(m_VertexPositions[i].z);
+
+					if (proprieties[0])
+					{
+						data.push_back(m_NormalCoordinates[i].x);
+						data.push_back(m_NormalCoordinates[i].y);
+					}
+
+					if (proprieties[1])
+					{
+						data.push_back(m_TextureCoordinates[i].x);
+						data.push_back(m_TextureCoordinates[i].y);
+					}
+
+					if (proprieties[2])
+					{
+						data.push_back(m_Colors[i].x);
+						data.push_back(m_Colors[i].y);
+						data.push_back(m_Colors[i].z);
+						data.push_back(m_Colors[i].w);
+					}
+
+					if (proprieties[3])
+					{
+						data.push_back(m_Tangents[i].x);
+						data.push_back(m_Tangents[i].y);
+						data.push_back(m_Tangents[i].z);
+					}
+
+					if (proprieties[4])
+					{
+						data.push_back(m_Bitangents[i].x);
+						data.push_back(m_Bitangents[i].y);
+						data.push_back(m_Bitangents[i].z);
+					}
+
+					vertex.PushVertexData(data.data());
 				}
 
+				//And then a vertex buffer is created and added
+				AddBindable(vertex.GetVertexBuffer(m_Name));
+			}
+
+			//Add a stride for the constant buffer and storage for the data
+			uint strideCBuff = 0;
+			std::vector<float> cbuffData;
+
+			//Iterate over every subdata propriety
+			for (uint i = 5; i < MAX_MESH_FLAGS_SIZE; i++)
+			{
 				//If the propriety has been activated
 				if ((settings.proprietiesFlags & (1 << i)) != 0)
 				{
-					//(if i < 6)
-					//Add it to the elements 
-					//Set the proprieties flag to true
-					//Update the stride
 					switch (i)
 					{
-						case 1:
-						{
-							elements.push_back({ "NORMALS", DXGI_FORMAT_R32G32_FLOAT });
-							proprieties[0] = true;
-							strideVertex += sizeof(DirectX::XMFLOAT2);
-						}
-							break;
-						case 2:
-						{
-							elements.push_back({ "TEXTURE_COORDS", DXGI_FORMAT_R32G32_FLOAT });
-							proprieties[1] = true;
-							strideVertex += sizeof(DirectX::XMFLOAT2);
-						}
-							break;
-						case 3:
-						{
-							elements.push_back({ "COLORS", DXGI_FORMAT_R32G32B32A32_FLOAT });
-							proprieties[2] = true;
-							strideVertex += sizeof(DirectX::XMFLOAT4);
-						}
-							break;
-						case 4:
-						{
-							elements.push_back({ "TANGENTS", DXGI_FORMAT_R32G32B32_FLOAT });
-							proprieties[3] = true;
-							strideVertex += sizeof(DirectX::XMFLOAT3);
-						}
-							break;
-						case 5:
-						{
-							elements.push_back({ "BITANGENTS", DXGI_FORMAT_R32G32B32_FLOAT });
-							proprieties[4] = true;
-							strideVertex += sizeof(DirectX::XMFLOAT3);
-						}
-							break;
-					
-					//(if i >= 6)
 					//Get the data and push it into the vector
 					//Update the stride
 						case 6:
@@ -229,7 +264,7 @@ namespace Atlas
 							int data;
 							m_Material->Get(AI_MATKEY_ENABLE_WIREFRAME, data);
 
-							cbuffData.push_back((const float)data);
+							cbuffData.push_back((float)data);
 							strideCBuff += sizeof(int);
 						}
 							break;
@@ -253,15 +288,6 @@ namespace Atlas
 							break;
 						case 14:
 						{
-							int data;
-							m_Material->Get(AI_MATKEY_BLEND_FUNC, data);
-
-							cbuffData.push_back((float)data);
-							strideCBuff += sizeof(int);
-						}
-							break;
-						case 15:
-						{
 							float data;
 							m_Material->Get(AI_MATKEY_OPACITY, data);
 
@@ -269,7 +295,7 @@ namespace Atlas
 							strideCBuff += sizeof(float);
 						}
 							break;
-						case 16:
+						case 15:
 						{
 							float data;
 							m_Material->Get(AI_MATKEY_SHININESS, data);
@@ -278,7 +304,7 @@ namespace Atlas
 							strideCBuff += sizeof(float);
 						}
 						break;
-						case 17:
+						case 16:
 						{
 							float data;
 							m_Material->Get(AI_MATKEY_SHININESS_STRENGTH, data);
@@ -287,7 +313,7 @@ namespace Atlas
 							strideCBuff += sizeof(float);
 						}
 							break;
-						case 18:
+						case 17:
 						{
 							float data;
 							m_Material->Get(AI_MATKEY_REFRACTI, data);
@@ -302,55 +328,6 @@ namespace Atlas
 
 			//If the stide is not 0 add a vertex constant buffer
 			if (strideCBuff != 0) AddBindable(VertexConstantBuffer::Create(cbuffData.data(), strideCBuff));
-
-			{
-				//Create a vector for the data
-				std::vector<float> data;
-				//If the data is selected, it is added to the vertex
-				for (int i = 0; i < m_VertexPositions.size(); i++)
-				{
-					data.push_back(m_VertexPositions[i].x);
-					data.push_back(m_VertexPositions[i].y);
-					data.push_back(m_VertexPositions[i].z);
-
-					if (proprieties[0])
-					{
-						data.push_back(m_NormalCoordinates[i].x);
-						data.push_back(m_NormalCoordinates[i].y);
-					}
-
-					if (proprieties[1])
-					{
-						data.push_back(m_TextureCoordinates[i].x);
-						data.push_back(m_TextureCoordinates[i].y);
-					}
-
-					if (proprieties[2])
-					{
-						data.push_back(m_Colors[i].x);
-						data.push_back(m_Colors[i].y);
-						data.push_back(m_Colors[i].z);
-						data.push_back(m_Colors[i].w);
-					}
-
-					if (proprieties[3])
-					{
-						data.push_back(m_Tangents[i].x);
-						data.push_back(m_Tangents[i].y);
-						data.push_back(m_Tangents[i].z);
-					}
-
-					if (proprieties[4])
-					{
-						data.push_back(m_Bitangents[i].x);
-						data.push_back(m_Bitangents[i].y);
-						data.push_back(m_Bitangents[i].z);
-					}
-				}
-
-				//And then a vertex buffer is created and added
-				AddBindable(VertexBuffer::Create(data.data(), (uint)data.size() * sizeof(float), strideVertex, m_Name));
-			}
 
 			//The index buffer is created
 			AddBindable(IndexBuffer::Create(m_Indecies.data(), (uint)m_Indecies.size() * sizeof(unsigned short), m_Name));
@@ -390,7 +367,7 @@ namespace Atlas
 
 			AddBindable(PixelShader::Create(settings.pixelShaderPath));
 
-			AddBindable(InputLayout::Create(elements, blob, settings.vertexShaderPath));
+			AddBindable(vertex.GetInputLayout(blob, settings.vertexShaderPath));
 
 			//The default topology and render target are selected
 			Graphics::SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

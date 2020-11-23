@@ -96,6 +96,9 @@
     <ClCompile Include="src\Graphics\AssimpWrapper\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\D3DWrappers\Vertex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -441,6 +444,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\AssimpWrapper\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\D3DWrappers\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

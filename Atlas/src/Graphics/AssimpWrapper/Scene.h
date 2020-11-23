@@ -114,11 +114,10 @@ namespace Atlas
 		std::string m_Name;
 		aiMaterial* m_Material;
 		std::string m_Filepath;
+		std::vector<unsigned short> m_Indecies;
 		
 		//The transform
 		DirectX::XMMATRIX m_Transform;
-
-		std::vector<unsigned short> m_Indecies;
 
 		//If the mesh has previously been constructed
 		bool m_Set;

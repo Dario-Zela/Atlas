@@ -216,6 +216,7 @@
   <ItemGroup>
     <ClCompile Include="src\Core\Camera.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\Vertex.cpp" />
     <ClCompile Include="src\Window\GUI.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Blendable.cpp" />
     <ClCompile Include="src\Graphics\BindableLib.cpp" />
