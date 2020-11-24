@@ -4,18 +4,26 @@
 
 namespace Atlas
 {
+	//A class that abstracts the creation of a vertex buffer
 	class Vertex
 	{
 	public:
 		Vertex() = default;
-		void AddAtribute(std::string name, uint type, int size);
-		void AddAtribute(std::tuple<std::string, uint, int> vertexData);
+		
+		//This adds an attribute to the vertex
+		//This can be done as a set of values or as a single tuple
+		void AddAttribute(std::string name, uint type, int size);
+		void AddAttribute(std::tuple<std::string, uint, int> vertexData);
+
+		//This pushes the data of one vertex into memory
 		void PushVertexData(void* data);
+
+		//These function get the input layout and vertex buffer
+		//Abstracting the creation of these elements
 		std::shared_ptr<InputLayout> GetInputLayout(wrl::ComPtr<ID3DBlob> blob, std::string tag);
 		std::shared_ptr<VertexBuffer> GetVertexBuffer(std::string tag);
-
 	private:
-		std::vector<InputElement> m_VectorDescriptor;
+		std::vector<InputElement> m_VertexDescriptor;
 		std::vector<byte> m_Data;
 		int m_Stride;
 	};

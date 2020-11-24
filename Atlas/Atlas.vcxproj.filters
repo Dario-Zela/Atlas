@@ -449,6 +449,9 @@
     <ClInclude Include="src\Graphics\D3DWrappers\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Graphics\RenderGraphAPI\Pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Shaders\TestPixel.hlsl" />

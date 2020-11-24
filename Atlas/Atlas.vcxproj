@@ -98,6 +98,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Camera.h" />
+    <ClInclude Include="src\Graphics\RenderGraphAPI\Pass.h" />
     <ClInclude Include="src\Window\GUI.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\Blendable.h" />
     <ClInclude Include="src\Graphics\BindableLib.h" />

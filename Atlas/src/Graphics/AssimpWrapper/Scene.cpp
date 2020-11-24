@@ -114,7 +114,7 @@ namespace Atlas
 			Vertex vertex;
 			bool proprieties[5];
 
-			vertex.AddAtribute(s_ProprietiesData.Data[0]);
+			vertex.AddAttribute(s_ProprietiesData.Data[0]);
 
 			//Iterate over every vertex element
 			for (uint i = 1; i < 6; i++)
@@ -124,7 +124,7 @@ namespace Atlas
 				//And add the appropriate data
 				if ((settings.proprietiesFlags & (1 << i)) != 0)
 				{
-					vertex.AddAtribute(s_ProprietiesData.Data[i]);
+					vertex.AddAttribute(s_ProprietiesData.Data[i]);
 					proprieties[i - 1] = true;
 				}
 			}
