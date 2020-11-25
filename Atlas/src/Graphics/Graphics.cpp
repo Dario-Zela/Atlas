@@ -3,7 +3,6 @@
 #include "Graphics/DX11Exception.h"
 #include "Core/Input.h"
 #include "Graphics/BindableLib.h"
-
 #include "Graphics/DxgiInfoManager.h"
 
 namespace Atlas
@@ -63,47 +62,12 @@ namespace Atlas
 		))
 
 		//This gets the back buffer render target 
-		wrl::ComPtr<ID3D11Resource> backBuffer = nullptr;
-		AT_CHECK_GFX_INFO(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
-		AT_CHECK_GFX_INFO(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Buffer));
+		wrl::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
+		AT_CHECK_GFX_INFO(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &backBuffer));
+		m_RenderTarget = std::make_shared<RenderTarget>(backBuffer.Get());
 
-		//Set up the z-Buffer
-
-		//Create the depth state
-		D3D11_DEPTH_STENCIL_DESC desc = {};
-		desc.DepthEnable = TRUE;
-		desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		desc.DepthFunc = D3D11_COMPARISON_LESS;
-
-		wrl::ComPtr<ID3D11DepthStencilState> depthState;
-		AT_CHECK_GFX_INFO(m_Device->CreateDepthStencilState(&desc, &depthState));
-		
-		//Bind the state
-		AT_CHECK_GFX_INFO_VOID(m_Context->OMSetDepthStencilState(depthState.Get(), 1));
-
-		//Create the texture
-		wrl::ComPtr<ID3D11Texture2D> depthTexture = {};
-		D3D11_TEXTURE2D_DESC descTex;
+		//Get the window dimentions
 		auto [width, height] = Input::GetWindowSize();
-		descTex.Width = (uint)width;
-		descTex.Height = (uint)height;
-		descTex.MipLevels = 1;
-		descTex.ArraySize = 1;
-		descTex.Format = DXGI_FORMAT_D32_FLOAT;
-		descTex.SampleDesc.Count = 1;
-		descTex.SampleDesc.Quality = 0;
-		descTex.Usage = D3D11_USAGE_DEFAULT;
-		descTex.CPUAccessFlags = 0;
-		descTex.MiscFlags = 0;
-		descTex.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-		AT_CHECK_GFX_INFO(m_Device->CreateTexture2D(&descTex, nullptr, &depthTexture));
-
-		//Create Texture View
-		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
-		descDSV.Format = DXGI_FORMAT_D32_FLOAT;
-		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		descDSV.Texture2D.MipSlice = 0;
-		AT_CHECK_GFX_INFO(m_Device->CreateDepthStencilView(depthTexture.Get(), &descDSV, &m_DepthStencilView));
 
 		//Set the default window
 		m_FullScreenPort.TopLeftX = 0;
@@ -125,24 +89,9 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(result == DXGI_ERROR_DEVICE_REMOVED ? s_Instance->m_Device->GetDeviceRemovedReason() : result);
 	}
 
-	void Graphics::ClearScreen(float r, float g, float b, float a)
-	{
-		//The back buffer is filled with the color
-		float color[4] = { r, g, b, a };
-		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->ClearRenderTargetView(s_Instance->m_Buffer.Get(), color));
-
-		//The Depth Stencil is cleared
-		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->ClearDepthStencilView(s_Instance->m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1, 0));
-	}
-
 	void Graphics::SetPrimitiveTopology(uint topology)
 	{
 		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)topology));
-	}
-
-	void Graphics::SetRenderTarget()
-	{
-		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->OMSetRenderTargets(1, s_Instance->m_Buffer.GetAddressOf(), s_Instance->m_DepthStencilView.Get()));
 	}
 
 	void Graphics::DrawIndexed(uint indexCount)

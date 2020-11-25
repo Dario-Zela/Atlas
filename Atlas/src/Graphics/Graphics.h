@@ -4,6 +4,8 @@
 #include <wrl.h>
 namespace wrl = Microsoft::WRL;
 
+#include "Graphics/D3DWrappers/RenderTarget.h"
+
 namespace Atlas
 {
 	class Graphics
@@ -16,10 +18,8 @@ namespace Atlas
 
 		void Init(HWND hwnd);
 		static void EndFrame(uint syncRate = 1);
-		static void ClearScreen(float r, float g, float b, float a = 1.0f);
 
 		static void SetPrimitiveTopology(uint topology);
-		static void SetRenderTarget();
 		
 		static void Draw(uint vertexCount);
 		static void DrawIndexed(uint indexCount);
@@ -30,15 +30,14 @@ namespace Atlas
 
 		static wrl::ComPtr<ID3D11Device> GetDevice() { return s_Instance->m_Device; }
 		static wrl::ComPtr<ID3D11DeviceContext> GetContext() { return s_Instance->m_Context; }
-
+		static std::shared_ptr<RenderTarget> GetRenderTarget() { return s_Instance->m_RenderTarget; }
 	private:
 		static Graphics* s_Instance;
 
 		wrl::ComPtr<IDXGISwapChain> m_SwapChain;
 		wrl::ComPtr<ID3D11Device> m_Device;
 		wrl::ComPtr<ID3D11DeviceContext> m_Context;
-		wrl::ComPtr<ID3D11RenderTargetView> m_Buffer;
-		wrl::ComPtr<ID3D11DepthStencilView> m_DepthStencilView;
+		std::shared_ptr<RenderTarget> m_RenderTarget;
 
 		D3D11_VIEWPORT m_FullScreenPort;
 	};

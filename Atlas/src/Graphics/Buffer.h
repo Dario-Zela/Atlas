@@ -2,5 +2,8 @@
 
 namespace Atlas
 {
+	class Buffer
+	{
 
+	};
 }

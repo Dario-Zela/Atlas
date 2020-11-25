@@ -371,7 +371,6 @@ namespace Atlas
 
 			//The default topology and render target are selected
 			Graphics::SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			Graphics::SetRenderTarget();
 
 			//If the view matrix is available, it is added to the transformation constant buffer
 			if (DirectX::XMMatrixIsNaN(settings.viewMatrix))

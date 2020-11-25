@@ -98,7 +98,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Camera.h" />
+    <ClInclude Include="src\Graphics\Buffer.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\DepthStencilBuffer.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\RenderTarget.h" />
+    <ClInclude Include="src\Graphics\RenderGraphAPI\Job.h" />
     <ClInclude Include="src\Graphics\RenderGraphAPI\Pass.h" />
+    <ClInclude Include="src\Graphics\RenderGraphAPI\RenderGraph.h" />
+    <ClInclude Include="src\Graphics\RenderGraphAPI\Sink.h" />
+    <ClInclude Include="src\Graphics\RenderGraphAPI\Source.h" />
+    <ClInclude Include="src\Graphics\RenderGraphAPI\Step.h" />
+    <ClInclude Include="src\Graphics\RenderGraphAPI\Technique.h" />
     <ClInclude Include="src\Window\GUI.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\Blendable.h" />
     <ClInclude Include="src\Graphics\BindableLib.h" />
@@ -217,6 +226,8 @@
   <ItemGroup>
     <ClCompile Include="src\Core\Camera.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\DepthStencilBuffer.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\RenderTarget.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Vertex.cpp" />
     <ClCompile Include="src\Window\GUI.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Blendable.cpp" />
