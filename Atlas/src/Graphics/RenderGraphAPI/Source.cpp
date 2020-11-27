@@ -13,20 +13,20 @@ namespace Atlas
 			bool valid = std::all_of(registeredName.begin(), registeredName.end(), [](char c) {return std::isalnum(c) || c == '_'; });
 
 		if (!valid || std::isdigit(registeredName.front()))
-			AT_CORE_ASSERT(false, "The source name {0} is invalid", m_RegisteredName);
+			AT_CORE_ASSERT_WARG(false, "The source name {0} is invalid", m_RegisteredName);
 	}
 
 	void Source::ValidateLinks()
 	{
 		if (!m_Linked)
 		{
-			AT_CORE_ASSERT(false, "The source {0} was not linked to a sink", m_RegisteredName)
+			AT_CORE_ASSERT_WARG(false, "The source {0} was not linked to a sink", m_RegisteredName)
 		}
 	}
 
 	std::shared_ptr<Buffer>& Source::GetBuffer()
 	{
-		AT_CORE_ASSERT(!m_Linked, "You cannot link a source twice. The source was {0}", m_RegisteredName)
+		AT_CORE_ASSERT_WARG(!m_Linked, "You cannot link a source twice. The source was {0}", m_RegisteredName)
 		m_Linked = true;
 		return m_Data;
 	}

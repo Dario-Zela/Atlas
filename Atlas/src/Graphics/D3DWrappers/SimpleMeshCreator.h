@@ -13,8 +13,8 @@ namespace Atlas
 		IndexedTriangleList(std::vector<DirectX::XMFLOAT3> verteciesIn, std::vector<unsigned short> indeciesIn)
 			:m_Vertecies(std::move(verteciesIn)), m_Indecies(std::move(indeciesIn))
 		{
-			AT_CORE_ASSERT(m_Vertecies.size() > 2, "Too few vertecies");
-			AT_CORE_ASSERT(m_Indecies.size() % 3 == 0, "The objects rappresented are not triangles");
+			AT_CORE_ASSERT_WARG(m_Vertecies.size() > 2, "Too few vertecies");
+			AT_CORE_ASSERT_WARG(m_Indecies.size() % 3 == 0, "The objects rappresented are not triangles");
 		}
 
 		//Allows you to transfom all of the verticies by a matrix
@@ -109,8 +109,8 @@ namespace Atlas
 		//This allows for more vertecies
 		static IndexedTriangleList MakeTessalated(uint divisionsX, uint divisionsY)
 		{
-			AT_CORE_ASSERT(divisionsX != 0, "Cannot make a plane with 0 tessellation");
-			AT_CORE_ASSERT(divisionsY != 0, "Cannot make a plane with 0 tessellation");
+			AT_CORE_ASSERT_WARG(divisionsX != 0, "Cannot make a plane with 0 tessellation");
+			AT_CORE_ASSERT_WARG(divisionsY != 0, "Cannot make a plane with 0 tessellation");
 
 			constexpr float width = 2.0f;
 			constexpr float height = 2.0f;
@@ -168,7 +168,7 @@ namespace Atlas
 	{
 		static IndexedTriangleList MakeTessalated(uint baseDivisions)
 		{
-			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertecies");
+			AT_CORE_ASSERT_WARG(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertecies");
 
 			const auto base = DirectX::XMVectorSet(1, 0, -1, 0);
 			const float longitudeAngle = DirectX::XM_2PI / baseDivisions;
@@ -215,7 +215,7 @@ namespace Atlas
 		//This makes all faces indipendent from each other
 		static IndexedTriangleList MakeTessalatedIndipendentFaces(uint baseDivisions)
 		{
-			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertecies");
+			AT_CORE_ASSERT_WARG(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertecies");
 
 			const auto base = DirectX::XMVectorSet(1, 0, -1, 0);
 			const float longitudeAngle = DirectX::XM_2PI / baseDivisions;
@@ -281,7 +281,7 @@ namespace Atlas
 	{
 		static IndexedTriangleList MakeTessalated(uint baseDivisions)
 		{
-			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertecies");
+			AT_CORE_ASSERT_WARG(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertecies");
 
 			const auto base = DirectX::XMVectorSet(1, 0, -1, 0);
 			const auto offset= DirectX::XMVectorSet(0, 0, 2, 0);
@@ -359,8 +359,8 @@ namespace Atlas
 	{
 		static IndexedTriangleList MakeTessalated(uint latitudeDivisions, uint longitudeDivisions)
 		{
-			AT_CORE_ASSERT(latitudeDivisions >= 3, "Cannot make a sphere with less then 3 tessellation");
-			AT_CORE_ASSERT(longitudeDivisions >= 3, "Cannot make a sphere with less then 3 tessellation");
+			AT_CORE_ASSERT_WARG(latitudeDivisions >= 3, "Cannot make a sphere with less then 3 tessellation");
+			AT_CORE_ASSERT_WARG(longitudeDivisions >= 3, "Cannot make a sphere with less then 3 tessellation");
 
 			constexpr float radius = 1;
 			const auto base = DirectX::XMVectorSet(0, 0, radius, 0);

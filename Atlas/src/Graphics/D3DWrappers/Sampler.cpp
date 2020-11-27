@@ -18,7 +18,7 @@ namespace Atlas
             //If it has anisotropy, add anisotropic filtering and set the max anisotropy
             samplerDescriptor.Filter = D3D11_FILTER_ANISOTROPIC;
             //Checks that the max anisotropy is appropriate
-            AT_ASSERT(maxAnisotropy < D3D11_MAX_MAXANISOTROPY && maxAnisotropy > 0, "Your level of anisotropy is invalid")
+            AT_CORE_ASSERT(maxAnisotropy < D3D11_MAX_MAXANISOTROPY && maxAnisotropy > 0, "Your level of anisotropy is invalid")
             samplerDescriptor.MaxAnisotropy = maxAnisotropy;
         } 
         else

@@ -24,7 +24,7 @@ namespace Atlas
 				return *source;
 			}
 		}
-		AT_CORE_ASSERT(false, "The requested source {0} does not appear in pass {1}", registeredName, m_Name)
+		AT_CORE_ASSERT_WARG(false, "The requested source {0} does not appear in pass {1}", registeredName, m_Name)
 	}
 
 	Sink& Pass::GetSink(std::string& registeredName)
@@ -36,7 +36,7 @@ namespace Atlas
 				return *sink;
 			}
 		}
-		AT_CORE_ASSERT(false, "The requested sink {0} does not appear in pass {1}", registeredName, m_Name)
+		AT_CORE_ASSERT_WARG(false, "The requested sink {0} does not appear in pass {1}", registeredName, m_Name)
 	}
 
 	void Pass::AddBindable(std::shared_ptr<Bindable> bindable)
@@ -78,14 +78,14 @@ namespace Atlas
 			source->ValidateLinks();
 		}
 
-		AT_CORE_ASSERT(m_RenderTarget->IsValid() || m_RenderTarget->IsValid(), "The pass {0} needs either a render target or a depth buffer", m_Name)
+		AT_CORE_ASSERT_WARG(m_RenderTarget->IsValid() || m_RenderTarget->IsValid(), "The pass {0} needs either a render target or a depth buffer", m_Name)
 	}
 
 	void Pass::RegisterSink(std::unique_ptr<Sink> sink)
 	{
 		for (auto& ownedSink : m_Sinks)
 		{
-			AT_CORE_ASSERT(!(ownedSink->GetRegisteredName() == sink->GetRegisteredName()), "The sinks {0} already exists in pass {1}", sink->GetRegisteredName(), m_Name)
+			AT_CORE_ASSERT_WARG(!(ownedSink->GetRegisteredName() == sink->GetRegisteredName()), "The sinks {0} already exists in pass {1}", sink->GetRegisteredName(), m_Name)
 		}
 
 		m_Sinks.push_back(std::move(sink));
@@ -95,7 +95,7 @@ namespace Atlas
 	{
 		for (auto& ownedSource : m_Sources)
 		{
-			AT_CORE_ASSERT(!(ownedSource->GetRegisteredName() == source->GetRegisteredName()), "The source {0} already exists in pass {1}", source->GetRegisteredName(), m_Name)
+			AT_CORE_ASSERT_WARG(!(ownedSource->GetRegisteredName() == source->GetRegisteredName()), "The source {0} already exists in pass {1}", source->GetRegisteredName(), m_Name)
 		}
 
 		m_Sources.push_back(std::move(source));

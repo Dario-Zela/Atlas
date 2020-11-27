@@ -48,9 +48,11 @@ typedef unsigned int uint;
 //Asserts break the debugger if a condition is false
 //And output the error
 #ifdef AT_ENABLE_ASSERTS
+#define AT_ASSERT_WARG(x, string, ...) {if(!(x)) {AT_CRITICAL("Assertion Failed: " string, __VA_ARGS__); __debugbreak(); } }
+#define	AT_CORE_ASSERT_WARG(x, string, ...) {if(!(x)) {AT_CORE_CRITICAL("Assertion Failed: " string, __VA_ARGS__); __debugbreak(); } }
 #define AT_ASSERT(x,...) {if(!(x)) {AT_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #define	AT_CORE_ASSERT(x,...) {if(!(x)) {AT_CORE_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else
-#define AT_ASSERT(x,...) x;
-#define	AT_CORE_ASSERT(x,...) x;
+#define AT_CORE_ASSERT_WARG(x,...) x;
+#define	AT_CORE_ASSERT_WARG(x,...) x;
 #endif

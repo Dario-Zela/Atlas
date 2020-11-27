@@ -40,9 +40,9 @@ namespace Atlas
 		}
 		catch (std::bad_cast&)
 		{
-			AT_CORE_ASSERT(false, "The pass of name {0} is not a render queue pass", name)
+			AT_CORE_ASSERT_WARG(false, "The pass of name {0} is not a render queue pass", name)
 		}
-		AT_CORE_ASSERT(false, "There was no pass of the name {0} in the render graph", name)
+		AT_CORE_ASSERT_WARG(false, "There was no pass of the name {0} in the render graph", name)
 	}
 
 	void RenderGraph::SetGlobalSinkTarget(std::string sinkName, std::string target)
@@ -54,7 +54,7 @@ namespace Atlas
 
 		auto i = std::find_if(m_GlobalSinks.begin(), m_GlobalSinks.end(), finder);
 
-		AT_CORE_ASSERT(!(i == m_GlobalSinks.end()), "There is no global sink with the name {0}", sinkName)
+		AT_CORE_ASSERT_WARG(!(i == m_GlobalSinks.end()), "There is no global sink with the name {0}", sinkName)
 
 		(*i)->SetTarget(target);
 	}
@@ -89,7 +89,7 @@ namespace Atlas
 
 		for (auto& ownedPass : m_Passes)
 		{
-			AT_CORE_ASSERT(!(ownedPass->GetName() == pass->GetName()), "The pass name {0} already exists", pass->GetName())
+			AT_CORE_ASSERT_WARG(!(ownedPass->GetName() == pass->GetName()), "The pass name {0} already exists", pass->GetName())
 		}
 
 		LinkPassSinks(*pass);
@@ -121,7 +121,7 @@ namespace Atlas
 						goto NextSink;
 					}
 				}
-				AT_CORE_ASSERT(false, "There is no global source named {0} for the sink {1} in pass {2} to link to", sink->GetOutputName(), sink->GetRegisteredName(), pass.GetName())
+				AT_CORE_ASSERT_WARG(false, "There is no global source named {0} for the sink {1} in pass {2} to link to", sink->GetOutputName(), sink->GetRegisteredName(), pass.GetName())
 			}
 			else
 			{

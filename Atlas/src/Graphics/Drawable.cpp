@@ -24,7 +24,7 @@ namespace Atlas
 	{
 		if (typeid(*bindable) == typeid(IndexBuffer))
 		{
-			AT_ASSERT(!m_IndexBuffer, "Attempted to add the index buffer twice");
+			AT_CORE_ASSERT(!m_IndexBuffer, "Attempted to add the index buffer twice");
 
 			m_IndexBuffer = (IndexBuffer*)bindable.get();
 			m_Bindables.push_back(std::move(bindable));

@@ -9,7 +9,7 @@ namespace Atlas
 	{
 		//Get the scene with triangles only, and calculating tangents and bitangents when necessary.
 		auto scene = m_Importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
-		AT_ASSERT(scene, m_Importer.GetErrorString());	//If the result is invalid, the error is outputted
+		AT_CORE_ASSERT(scene, m_Importer.GetErrorString());	//If the result is invalid, the error is outputted
 
 		//Reserve the space for the meshes
 		m_Meshes.reserve(scene->mNumMeshes);
@@ -58,7 +58,7 @@ namespace Atlas
 
 	void Scene::ApplyTransform(std::string nodeName, DirectX::XMMATRIX& transform)
 	{
-		AT_ASSERT(m_Nodes.find(nodeName) != m_Nodes.end(), "The selected node doesn't exist")
+		AT_CORE_ASSERT(m_Nodes.find(nodeName) != m_Nodes.end(), "The selected node doesn't exist")
 		m_Nodes[nodeName]->SetAppliedTranform(transform);
 	}
 

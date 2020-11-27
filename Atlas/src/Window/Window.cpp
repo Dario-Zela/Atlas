@@ -179,7 +179,7 @@ namespace Atlas
         wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
 
         //Register the window and check if it has been accompished successfully
-        AT_ASSERT(RegisterClassEx(&wc), "The class could not be registered\n[Description]: ", TranslateErrorCode(GetLastError()));
+        AT_CORE_ASSERT_WARG(RegisterClassEx(&wc), "The class could not be registered\n[Description]: ", TranslateErrorCode(GetLastError()));
 
         RECT windowSize = RECT();
         windowSize.top = 0;
@@ -187,13 +187,13 @@ namespace Atlas
         windowSize.left = 0;
         windowSize.right = width;
 
-        AT_ASSERT(AdjustWindowRectEx(&windowSize, WS_TILEDWINDOW, FALSE, 0), "The window could not be resized\n[Description]: ", TranslateErrorCode(GetLastError()));
+        AT_CORE_ASSERT_WARG(AdjustWindowRectEx(&windowSize, WS_TILEDWINDOW, FALSE, 0), "The window could not be resized\n[Description]: ", TranslateErrorCode(GetLastError()));
 
         //Create the window and save the handle to it
         m_Hwnd = CreateWindowExA(WS_EX_APPWINDOW, "MyWindowClass", name.c_str(), WS_TILEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, windowSize.right - windowSize.left, windowSize.bottom - windowSize.top, NULL, NULL, NULL, NULL);
 
         //Check if it was succesful
-        AT_ASSERT(m_Hwnd, "The window could not be created\n[Description]: ", TranslateErrorCode(GetLastError()));
+        AT_CORE_ASSERT_WARG(m_Hwnd, "The window could not be created\n[Description]: ", TranslateErrorCode(GetLastError()));
 
         //Show and draw the window
         ShowWindow(m_Hwnd, SW_SHOW);
@@ -209,7 +209,7 @@ namespace Atlas
         m_Active = false;
 
         //Destroy the window
-        AT_ASSERT(DestroyWindow(m_Hwnd), "The window could not be destroyed\n[Description]: ", TranslateErrorCode(GetLastError()));
+        AT_CORE_ASSERT_WARG(DestroyWindow(m_Hwnd), "The window could not be destroyed\n[Description]: ", TranslateErrorCode(GetLastError()));
     }
 
     void Window::Broadcast()

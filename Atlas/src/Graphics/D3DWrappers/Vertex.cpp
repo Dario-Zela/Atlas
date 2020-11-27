@@ -32,7 +32,7 @@ namespace Atlas
 			}
 			catch (std::exception&)
 			{
-				AT_CORE_ASSERT(false,"You gave too little data, only {0}, of the {1} bytes could be extracted", i, m_Stride);
+				AT_CORE_ASSERT_WARG(false,"You gave too little data, only {0}, of the {1} bytes could be extracted", i, m_Stride);
 			}
 		}
 	}
