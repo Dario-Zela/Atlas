@@ -64,11 +64,19 @@ namespace Atlas
 
 	void RenderTarget::Bind()
 	{
-		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), nullptr));
+		Bind(nullptr);
 	}
 
 	void RenderTarget::Bind(ID3D11DepthStencilView* depthStencilBuffer)
 	{
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), depthStencilBuffer));
+	}
+
+	void RenderTarget::Copy(std::shared_ptr<Buffer> buffer)
+	{
+		auto data = std::static_pointer_cast<RenderTarget>(buffer);
+		m_RenderTargetView = data->GetTargetView();
+		m_Width = data->GetWidth();
+		m_Height = data->GetHeight();
 	}
 }

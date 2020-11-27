@@ -1,15 +1,23 @@
 #include "pch.h"
 #include "Drawable.h"
 #include "Graphics/D3DWrappers/ViewPort.h"
+#include "Graphics/Drawable.h"
+#include "Graphics/RenderGraphAPI/RenderGraph.h"
 
 namespace Atlas 
 {
-	void Drawable::Draw() const
+	void Drawable::Bind() const
 	{
 		for (auto bindable : m_Bindables)
 			bindable->Bind();
+	}
 
-		Graphics::DrawIndexed(m_IndexBuffer->GetCount());
+	void Drawable::Submit()
+	{
+		for (auto& techique : m_Techniques)
+		{
+			techique.Submit(*this);
+		}
 	}
 
 	void Drawable::AddBindable(std::shared_ptr<Bindable> bindable)
@@ -26,6 +34,14 @@ namespace Atlas
 			if (typeid(*bindable) == typeid(ViewPort))
 				auto x = 0;
 			m_Bindables.push_back(bindable);
+		}
+	}
+
+	void Drawable::LinkTechniques(RenderGraph& renderGraph)
+	{
+		for (auto& techique : m_Techniques)
+		{
+			techique.Link(renderGraph);
 		}
 	}
 }

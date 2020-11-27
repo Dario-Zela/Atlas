@@ -89,11 +89,6 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(result == DXGI_ERROR_DEVICE_REMOVED ? s_Instance->m_Device->GetDeviceRemovedReason() : result);
 	}
 
-	void Graphics::SetPrimitiveTopology(uint topology)
-	{
-		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->IASetPrimitiveTopology((D3D11_PRIMITIVE_TOPOLOGY)topology));
-	}
-
 	void Graphics::DrawIndexed(uint indexCount)
 	{
 		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->DrawIndexed(indexCount, 0, 0));

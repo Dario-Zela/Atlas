@@ -18,8 +18,6 @@ namespace Atlas
 
 		void Init(HWND hwnd);
 		static void EndFrame(uint syncRate = 1);
-
-		static void SetPrimitiveTopology(uint topology);
 		
 		static void Draw(uint vertexCount);
 		static void DrawIndexed(uint indexCount);

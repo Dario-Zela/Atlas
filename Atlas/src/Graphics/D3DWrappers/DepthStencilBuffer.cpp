@@ -3,6 +3,7 @@
 #include "Graphics/Graphics.h"
 #include "Graphics/DxgiInfoManager.h"
 #include "Graphics/D3DWrappers/RenderTarget.h"
+#include "Core/Input.h"
 
 namespace Atlas
 {
@@ -45,6 +46,13 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateDepthStencilView(depthTexture.Get(), &descDSV, &m_DepthStencilView));
 	}
 
+	std::shared_ptr<DepthStencilBuffer> DepthStencilBuffer::Create()
+	{
+		auto [width, height] = Input::GetWindowSize();
+
+		return std::move(Create(width, height));
+	}
+
 	void DepthStencilBuffer::Clear()
 	{
 		//The Depth Stencil is cleared
@@ -59,5 +67,11 @@ namespace Atlas
 	void DepthStencilBuffer::Bind(RenderTarget* renderTarget)
 	{
 		renderTarget->Bind(m_DepthStencilView.Get());
+	}
+
+	void DepthStencilBuffer::Copy(std::shared_ptr<Buffer> buffer)
+	{
+		auto data = std::static_pointer_cast<DepthStencilBuffer>(buffer);
+		m_DepthStencilView = data->GetDepthStencilBuffer();
 	}
 }

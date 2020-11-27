@@ -98,12 +98,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Camera.h" />
+    <ClInclude Include="src\Graphics\AssimpWrapper\Mesh.h" />
+    <ClInclude Include="src\Graphics\AssimpWrapper\Node.h" />
     <ClInclude Include="src\Graphics\Buffer.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\DepthStencilBuffer.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\RenderTarget.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\Topology.h" />
+    <ClInclude Include="src\Graphics\RenderGraphAPI\FullScreenPass.h" />
     <ClInclude Include="src\Graphics\RenderGraphAPI\Job.h" />
     <ClInclude Include="src\Graphics\RenderGraphAPI\Pass.h" />
     <ClInclude Include="src\Graphics\RenderGraphAPI\RenderGraph.h" />
+    <ClInclude Include="src\Graphics\RenderGraphAPI\RenderQueuePass.h" />
     <ClInclude Include="src\Graphics\RenderGraphAPI\Sink.h" />
     <ClInclude Include="src\Graphics\RenderGraphAPI\Source.h" />
     <ClInclude Include="src\Graphics\RenderGraphAPI\Step.h" />
@@ -226,9 +231,21 @@
   <ItemGroup>
     <ClCompile Include="src\Core\Camera.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
+    <ClCompile Include="src\Graphics\AssimpWrapper\Mesh.cpp" />
+    <ClCompile Include="src\Graphics\AssimpWrapper\Node.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\DepthStencilBuffer.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\RenderTarget.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\Topology.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Vertex.cpp" />
+    <ClCompile Include="src\Graphics\RenderGraphAPI\FullScreenPass.cpp" />
+    <ClCompile Include="src\Graphics\RenderGraphAPI\Job.cpp" />
+    <ClCompile Include="src\Graphics\RenderGraphAPI\Pass.cpp" />
+    <ClCompile Include="src\Graphics\RenderGraphAPI\RenderGraph.cpp" />
+    <ClCompile Include="src\Graphics\RenderGraphAPI\RenderQueuePass.cpp" />
+    <ClCompile Include="src\Graphics\RenderGraphAPI\Sink.cpp" />
+    <ClCompile Include="src\Graphics\RenderGraphAPI\Source.cpp" />
+    <ClCompile Include="src\Graphics\RenderGraphAPI\Step.cpp" />
+    <ClCompile Include="src\Graphics\RenderGraphAPI\Technique.cpp" />
     <ClCompile Include="src\Window\GUI.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Blendable.cpp" />
     <ClCompile Include="src\Graphics\BindableLib.cpp" />

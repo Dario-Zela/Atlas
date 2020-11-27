@@ -49,8 +49,8 @@ namespace Atlas
 				//Get the differences between the positions and add them to the rotaion
 				std::tuple<int, int> currentPosition = Input::GetCursorPosition();
 
-				m_Rotation[0] += (std::get<0>(currentPosition) - std::get<0>(m_InitialPosition)) * 0.03f;
-				m_Rotation[1] = std::clamp(m_Rotation[1] + (std::get<1>(currentPosition) - std::get<1>(m_InitialPosition)) * 0.03f,
+				m_Rotation[0] += (std::get<0>(currentPosition) - std::get<0>(m_InitialPosition)) * 0.01f;
+				m_Rotation[1] = std::clamp(m_Rotation[1] + (std::get<1>(currentPosition) - std::get<1>(m_InitialPosition)) * 0.01f,
 					-DirectX::XM_PIDIV2, DirectX::XM_PIDIV2);	//This is clamped to stop users from rotating 360 degrees
 
 				//Update the initial position

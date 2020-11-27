@@ -2,8 +2,8 @@
 #include <DirectXMath.h>
 #include "Graphics/Graphics.h"
 #include "Graphics/Bindable.h"
-#include "Graphics/BindableLib.h"
 #include "Graphics/D3DWrappers/Buffers.h"
+#include "Graphics/RenderGraphAPI/Technique.h"
 
 namespace Atlas
 {
@@ -14,14 +14,22 @@ namespace Atlas
 		Drawable(const Drawable&) = delete;
 		virtual ~Drawable() = default;
 
-		void Draw() const;
+		void Bind() const;
+		void Submit();
+
 		void AddBindable(std::shared_ptr<Bindable> bindable);
 		void ClearBindables() { m_Bindables.clear(); m_IndexBuffer = nullptr; }
 
+		void LinkTechniques(RenderGraph& renderGraph);
+
+		uint GetIndexCount() const { return m_IndexBuffer->GetCount(); }
+
+		void AddTechnique(Technique& technique) { m_Techniques.push_back(technique); }
+
 		virtual DirectX::XMMATRIX GetTransformXM() = 0;
-		virtual void Update(float timeStep) {}
 	private:
 		std::vector<std::shared_ptr<Bindable>> m_Bindables;
 		IndexBuffer* m_IndexBuffer;
+		std::vector<Technique> m_Techniques;
 	};
 }
