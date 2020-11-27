@@ -50,6 +50,8 @@ namespace Atlas
 		));
 	}
 
+	RenderTarget::RenderTarget() { }
+
 	void RenderTarget::Clear()
 	{
 		Clear(0, 0, 0, 0);

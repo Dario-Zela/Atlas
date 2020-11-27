@@ -12,11 +12,16 @@ namespace Atlas
 	{
 	public:
 		DepthStencilBuffer(uint width, uint height);
+		DepthStencilBuffer();
 
 		static std::shared_ptr<DepthStencilBuffer> Create(uint width, uint height) { return std::make_shared<DepthStencilBuffer>(width, height); }
 		static std::shared_ptr<DepthStencilBuffer> Create();
 
+		static std::shared_ptr<DepthStencilBuffer> CreateEmpty() { return std::make_shared<DepthStencilBuffer>(); }
+
 		void Clear();
+
+		bool IsValid() { return m_DepthStencilView; }
 
 		void Bind();
 		void Bind(RenderTarget* renderTarget);

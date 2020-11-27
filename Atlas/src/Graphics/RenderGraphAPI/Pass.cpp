@@ -11,8 +11,8 @@ namespace Atlas
 	Pass::Pass(std::string name)
 		:m_Name(std::move(name)) 
 	{
-		m_RenderTarget = RenderTarget::Create(1,1);
-		m_DepthBuffer = DepthStencilBuffer::Create(1,1);
+		m_RenderTarget = RenderTarget::CreateEmpty();
+		m_DepthBuffer = DepthStencilBuffer::CreateEmpty();
 	}
 
 	Source& Pass::GetSource(std::string& registeredName)
@@ -55,8 +55,6 @@ namespace Atlas
 			m_DepthBuffer->Bind();
 		}
 
-		m_RenderTarget->Debug = true;
-
 		for (auto& bindable : m_Bindables)
 		{
 			bindable->Bind();
@@ -80,7 +78,7 @@ namespace Atlas
 			source->ValidateLinks();
 		}
 
-		AT_CORE_ASSERT(!(!m_RenderTarget && !m_DepthBuffer), "The pass {0} needs either a render target or a depth buffer", m_Name)
+		AT_CORE_ASSERT(m_RenderTarget->IsValid() || m_RenderTarget->IsValid(), "The pass {0} needs either a render target or a depth buffer", m_Name)
 	}
 
 	void Pass::RegisterSink(std::unique_ptr<Sink> sink)

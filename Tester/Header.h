@@ -54,3 +54,20 @@ public:
 		Finalise();
 	}
 };
+
+class LambertianRenderGraph2 : public Atlas::RenderGraph
+{
+public:
+	LambertianRenderGraph2()
+		: Atlas::RenderGraph()
+	{
+		{
+			auto pass = std::make_unique<LambertianPass>();
+			pass->SetSinkLink("renderTarget", "$.backBuffer");
+			pass->SetSinkLink("depthStencil", "$.defaultDepth");
+			AddPass(std::move(pass));
+		}
+		SetGlobalSinkTarget("backBuffer", "LambertianPass.renderTarget");
+		Finalise();
+	}
+};

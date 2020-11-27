@@ -13,12 +13,16 @@ namespace Atlas
 	public:
 		RenderTarget(uint width, uint height);
 		RenderTarget(ID3D11Texture2D* texture);
+		RenderTarget();
 
 		static std::shared_ptr<RenderTarget> Create(uint width, uint height) { return std::make_shared<RenderTarget>(width, height); }
 		static std::shared_ptr<RenderTarget> Create(ID3D11Texture2D* texture) { return std::make_shared<RenderTarget>(texture); }
+		static std::shared_ptr<RenderTarget> CreateEmpty() { return std::make_shared<RenderTarget>(); }
 
 		uint GetWidth() { return m_Width; }
 		uint GetHeight() { return m_Height; }
+
+		bool IsValid() { return m_RenderTargetView && m_Width != 0 && m_Height != 0; }
 
 		std::string GetTypeName() override { return "RenderTarget"; }
 
@@ -29,8 +33,6 @@ namespace Atlas
 		void Bind(ID3D11DepthStencilView* depthStencilBuffer);
 
 		void Copy(std::shared_ptr<Buffer> buffer) override;
-
-		bool Debug = false;
 
 		wrl::ComPtr<ID3D11RenderTargetView> GetTargetView() { return m_RenderTargetView; }
 	private:

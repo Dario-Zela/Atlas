@@ -46,6 +46,8 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateDepthStencilView(depthTexture.Get(), &descDSV, &m_DepthStencilView));
 	}
 
+	DepthStencilBuffer::DepthStencilBuffer() { }
+
 	std::shared_ptr<DepthStencilBuffer> DepthStencilBuffer::Create()
 	{
 		auto [width, height] = Input::GetWindowSize();

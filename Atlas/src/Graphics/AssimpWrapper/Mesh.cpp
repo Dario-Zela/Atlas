@@ -5,6 +5,7 @@
 #include "Graphics/D3DWrappers/InputLayout.h"
 #include "Graphics/D3DWrappers/Texture.h"
 #include "Graphics/D3DWrappers/TransformationConstantBuffer.h"
+#include "Graphics/D3DWrappers/Topology.h"
 
 #include <filesystem>
 
@@ -345,6 +346,9 @@ namespace Atlas
 					}
 				}
 			}
+
+			//Add the topopology
+			AddBindable(Atlas::Topology::Create());
 
 			//If the view matrix is available, it is added to the transformation constant buffer
 			if (DirectX::XMMatrixIsNaN(settings.viewMatrix))
