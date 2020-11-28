@@ -18,7 +18,7 @@ namespace Atlas
 		static void Set() noexcept;
 		
 		//This gets the messages taken from the last Set call to now
-		static std::vector<std::string> GetMessages();
+		static std::vector<std::tuple<std::string, int>> GetMessages();
 	private:
 
 		static DxgiInfoManager* s_Instance;

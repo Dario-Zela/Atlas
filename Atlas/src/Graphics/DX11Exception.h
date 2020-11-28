@@ -7,7 +7,7 @@ namespace Atlas
 	class DX11Exception : public AtlasException
 	{
 	public:
-		DX11Exception(int line, const char* file, HRESULT hr, std::vector<std::string> messages = std::vector<std::string>()) noexcept;
+		DX11Exception(int line, const char* file, HRESULT hr, std::vector<std::tuple<std::string, int>>  messages = std::vector<std::tuple<std::string, int>>()) noexcept;
 		const char* what() const noexcept override;
 		virtual const char* GetType() const noexcept override;
 		//This translates the error result into a string
@@ -25,7 +25,7 @@ namespace Atlas
 #if AT_DEBUG
 #define AT_CHECK_GFX(x) {HRESULT hr = x; if(FAILED(hr)) throw DX11Exception(__LINE__, __FILE__, hr);}
 #define AT_CHECK_GFX_INFO(x) DxgiInfoManager::Set(); {HRESULT hr = x; if(FAILED(hr))  throw DX11Exception(__LINE__, __FILE__, hr, DxgiInfoManager::GetMessages());}
-#define AT_CHECK_GFX_INFO_VOID(x) DxgiInfoManager::Set(); x; { std::vector<std::string> messages = DxgiInfoManager::GetMessages(); if(messages.size() > 0) for(int i = 0; i < messages.size(); i++) if(messages[0].find("D3D11 ERROR") != std::string::npos) throw DX11Exception(__LINE__, __FILE__, -1, DxgiInfoManager::GetMessages()); else AT_CORE_WARN(messages[0]); }
+#define AT_CHECK_GFX_INFO_VOID(x) DxgiInfoManager::Set(); x; { std::vector<std::tuple<std::string, int>> messages = DxgiInfoManager::GetMessages(); if(messages.size() > 0) for(int i = 0; i < messages.size(); i++) { auto[message, severity] = messages[i]; if(severity < 2) throw DX11Exception(__LINE__, __FILE__, -1, messages); else AT_CORE_WARN(message); }}
 #else
 #define AT_CHECK_GFX(x) x;
 #define AT_CHECK_GFX_INFO(x) x;

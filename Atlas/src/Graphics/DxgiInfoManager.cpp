@@ -42,17 +42,17 @@ namespace Atlas
 		m_Next = m_DxgiInfoQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);
 	}
 	
-	std::vector<std::string> DxgiInfoManager::GetMessages()
+	std::vector<std::tuple<std::string, int>> DxgiInfoManager::GetMessages()
 	{
-		std::vector<std::string> messages;
+		std::vector<std::tuple<std::string, int>> messages;
 		auto end = m_DxgiInfoQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);
 		for (auto i = m_Next; i < end; i++)
 		{
 			SIZE_T messageLenght;
-			
+
 			//Get the size of the message in bytes
 			AT_CHECK_GFX(m_DxgiInfoQueue->GetMessage(DXGI_DEBUG_ALL, i, nullptr, &messageLenght));
-			
+
 			//Allocate the memory
 			//This is done so that it is deleted once it is out of scope
 			auto bytes = std::make_unique<byte[]>(messageLenght);
@@ -61,7 +61,7 @@ namespace Atlas
 			//Get the message and push it to the vector
 			AT_CHECK_GFX(m_DxgiInfoQueue->GetMessage(DXGI_DEBUG_ALL, i, message, &messageLenght))
 
-			messages.emplace_back(message->pDescription);
+			messages.emplace_back(std::tuple<std::string, int>{ message->pDescription, message->Severity });
 		}
 		return messages;
 	}

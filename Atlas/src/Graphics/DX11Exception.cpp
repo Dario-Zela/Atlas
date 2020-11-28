@@ -3,13 +3,13 @@
 
 namespace Atlas
 {
-	DX11Exception::DX11Exception(int line, const char* file, HRESULT hr, std::vector<std::string> messages) noexcept
+	DX11Exception::DX11Exception(int line, const char* file, HRESULT hr, std::vector<std::tuple<std::string, int>> messages) noexcept
 		: AtlasException(line, file), hr(hr)
 	{
 		//Add the messages to the info
 		for (const auto& message : messages)
 		{
-			m_Info += message;
+			m_Info += std::get<0>(message);
 			m_Info.push_back('\n');
 		}
 		//Remove the final new line if it exists
