@@ -22,52 +22,20 @@ namespace Atlas
 	{
 		AT_CORE_ASSERT(m_Finalised, "The Render Graph has not been finalised")
 
-		size_t currentLevel = 0;
-		int iterator = 0;
-
-		for (auto& pass : m_Passes)
+		for (int i = 0; i < m_Passes.size(); i++)
 		{
-			if (pass->GetLevel() == currentLevel)
-			{
-				m_ThreadPool.AddWork(std::bind(&Pass::Execute, pass.get(), m_DeferedContexts[currentLevel][iterator++].GetContext()));
-			}
-			else
-			{
-				m_ThreadPool.Sync();
-
-				m_ThreadPool.AddWork(std::bind([](DeferredRenderContext* contexts, DeferredRenderContext& masterContext, int maxItems)
-					{
-						for (int i = 0; i < maxItems; i++)
-						{
-							auto& context = contexts[i];
-							wrl::ComPtr<ID3D11CommandList> commandList = nullptr;
-							context.GetContext()->FinishCommandList(FALSE, &commandList);
-							masterContext.GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
-						}
-					}, m_DeferedContexts[currentLevel], std::ref(m_Context), iterator));
-
-				iterator = 0;
-				
-				currentLevel++;
-
-				m_ThreadPool.AddWork(std::bind(&Pass::Execute, pass.get(), m_DeferedContexts[currentLevel][iterator++].GetContext()));
-			}
+			m_ThreadPool.AddWork(std::bind(&Pass::Execute, m_Passes[i].get(), m_DeferedContexts[i].GetContext()));
 		}
 
 		m_ThreadPool.Sync();
 
-		for (int i = 0; i < iterator; i++)
+		for (int i = 0; i < m_Passes.size(); i++)
 		{
-			auto& context = m_DeferedContexts[currentLevel][i];
+			auto& context = m_DeferedContexts[i];
 			wrl::ComPtr<ID3D11CommandList> commandList = nullptr;
 			context.GetContext()->FinishCommandList(FALSE, &commandList);
-			m_Context.GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
+			Graphics::GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
 		}
-
-		wrl::ComPtr<ID3D11CommandList> commandList;
-		m_Context.GetContext()->FinishCommandList(FALSE, &commandList);
-		Graphics::GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
-
 	}
 
 	void RenderGraph::ExecuteImmidiate()
@@ -99,11 +67,6 @@ namespace Atlas
 
 	RenderGraph::~RenderGraph()
 	{
-		for (int i = 0; i < m_MaxLevel; i++)
-		{
-			delete[] m_DeferedContexts;
-		}
-
 		delete[] m_DeferedContexts;
 	}
 
@@ -133,19 +96,9 @@ namespace Atlas
 
 	void RenderGraph::Finalise()
 	{
-		m_MaxLevel++;
-
 		AT_CORE_ASSERT(!m_Finalised, "The Render Graph has not been finalised")
 		
 		LinkGlobalSinks();
-
-		int* numItemsPerLevel = new int[m_MaxLevel]();
-		
-		for (auto& pass : m_Passes)
-		{
-			pass->Finalise();
-			numItemsPerLevel[pass->GetLevel()]++;
-		}
 
 
 		std::sort(m_Passes.begin(), m_Passes.end(), [](std::unique_ptr<Pass>& a, std::unique_ptr<Pass>& b)
@@ -154,16 +107,9 @@ namespace Atlas
 			}
 		);
 
-		m_ThreadPool.CreatePool(m_Passes.size() + 1);
+		m_ThreadPool.CreatePool(m_Passes.size());
 
-		m_DeferedContexts = new DeferredRenderContext*[m_MaxLevel];
-		
-		for (int i = 0; i < m_MaxLevel; i++)
-		{
-			m_DeferedContexts[i] = new DeferredRenderContext[numItemsPerLevel[i]]();
-		}
-
-		delete[] numItemsPerLevel;
+		m_DeferedContexts = new DeferredRenderContext[m_Passes.size()];
 
 		m_Finalised = true;
 	}
@@ -230,9 +176,6 @@ namespace Atlas
 
 		NextSink:;
 		}
-		
-		if (m_MaxLevel < level)
-			m_MaxLevel = level;
 
 		return level;
 	}
