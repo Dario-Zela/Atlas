@@ -24,8 +24,8 @@ namespace Atlas
 
 #if AT_DEBUG
 #define AT_CHECK_GFX(x) {HRESULT hr = x; if(FAILED(hr)) throw DX11Exception(__LINE__, __FILE__, hr);}
-#define AT_CHECK_GFX_INFO(x) DxgiInfoManager::Set(); {HRESULT hr = x; if(FAILED(hr)) throw DX11Exception(__LINE__, __FILE__, hr, DxgiInfoManager::GetMessages());}
-#define AT_CHECK_GFX_INFO_VOID(x) DxgiInfoManager::Set(); x; if(DxgiInfoManager::GetMessages().size() > 0) throw DX11Exception(__LINE__, __FILE__, -1, DxgiInfoManager::GetMessages());
+#define AT_CHECK_GFX_INFO(x) DxgiInfoManager::Set(); {HRESULT hr = x; if(FAILED(hr))  throw DX11Exception(__LINE__, __FILE__, hr, DxgiInfoManager::GetMessages());}
+#define AT_CHECK_GFX_INFO_VOID(x) DxgiInfoManager::Set(); x; { std::vector<std::string> messages = DxgiInfoManager::GetMessages(); if(messages.size() > 0) for(int i = 0; i < messages.size(); i++) if(messages[0].find("D3D11 ERROR") != std::string::npos) throw DX11Exception(__LINE__, __FILE__, -1, DxgiInfoManager::GetMessages()); else AT_CORE_WARN(messages[0]); }
 #else
 #define AT_CHECK_GFX(x) x;
 #define AT_CHECK_GFX_INFO(x) x;

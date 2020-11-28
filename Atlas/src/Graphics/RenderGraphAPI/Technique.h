@@ -13,7 +13,6 @@ namespace Atlas
 		void Submit(const Drawable& drawable);
 		void Link(RenderGraph& renderGraph);
 		void AddStep(Step& step) { m_Steps.push_back(std::move(step)); }
-		void Bind();
 
 		std::string& GetName() { return m_Name; }
 		void SetActiveState(bool state) { m_Active = state; }

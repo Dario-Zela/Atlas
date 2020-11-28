@@ -1,5 +1,4 @@
 #pragma once
-#include "Graphics/Graphics.h"
 #include "Graphics/Bindable.h"
 
 namespace Atlas
@@ -17,7 +16,8 @@ namespace Atlas
 		//Generates the unique identifier for the input layout
 		static std::string GenerateUID(uint x, uint y, uint width, uint height, uint zMin, uint zMax);
 
-		void Bind() override;		//Binds the layout
+		void ImmidiateBind() override;		//Binds the layout
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		D3D11_VIEWPORT m_ViewPort;
 	};

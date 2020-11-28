@@ -61,14 +61,24 @@ namespace Atlas
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1, 0));
 	}
 
-	void DepthStencilBuffer::Bind()
+	void DepthStencilBuffer::ImmidiateBind()
 	{
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetRenderTargets(1, nullptr, m_DepthStencilView.Get()));
 	}
 
-	void DepthStencilBuffer::Bind(RenderTarget* renderTarget)
+	void DepthStencilBuffer::ImmidiateBind(RenderTarget* renderTarget)
 	{
-		renderTarget->Bind(m_DepthStencilView.Get());
+		renderTarget->ImmidiateBind(m_DepthStencilView.Get());
+	}
+
+	void DepthStencilBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		AT_CHECK_GFX_INFO_VOID(context->OMSetRenderTargets(1, nullptr, m_DepthStencilView.Get()));
+	}
+
+	void DepthStencilBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context, RenderTarget* renderTarget)
+	{
+		renderTarget->Bind(context, m_DepthStencilView.Get());
 	}
 
 	void DepthStencilBuffer::Copy(std::shared_ptr<Buffer> buffer)

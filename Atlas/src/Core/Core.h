@@ -53,6 +53,8 @@ typedef unsigned int uint;
 #define AT_ASSERT(x,...) {if(!(x)) {AT_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #define	AT_CORE_ASSERT(x,...) {if(!(x)) {AT_CORE_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else
-#define AT_CORE_ASSERT_WARG(x,...) x;
-#define	AT_CORE_ASSERT_WARG(x,...) x;
+#define AT_ASSERT_WARG(x,...) if(!(x)) throw std::exception();
+#define	AT_CORE_ASSERT_WARG(x,...) if(!(x)) throw std::exception();
+#define AT_ASSERT(x,...) if(!(x)) throw std::exception();
+#define	AT_CORE_ASSERT(x,...) if(!(x)) throw std::exception();
 #endif

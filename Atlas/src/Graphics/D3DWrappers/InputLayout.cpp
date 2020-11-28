@@ -54,9 +54,15 @@ namespace Atlas
 		return std::string(typeid(InputLayout).name()) + '_'  + tag + '_' + layoutNames;
 	}
 
-	void InputLayout::Bind()
+	void InputLayout::ImmidiateBind()
 	{
 		//Binds the layout
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetInputLayout(m_InputLayout.Get()));
+	}
+
+	void InputLayout::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the layout
+		AT_CHECK_GFX_INFO_VOID(context->IASetInputLayout(m_InputLayout.Get()));
 	}
 }

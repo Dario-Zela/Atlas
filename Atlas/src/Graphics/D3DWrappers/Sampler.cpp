@@ -65,9 +65,15 @@ namespace Atlas
         return v;
     }
 
-    void Sampler::Bind()
+    void Sampler::ImmidiateBind()
     {
         //Binds the sampler
         AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetSamplers(m_Slot, 1, m_Sampler.GetAddressOf()));
+    }
+
+    void Sampler::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+    {
+        //Binds the sampler
+        AT_CHECK_GFX_INFO_VOID(context->PSSetSamplers(m_Slot, 1, m_Sampler.GetAddressOf()));
     }
 }

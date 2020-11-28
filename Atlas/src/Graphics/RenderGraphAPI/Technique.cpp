@@ -23,12 +23,4 @@ namespace Atlas
 			step.Link(renderGraph);
 		}
 	}
-
-	void Technique::Bind()
-	{
-		for (Step& step : m_Steps)
-		{
-			step.Bind();
-		}
-	}
 }

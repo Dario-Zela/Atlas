@@ -22,7 +22,8 @@ namespace Atlas
 		//Generates the unique identifier for the texture
 		static std::string GenerateUID(std::string path, uint slot, bool mipMapping);
 
-		void Bind();	//Binds the texture
+		void ImmidiateBind() override;	//Binds the texture
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		wrl::ComPtr<ID3D11ShaderResourceView> m_Texture;
 		uint m_Slot;

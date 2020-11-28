@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ViewPort.h"
 #include "Graphics/BindableLib.h"
-
+#include "Graphics/Graphics.h"
 #include "Graphics/DxgiInfoManager.h"
 
 namespace Atlas
@@ -44,9 +44,15 @@ namespace Atlas
 			+ '_' + std::to_string(height) + '_' + std::to_string(zMin) + '_' + std::to_string(zMax);
 	}
 	
-	void ViewPort::Bind()
+	void ViewPort::ImmidiateBind()
 	{
 		//Binds the viewport
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->RSSetViewports(1, &m_ViewPort));
+	}
+
+	void ViewPort::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the viewport
+		AT_CHECK_GFX_INFO_VOID(context->RSSetViewports(1, &m_ViewPort));
 	}
 }

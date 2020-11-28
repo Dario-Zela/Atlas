@@ -21,11 +21,19 @@ namespace Atlas
 		m_Pass = &renderGraph.GetRenderQueue(m_PassName);
 	}
 
-	void Step::Bind()
+	void Step::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
 	{
 		for (auto& bindable : m_Bindables)
 		{
-			bindable->Bind();
+			bindable->Bind(context);
+		}
+	}
+
+	void Step::ImmidiateBind()
+	{
+		for (auto& bindable : m_Bindables)
+		{
+			bindable->ImmidiateBind();
 		}
 	}
 }

@@ -137,9 +137,15 @@ namespace Atlas
         return std::string(typeid(Texture).name()) + '_' + path + '_' + std::to_string(slot) + '_' + std::to_string(mipMapping);
     }
 
-    void Texture::Bind()
+    void Texture::ImmidiateBind()
     {
         //Binds the texture
         AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetShaderResources(m_Slot, 1, m_Texture.GetAddressOf()));
+    }
+
+    void Texture::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+    {
+        //Binds the texture
+        AT_CHECK_GFX_INFO_VOID(context->PSSetShaderResources(m_Slot, 1, m_Texture.GetAddressOf()));
     }
 }

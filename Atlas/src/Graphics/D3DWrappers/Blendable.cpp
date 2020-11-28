@@ -39,9 +39,15 @@ namespace Atlas
 		return std::move(std::make_shared<Blendable>(blending, renderTarget));
 	}
 
-	void Blendable::Bind()
+	void Blendable::ImmidiateBind()
 	{
 		//Binds the blend function to the pipeline
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetBlendState(m_BlendState.Get(), nullptr, 0xFFFFFFFFu));
+	}
+
+	void Blendable::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the blend function to the pipeline
+		AT_CHECK_GFX_INFO_VOID(context->OMSetBlendState(m_BlendState.Get(), nullptr, 0xFFFFFFFFu));
 	}
 }

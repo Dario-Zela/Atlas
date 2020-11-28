@@ -33,8 +33,13 @@ namespace Atlas
 		return typeid(Topology).name() + '_' + std::to_string(topology);
 	}
 
-	void Topology::Bind()
+	void Topology::ImmidiateBind()
 	{
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetPrimitiveTopology(m_Topology));
+	}
+
+	void Topology::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		AT_CHECK_GFX_INFO_VOID(context->IASetPrimitiveTopology(m_Topology));
 	}
 }

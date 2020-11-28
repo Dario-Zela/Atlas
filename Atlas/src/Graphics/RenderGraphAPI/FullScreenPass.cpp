@@ -20,9 +20,15 @@ namespace Atlas
 		AddBindable(IndexBuffer::Create(indices.data(), indices.size() * sizeof(unsigned short), "FullScreenPositionIndex"));
 	}
 
-	void FullScreenPass::Execute()
+	void FullScreenPass::Execute(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		BindAll(context);
+		Graphics::DrawIndexed(6, context);
+	}
+
+	void FullScreenPass::ExecuteImmidiate()
 	{
 		BindAll();
-		Graphics::DrawIndexed(6);
+		Graphics::ImmidiateDrawIndexed(6);
 	}
 }

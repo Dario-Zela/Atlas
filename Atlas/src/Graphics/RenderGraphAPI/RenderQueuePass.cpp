@@ -13,13 +13,23 @@ namespace Atlas
 		m_Jobs.push_back(job);
 	}
 
-	void RenderQueuePass::Execute()
+	void RenderQueuePass::Execute(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		BindAll(context);
+
+		for (const auto& job : m_Jobs)
+		{
+			job.Execute(context);
+		}
+	}
+
+	void RenderQueuePass::ExecuteImmidiate()
 	{
 		BindAll();
 
 		for (const auto& job : m_Jobs)
 		{
-			job.Execute();
+			job.ExecuteImmidiate();
 		}
 	}
 }

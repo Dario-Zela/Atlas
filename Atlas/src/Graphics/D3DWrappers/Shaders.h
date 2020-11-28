@@ -23,8 +23,9 @@ namespace Atlas
 		//Generates the unique identifier for the input layout
 		static std::string GenerateUID(std::string path);
 
-		void Bind() override;	//Binds the layout
-		
+		void ImmidiateBind() override;	//Binds the layout
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
+
 		//Gets the blob from the vertex shader
 		//Required for the input layer
 		wrl::ComPtr<ID3DBlob> GetBlob();
@@ -46,7 +47,8 @@ namespace Atlas
 		//Generates the unique identifier for the input layout
 		static std::string GenerateUID(std::string path);
 
-		void Bind() override;	//Binds the layout
+		void ImmidiateBind() override;	//Binds the layout
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		wrl::ComPtr<ID3D11PixelShader> m_PixelShader;
 		wrl::ComPtr<ID3DBlob> m_Blob;

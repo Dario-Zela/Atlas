@@ -74,11 +74,18 @@ namespace Atlas
 		return std::string(typeid(VertexBuffer).name()) + '_' + tag;
 	}
 
-	void VertexBuffer::Bind()
+	void VertexBuffer::ImmidiateBind()
 	{
 		//This binds the vertex buffer
 		uint zero = 0;
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &m_Stride, &zero))
+	}
+
+	void VertexBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//This binds the vertex buffer
+		uint zero = 0;
+		AT_CHECK_GFX_INFO_VOID(context->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &m_Stride, &zero))
 	}
 
 	//Index Buffer
@@ -148,10 +155,16 @@ namespace Atlas
 		return std::string(typeid(IndexBuffer).name()) + '_' + tag;
 	}
 
-	void IndexBuffer::Bind()
+	void IndexBuffer::ImmidiateBind()
 	{
 		//This binds the index buffer
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0))
+	}
+
+	void IndexBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//This binds the index buffer
+		AT_CHECK_GFX_INFO_VOID(context->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0))
 	}
 
 	uint IndexBuffer::GetCount() const
@@ -229,16 +242,27 @@ namespace Atlas
 	}
 
 	//Vertex Shader Constant Buffer
-	void VertexConstantBuffer::Bind()
+	void VertexConstantBuffer::ImmidiateBind()
 	{
 		//Binds the element to the vertex shader
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->VSSetConstantBuffers(0, 1, m_ConstantBuffer.GetAddressOf()));
 	}
 
+	void VertexConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the element to the vertex shader
+		AT_CHECK_GFX_INFO_VOID(context->VSSetConstantBuffers(0, 1, m_ConstantBuffer.GetAddressOf()));
+	}
+
 	//Pixel Shader Constant Buffer
-	void PixelConstantBuffer::Bind()
+	void PixelConstantBuffer::ImmidiateBind()
 	{
 		//Binds the element to the pixel shader
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetConstantBuffers(0, 1, m_ConstantBuffer.GetAddressOf()));
+	}
+	void PixelConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the element to the pixel shader
+		AT_CHECK_GFX_INFO_VOID(context->PSSetConstantBuffers(0, 1, m_ConstantBuffer.GetAddressOf()));
 	}
 }

@@ -13,7 +13,8 @@ namespace Atlas
 		Blendable(bool blending, int renderTarget);
 		static std::shared_ptr<Blendable> Create(bool blending, int renderTarget);	//A static constructor that creates a shared ptr
 
-		void Bind() override;	//Binds the blend function to the pipeline
+		void ImmidiateBind() override;	//Binds the blend function to the pipeline
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		wrl::ComPtr<ID3D11BlendState> m_BlendState;
 	};

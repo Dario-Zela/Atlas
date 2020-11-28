@@ -23,8 +23,11 @@ namespace Atlas
 
 		bool IsValid() { return m_DepthStencilView; }
 
-		void Bind();
-		void Bind(RenderTarget* renderTarget);
+		void ImmidiateBind();
+		void ImmidiateBind(RenderTarget* renderTarget);
+
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context);
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context, RenderTarget* renderTarget);
 
 		void Copy(std::shared_ptr<Buffer> buffer) override;
 

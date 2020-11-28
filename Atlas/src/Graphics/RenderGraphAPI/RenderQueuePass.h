@@ -9,7 +9,8 @@ namespace Atlas
 	public:
 		RenderQueuePass(std::string name);
 		void Accept(Job job);
-		void Execute() override;
+		void Execute(wrl::ComPtr<ID3D11DeviceContext> context) override;
+		void ExecuteImmidiate() override;
 		void Reset() override { m_Jobs.clear(); }
 	private:
 		std::vector<Job> m_Jobs;

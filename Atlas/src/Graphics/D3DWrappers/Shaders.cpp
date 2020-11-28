@@ -47,10 +47,16 @@ namespace Atlas
 		return std::string(typeid(VertexShader).name()) + '_' + path;
 	}
 
-	void VertexShader::Bind()
+	void VertexShader::ImmidiateBind()
 	{
 		//Binds the vertex shader
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->VSSetShader(m_VertexShader.Get(), nullptr, 0))
+	}
+
+	void VertexShader::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the vertex shader
+		AT_CHECK_GFX_INFO_VOID(context->VSSetShader(m_VertexShader.Get(), nullptr, 0))
 	}
 
 	wrl::ComPtr<ID3DBlob> VertexShader::GetBlob()
@@ -100,9 +106,15 @@ namespace Atlas
 		return std::string(typeid(PixelShader).name()) + '_' + path;
 	}
 
-	void PixelShader::Bind()
+	void PixelShader::ImmidiateBind()
 	{
 		//Binds the pixel shader
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetShader(m_PixelShader.Get(), nullptr, 0))
+	}
+
+	void PixelShader::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the pixel shader
+		AT_CHECK_GFX_INFO_VOID(context->PSSetShader(m_PixelShader.Get(), nullptr, 0))
 	}
 }

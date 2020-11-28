@@ -15,3 +15,4 @@
 #include "Graphics/D3DWrappers/InputLayout.h"
 #include "Graphics/D3DWrappers/Topology.h"
 #include "Graphics/D3DWrappers/Sampler.h"
+#include "Graphics/D3DWrappers/Blendable.h"

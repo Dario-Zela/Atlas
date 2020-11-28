@@ -5,6 +5,7 @@
 namespace wrl = Microsoft::WRL;
 
 #include "Graphics/D3DWrappers/RenderTarget.h"
+#include "Graphics/D3DWrappers/ViewPort.h"
 
 namespace Atlas
 {
@@ -19,10 +20,13 @@ namespace Atlas
 		void Init(HWND hwnd);
 		static void EndFrame(uint syncRate = 1);
 		
-		static void Draw(uint vertexCount);
-		static void DrawIndexed(uint indexCount);
+		static void ImmidiateDraw(uint vertexCount);
+		static void ImmidiateDrawIndexed(uint indexCount);
 
-		static void BindDefaultViewPort();
+		static void Draw(uint vertexCount, wrl::ComPtr<ID3D11DeviceContext> context);
+		static void DrawIndexed(uint indexCount, wrl::ComPtr<ID3D11DeviceContext> context);
+
+		static std::shared_ptr<ViewPort> GetDefaultViewPort() { return s_Instance->m_FullScreenPort; }
 
 		static bool IsInitialised();
 
@@ -37,6 +41,6 @@ namespace Atlas
 		wrl::ComPtr<ID3D11DeviceContext> m_Context;
 		std::shared_ptr<RenderTarget> m_RenderTarget;
 
-		D3D11_VIEWPORT m_FullScreenPort;
+		std::shared_ptr<ViewPort> m_FullScreenPort;
 	};
 }

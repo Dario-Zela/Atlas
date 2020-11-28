@@ -18,13 +18,23 @@ namespace Atlas
 		return std::make_shared<TransformationConstantBuffer>(parent, projection);
 	}
 
-	void TransformationConstantBuffer::Bind()
+	void TransformationConstantBuffer::ImmidiateBind()
 	{
 		//Get's the parent's transformation and adds it to it's projection
 		auto mat = DirectX::XMMatrixTranspose(m_Parent.GetTransformXM() * m_Projection);
 		//Updates the constant buffer
 		m_VertexBuffer->Update((void*)&mat, sizeof(mat));
 		//Binds the buffer
-		m_VertexBuffer->Bind();
+		m_VertexBuffer->ImmidiateBind();
+	}
+
+	void TransformationConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Get's the parent's transformation and adds it to it's projection
+		auto mat = DirectX::XMMatrixTranspose(m_Parent.GetTransformXM() * m_Projection);
+		//Updates the constant buffer
+		m_VertexBuffer->Update((void*)&mat, sizeof(mat));
+		//Binds the buffer
+		m_VertexBuffer->Bind(context);
 	}
 }

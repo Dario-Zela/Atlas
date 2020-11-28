@@ -29,8 +29,11 @@ namespace Atlas
 		void Clear();
 		void Clear(float r, float g, float b, float a = 1.0f);
 
-		void Bind();
-		void Bind(ID3D11DepthStencilView* depthStencilBuffer);
+		void ImmidiateBind();
+		void ImmidiateBind(ID3D11DepthStencilView* depthStencilBuffer);
+
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context);
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context, ID3D11DepthStencilView* depthStencilBuffer);
 
 		void Copy(std::shared_ptr<Buffer> buffer) override;
 

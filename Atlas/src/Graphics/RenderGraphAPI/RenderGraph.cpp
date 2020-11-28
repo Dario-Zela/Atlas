@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "RenderGraph.h"
+#include <thread>
 
 #include "Graphics/Graphics.h"
 #include "Graphics/RenderGraphAPI/Pass.h"
@@ -20,9 +21,60 @@ namespace Atlas
 	void RenderGraph::Execute()
 	{
 		AT_CORE_ASSERT(m_Finalised, "The Render Graph has not been finalised")
+
+		size_t currentLevel = 0;
+		int iterator = 0;
+
 		for (auto& pass : m_Passes)
 		{
-			pass->Execute();
+			if (pass->GetLevel() == currentLevel)
+			{
+				m_ThreadPool.AddWork(std::bind(&Pass::Execute, pass.get(), m_DeferedContexts[currentLevel][iterator++].GetContext()));
+			}
+			else
+			{
+				m_ThreadPool.Sync();
+
+				m_ThreadPool.AddWork(std::bind([](DeferredRenderContext* contexts, DeferredRenderContext& masterContext, int maxItems)
+					{
+						for (int i = 0; i < maxItems; i++)
+						{
+							auto& context = contexts[i];
+							wrl::ComPtr<ID3D11CommandList> commandList = nullptr;
+							context.GetContext()->FinishCommandList(FALSE, &commandList);
+							masterContext.GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
+						}
+					}, m_DeferedContexts[currentLevel], std::ref(m_Context), iterator));
+
+				iterator = 0;
+				
+				currentLevel++;
+
+				m_ThreadPool.AddWork(std::bind(&Pass::Execute, pass.get(), m_DeferedContexts[currentLevel][iterator++].GetContext()));
+			}
+		}
+
+		m_ThreadPool.Sync();
+
+		for (int i = 0; i < iterator; i++)
+		{
+			auto& context = m_DeferedContexts[currentLevel][i];
+			wrl::ComPtr<ID3D11CommandList> commandList = nullptr;
+			context.GetContext()->FinishCommandList(FALSE, &commandList);
+			m_Context.GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
+		}
+
+		wrl::ComPtr<ID3D11CommandList> commandList;
+		m_Context.GetContext()->FinishCommandList(FALSE, &commandList);
+		Graphics::GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
+
+	}
+
+	void RenderGraph::ExecuteImmidiate()
+	{
+		for (auto& pass : m_Passes)
+		{
+			pass->ExecuteImmidiate();
 		}
 	}
 
@@ -43,6 +95,16 @@ namespace Atlas
 			AT_CORE_ASSERT_WARG(false, "The pass of name {0} is not a render queue pass", name)
 		}
 		AT_CORE_ASSERT_WARG(false, "There was no pass of the name {0} in the render graph", name)
+	}
+
+	RenderGraph::~RenderGraph()
+	{
+		for (int i = 0; i < m_MaxLevel; i++)
+		{
+			delete[] m_DeferedContexts;
+		}
+
+		delete[] m_DeferedContexts;
 	}
 
 	void RenderGraph::SetGlobalSinkTarget(std::string sinkName, std::string target)
@@ -71,15 +133,38 @@ namespace Atlas
 
 	void RenderGraph::Finalise()
 	{
+		m_MaxLevel++;
+
 		AT_CORE_ASSERT(!m_Finalised, "The Render Graph has not been finalised")
 		
 		LinkGlobalSinks();
+
+		int* numItemsPerLevel = new int[m_MaxLevel]();
 		
 		for (auto& pass : m_Passes)
 		{
 			pass->Finalise();
+			numItemsPerLevel[pass->GetLevel()]++;
 		}
+
+
+		std::sort(m_Passes.begin(), m_Passes.end(), [](std::unique_ptr<Pass>& a, std::unique_ptr<Pass>& b)
+			{
+				return a->GetLevel() < b->GetLevel();
+			}
+		);
+
+		m_ThreadPool.CreatePool(m_Passes.size() + 1);
+
+		m_DeferedContexts = new DeferredRenderContext*[m_MaxLevel];
 		
+		for (int i = 0; i < m_MaxLevel; i++)
+		{
+			m_DeferedContexts[i] = new DeferredRenderContext[numItemsPerLevel[i]]();
+		}
+
+		delete[] numItemsPerLevel;
+
 		m_Finalised = true;
 	}
 
@@ -92,7 +177,7 @@ namespace Atlas
 			AT_CORE_ASSERT_WARG(!(ownedPass->GetName() == pass->GetName()), "The pass name {0} already exists", pass->GetName())
 		}
 
-		LinkPassSinks(*pass);
+		pass->m_Level = LinkPassSinks(*pass);
 
 		m_Passes.push_back(std::move(pass));
 	}
@@ -105,14 +190,17 @@ namespace Atlas
 		}
 	}
 
-	void RenderGraph::LinkPassSinks(Pass& pass)
+	int RenderGraph::LinkPassSinks(Pass& pass)
 	{
+		int level = 0;
 		for (auto& sink : pass.GetSinks())
 		{
 			std::string& sourcePassName = sink->GetPassName();
 
 			if (sourcePassName == "$")
 			{
+				level = level == 0 ? 0 : level;
+
 				for (auto& source : m_GlobalSources)
 				{
 					if (source->GetRegisteredName() == sink->GetOutputName())
@@ -131,6 +219,10 @@ namespace Atlas
 					{
 						auto& source = pass->GetSource(sink->GetOutputName());
 						sink->Bind(source);
+
+						if (level - 1 < pass->GetLevel())
+							level = pass->GetLevel() + 1;
+
 						goto NextSink;
 					}
 				}
@@ -138,6 +230,11 @@ namespace Atlas
 
 		NextSink:;
 		}
+		
+		if (m_MaxLevel < level)
+			m_MaxLevel = level;
+
+		return level;
 	}
 
 	void RenderGraph::LinkGlobalSinks()

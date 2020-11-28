@@ -16,7 +16,8 @@ namespace Atlas
 		//Generates the unique identifier for the sampler
 		static std::string GenerateUID(int slot, bool mipMapping, bool Anisotropy, uint maxAnisotropy);
 
-		void Bind() override;		//Binds the sampler
+		void ImmidiateBind() override;		//Binds the sampler
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		int m_Slot;
 		wrl::ComPtr<ID3D11SamplerState> m_Sampler;

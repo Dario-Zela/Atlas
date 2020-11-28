@@ -8,8 +8,8 @@ namespace Atlas
 	{
 	public:
 		Job(const Drawable* drawable, Step* step);
-		void Execute() const;
-
+		void Execute(wrl::ComPtr<ID3D11DeviceContext> context) const;
+		void ExecuteImmidiate() const;
 	private:
 		const Drawable* m_Drawable;
 		Step* m_Step;

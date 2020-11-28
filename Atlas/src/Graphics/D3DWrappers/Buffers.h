@@ -19,7 +19,8 @@ namespace Atlas
 
 		//Generates the unique identifier for the buffer
 		static std::string GenerateUID(std::string tag);
-		void Bind() override;		//Binds the buffer
+		void ImmidiateBind() override;		//Binds the buffer
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		wrl::ComPtr<ID3D11Buffer> m_VertexBuffer;
 		uint m_Stride;
@@ -40,7 +41,9 @@ namespace Atlas
 
 		//Generates the unique identifier for the buffer
 		static std::string GenerateUID(std::string tag);
-		void Bind() override;		//Binds the buffer
+		void ImmidiateBind() override;		//Binds the buffer
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
+
 		uint GetCount() const;		//Gets the number of elements
 	private:
 		wrl::ComPtr<ID3D11Buffer> m_IndexBuffer;
@@ -64,7 +67,8 @@ namespace Atlas
 
 		void Update(void* data, uint sizeData);		//Updates the constant buffer
 
-		void Bind() override {};		//Binds the buffer
+		void ImmidiateBind() override {};		//Binds the buffer
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override {}
 	protected:
 		wrl::ComPtr<ID3D11Buffer> m_ConstantBuffer;
 	};
@@ -77,7 +81,8 @@ namespace Atlas
 		VertexConstantBuffer(void* data, uint sizeData) : ConstantBuffer(data, sizeData) {}
 		VertexConstantBuffer(uint sizeData) : ConstantBuffer(sizeData) {}
 
-		void Bind() override;		//This binds the buffer to the vertex shader
+		void ImmidiateBind() override;		//This binds the buffer to the vertex shader
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	};
 
 	//A constant buffer used in the pixel shader
@@ -88,6 +93,7 @@ namespace Atlas
 		PixelConstantBuffer(void* data, uint sizeData) : ConstantBuffer(data, sizeData) {}
 		PixelConstantBuffer(uint sizeData) : ConstantBuffer(sizeData) {}
 
-		void Bind() override;		//This binds the buffer to the pixel shader
+		void ImmidiateBind() override;		//This binds the buffer to the pixel shader
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	};
 }

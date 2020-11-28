@@ -141,6 +141,12 @@
     <ClCompile Include="src\Graphics\AssimpWrapper\Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\D3DWrappers\DeferredRenderContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\ThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -534,6 +540,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\AssimpWrapper\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\D3DWrappers\DeferredRenderContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\ThreadPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

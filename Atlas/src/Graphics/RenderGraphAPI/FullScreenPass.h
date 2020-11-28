@@ -7,6 +7,7 @@ namespace Atlas
 	{
 	public:
 		FullScreenPass(std::string name);
-		void Execute() override;
+		void Execute(wrl::ComPtr<ID3D11DeviceContext> context) override;
+		void ExecuteImmidiate() override;
 	};
 }

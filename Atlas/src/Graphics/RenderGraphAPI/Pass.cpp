@@ -2,14 +2,13 @@
 #include "Pass.h"
 
 #include "Graphics/Bindable.h"
-
 #include "Graphics/D3DWrappers/DepthStencilBuffer.h"
 #include "Graphics/D3DWrappers/RenderTarget.h"
 
 namespace Atlas
 {
 	Pass::Pass(std::string name)
-		:m_Name(std::move(name)) 
+		:m_Name(std::move(name)), m_Level(-1)
 	{
 		m_RenderTarget = RenderTarget::CreateEmpty();
 		m_DepthBuffer = DepthStencilBuffer::CreateEmpty();
@@ -44,20 +43,37 @@ namespace Atlas
 		m_Bindables.push_back(std::move(bindable));
 	}
 
-	void Pass::BindAll()
+	void Pass::BindAll(wrl::ComPtr<ID3D11DeviceContext> context)
 	{
 		if (m_RenderTarget)
 		{
-			m_RenderTarget->Bind(m_DepthBuffer->GetDepthStencilBuffer().Get());
+			m_RenderTarget->Bind(context, m_DepthBuffer->GetDepthStencilBuffer().Get());
 		}
 		else
 		{
-			m_DepthBuffer->Bind();
+			m_DepthBuffer->Bind(context);
 		}
 
 		for (auto& bindable : m_Bindables)
 		{
-			bindable->Bind();
+			bindable->Bind(context);
+		}
+	}
+
+	void Pass::BindAll()
+	{
+		if (m_RenderTarget)
+		{
+			m_RenderTarget->ImmidiateBind(m_DepthBuffer->GetDepthStencilBuffer().Get());
+		}
+		else
+		{
+			m_DepthBuffer->ImmidiateBind();
+		}
+
+		for (auto& bindable : m_Bindables)
+		{
+			bindable->ImmidiateBind();
 		}
 	}
 
@@ -79,6 +95,7 @@ namespace Atlas
 		}
 
 		AT_CORE_ASSERT_WARG(m_RenderTarget->IsValid() || m_RenderTarget->IsValid(), "The pass {0} needs either a render target or a depth buffer", m_Name)
+		AT_CORE_ASSERT_WARG(m_Level > -1, "The pass {0} has not been accurately placed into the graph, this will only occour if there are no sinks or sources to link", m_Name)
 	}
 
 	void Pass::RegisterSink(std::unique_ptr<Sink> sink)

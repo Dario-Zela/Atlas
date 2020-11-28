@@ -6,10 +6,16 @@
 
 namespace Atlas 
 {
-	void Drawable::Bind() const
+	void Drawable::ImmidiateBind() const
 	{
-		for (auto bindable : m_Bindables)
-			bindable->Bind();
+		for (auto& bindable : m_Bindables)
+			bindable->ImmidiateBind();
+	}
+
+	void Drawable::Bind(wrl::ComPtr<ID3D11DeviceContext> context) const
+	{
+		for (auto& bindable : m_Bindables)
+			bindable->Bind(context);
 	}
 
 	void Drawable::Submit()
@@ -31,8 +37,6 @@ namespace Atlas
 		}
 		else
 		{
-			if (typeid(*bindable) == typeid(ViewPort))
-				auto x = 0;
 			m_Bindables.push_back(bindable);
 		}
 	}

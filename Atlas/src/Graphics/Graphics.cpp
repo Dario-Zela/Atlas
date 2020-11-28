@@ -66,19 +66,14 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &backBuffer));
 		m_RenderTarget = std::make_shared<RenderTarget>(backBuffer.Get());
 
+		//Initialise the Bindable library
+		BindableLib::Init();
+
 		//Get the window dimentions
 		auto [width, height] = Input::GetWindowSize();
 
 		//Set the default window
-		m_FullScreenPort.TopLeftX = 0;
-		m_FullScreenPort.TopLeftY = 0;
-		m_FullScreenPort.Width = (float)width;
-		m_FullScreenPort.Height = (float)height;
-		m_FullScreenPort.MinDepth = 0;
-		m_FullScreenPort.MaxDepth = 1;
-
-		//Initialise the Bindable library
-		BindableLib::Init();
+		m_FullScreenPort = ViewPort::Create(0, 0, width, height, 0, 1);
 	}
 
 	void Graphics::EndFrame(uint syncRate)
@@ -89,14 +84,19 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(result == DXGI_ERROR_DEVICE_REMOVED ? s_Instance->m_Device->GetDeviceRemovedReason() : result);
 	}
 
-	void Graphics::DrawIndexed(uint indexCount)
+	void Graphics::ImmidiateDraw(uint vertexCount)
+	{
+		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->Draw(vertexCount, 0));
+	}
+
+	void Graphics::ImmidiateDrawIndexed(uint indexCount)
 	{
 		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->DrawIndexed(indexCount, 0, 0));
 	}
 
-	void Graphics::BindDefaultViewPort()
+	void Graphics::DrawIndexed(uint indexCount, wrl::ComPtr<ID3D11DeviceContext> context)
 	{
-		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->RSSetViewports(1, &s_Instance->m_FullScreenPort));
+		AT_CHECK_GFX_INFO_VOID(context->DrawIndexed(indexCount, 0, 0));
 	}
 
 	bool Graphics::IsInitialised()
@@ -104,8 +104,8 @@ namespace Atlas
 		return s_Instance;
 	}
 
-	void Graphics::Draw(uint vertexCount)
+	void Graphics::Draw(uint vertexCount, wrl::ComPtr<ID3D11DeviceContext> context)
 	{
-		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->Draw(vertexCount, 0));
+		AT_CHECK_GFX_INFO_VOID(context->Draw(vertexCount, 0));
 	}
 }

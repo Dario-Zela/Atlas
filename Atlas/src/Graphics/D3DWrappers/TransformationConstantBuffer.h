@@ -15,7 +15,8 @@ namespace Atlas
 		//The wrapper over the constructor to get a shared ptr
 		static std::shared_ptr<TransformationConstantBuffer> Create(Drawable& parent, DirectX::XMMATRIX projection);
 
-		void Bind() override;	//Binds the layout
+		void ImmidiateBind() override;	//Binds the layout
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		std::unique_ptr<VertexConstantBuffer> m_VertexBuffer;
 		Drawable& m_Parent;

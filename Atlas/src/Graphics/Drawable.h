@@ -14,7 +14,8 @@ namespace Atlas
 		Drawable(const Drawable&) = delete;
 		virtual ~Drawable() = default;
 
-		void Bind() const;
+		void ImmidiateBind() const;
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) const;
 		void Submit();
 
 		void AddBindable(std::shared_ptr<Bindable> bindable);

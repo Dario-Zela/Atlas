@@ -13,11 +13,11 @@ public:
 	}
 };
 
-class ClearPass : public Atlas::FullScreenPass
+class ClearPass : public Atlas::Pass
 {
 public:
 	ClearPass()
-		: Atlas::FullScreenPass("ClearPass")
+		: Atlas::Pass("ClearPass")
 	{
 		RegisterSink(Atlas::Sink::Create("renderTarget", std::static_pointer_cast<Atlas::Buffer>(m_RenderTarget)));
 		RegisterSink(Atlas::Sink::Create("depthStencil", std::static_pointer_cast<Atlas::Buffer>(m_DepthBuffer)));
@@ -25,9 +25,15 @@ public:
 		RegisterSource(Atlas::Source::Create("depthStencil", std::static_pointer_cast<Atlas::Buffer>(m_DepthBuffer)));
 	}
 
-	void Execute()
+	void Execute(wrl::ComPtr<ID3D11DeviceContext> context) override
 	{
 		m_RenderTarget->Clear(0,0,1,1);
+		m_DepthBuffer->Clear();
+	}
+
+	void ExecuteImmidiate() override
+	{
+		m_RenderTarget->Clear(0, 0, 1, 1);
 		m_DepthBuffer->Clear();
 	}
 };
