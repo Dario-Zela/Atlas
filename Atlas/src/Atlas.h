@@ -16,3 +16,6 @@
 #include "Graphics/D3DWrappers/Topology.h"
 #include "Graphics/D3DWrappers/Sampler.h"
 #include "Graphics/D3DWrappers/Blendable.h"
+#include "Graphics/D3DWrappers/SimpleMeshCreator.h"
+#include "Graphics/D3DWrappers/TransformationConstantBuffer.h"
+#include "Core/ThreadPool.h"

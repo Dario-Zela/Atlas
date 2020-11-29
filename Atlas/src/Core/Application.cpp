@@ -41,10 +41,10 @@ namespace Atlas
 	Application::Application(std::string title, uint width, uint height)
 		: m_Minimised(false), m_EventManager(), m_Window(&m_EventManager)
 	{
-		#ifndef AT_DEBUG
-			HWND hWnd = GetConsoleWindow();
-			ShowWindow(hWnd, SW_HIDE);
-		#endif // AT_DEBUG
+		//#ifdef AT_DEBUG
+		//	HWND hWnd = GetConsoleWindow();
+		//	ShowWindow(hWnd, SW_HIDE);
+		//#endif // AT_DEBUG
 
 
 		AT_CORE_INFO("Initialising the window")

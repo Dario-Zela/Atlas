@@ -42,7 +42,6 @@ namespace Atlas
 		std::shared_ptr<DepthStencilBuffer> m_DefaultDepth;
 		DeferredRenderContext m_Context;
 		ThreadPool m_ThreadPool;
-		DeferredRenderContext* m_DeferedContexts;
 
 		bool m_Finalised;
 	};

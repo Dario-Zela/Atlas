@@ -20,12 +20,12 @@ namespace Atlas
 
 	void RenderGraph::Execute()
 	{
-		AT_CORE_ASSERT(m_Finalised, "The Render Graph has not been finalised")
+		AT_CORE_ASSERT(m_Finalised, "The Render Graph has not been finalised");
 
 		wrl::ComPtr<ID3D11CommandList> commandList = nullptr;
-
+		
 		bool* passed = new bool[m_Passes.size()]();
-
+		
 		auto passExecute = [&commandList, &passed](Pass* pass, wrl::ComPtr<ID3D11DeviceContext> context, int index)
 		{
 			pass->Execute(context);
@@ -36,13 +36,13 @@ namespace Atlas
 		
 		for (int i = 0; i < m_Passes.size(); i++)
 		{
-			m_ThreadPool.AddWork(std::bind(passExecute, m_Passes[i].get(), m_DeferedContexts[i].GetContext(), i));
+			m_ThreadPool.AddWork(passExecute, m_Passes[i].get(), i);
 		}
 		
 		m_ThreadPool.Sync();
 		
 		Graphics::GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
-
+		
 		delete[] passed;
 	}
 
@@ -75,7 +75,6 @@ namespace Atlas
 
 	RenderGraph::~RenderGraph()
 	{
-		delete[] m_DeferedContexts;
 	}
 
 	void RenderGraph::SetGlobalSinkTarget(std::string sinkName, std::string target)
@@ -119,9 +118,7 @@ namespace Atlas
 			}
 		);
 
-		m_ThreadPool.CreatePool(m_Passes.size());
-
-		m_DeferedContexts = new DeferredRenderContext[m_Passes.size()];
+		m_ThreadPool.CreatePool(5 > m_Passes.size() ? m_Passes.size() : 5);
 
 		m_Finalised = true;
 	}

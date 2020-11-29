@@ -360,6 +360,8 @@ namespace Atlas
 				AddBindable(TransformationConstantBuffer::Create(*this, settings.viewMatrix));
 			}
 
+			m_Transform = accumulatedTransform;
+
 			//Make the set flag to true
 			m_Set = true;
 		}

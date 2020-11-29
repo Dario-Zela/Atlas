@@ -1,5 +1,4 @@
 #pragma once
-#include "Atlas.h"
 
 class LambertianPass : public Atlas::RenderQueuePass
 {

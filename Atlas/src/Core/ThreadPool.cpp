@@ -5,12 +5,16 @@ namespace Atlas
 {
 	void ThreadPool::CreatePool(int numberOfThreads)
 	{
+		AT_CORE_ASSERT(!m_Alive, "You cannot recrate a thread pool");
+
 		m_Alive = true;
 		m_Mutex.SetMax(numberOfThreads);
 
 		m_Threads.reserve(numberOfThreads);
 		for (int i = 0; i < numberOfThreads; i++)
-			m_Threads.emplace_back(std::bind(&ThreadPool::Thread, this));
+			m_Threads.emplace_back(std::bind(&ThreadPool::Thread, this, i));
+
+		m_Contexts = new DeferredRenderContext[numberOfThreads]();
 	}
 
 	ThreadPool::~ThreadPool()
@@ -23,28 +27,32 @@ namespace Atlas
 
 		for (auto& thread : m_Threads)
 			thread.join();
+
+		delete[] m_Contexts;
 	}
 
-	void ThreadPool::AddWork(std::function<void(void)> work)
+	void ThreadPool::AddWork(std::function<void(Pass*, wrl::ComPtr<ID3D11DeviceContext>, int)> work, Pass* executable, int index)
 	{
-		std::unique_lock<std::mutex> lock(m_Mutex);
-
 		while (m_Mutex.IsFullyUsed());
 
-		m_Jobs.emplace(std::move(work));
+		std::unique_lock<std::mutex> lock(m_Mutex);
+
+		m_Jobs.emplace(std::move(work), executable, index);
 		m_Condition.notify_one();
 		m_Mutex.InUse();
 	}
 
 	void ThreadPool::Sync()
 	{
-		while (!m_Jobs.empty());
+		while (!m_Jobs.empty()) if(m_Mutex.m_Max == 5) std::cout << "Await" <<std::endl;
 		while (!m_Mutex.IsSynced());
 	}
 
-	void ThreadPool::Thread()
+	void ThreadPool::Thread(int threadNum)
 	{
-		std::function<void(void)> job;
+		std::function<void(Pass*, wrl::ComPtr<ID3D11DeviceContext>, int)> job;
+		Pass* executable = nullptr;
+		int index = 0;
 
 		while (true)
 		{
@@ -58,11 +66,14 @@ namespace Atlas
 				if (!m_Alive)
 					return;
 
-				job = std::move(m_Jobs.front());
+				auto tuple = std::move(m_Jobs.front());
+				job = std::move(std::get<0>(tuple));
+				executable = std::get<1>(tuple);
+				index = std::get<2>(tuple);
 				m_Jobs.pop();
 			}
 			
-			job();
+			job(executable, m_Contexts[threadNum].GetContext(), index);
 		}
 	}
 }

@@ -5,6 +5,8 @@
 #include <functional>
 #include <queue>
 #include <atomic>
+#include "Graphics/RenderGraphAPI/Pass.h"
+#include "Graphics/D3DWrappers/DeferredRenderContext.h"
 
 namespace Atlas 
 {
@@ -21,8 +23,8 @@ namespace Atlas
 
 		void InUse() { m_Count--; }
 		void Waiting() { m_Count++; }
-	private:
 		uint m_Max;
+	private:
 		std::atomic<uint> m_Count;
 	};
 
@@ -34,15 +36,16 @@ namespace Atlas
 
 		void CreatePool(int numberOfThreads);
 
-		void AddWork(std::function<void(void)> work);
+		void AddWork(std::function<void(Pass*, wrl::ComPtr<ID3D11DeviceContext>, int)> work, Pass* executable, int threadNum);
 		void Sync();
 	private:
-		void Thread();
+		void Thread(int index);
 
 		CountedMutex m_Mutex;
 		std::vector<std::thread> m_Threads;
-		std::queue<std::function<void(void)>> m_Jobs;
+		std::queue<std::tuple<std::function<void(Pass*, wrl::ComPtr<ID3D11DeviceContext>, int)>, Pass*, int>> m_Jobs;
 		std::condition_variable m_Condition;
+		DeferredRenderContext* m_Contexts;
 		bool m_Alive;
 	};
 }

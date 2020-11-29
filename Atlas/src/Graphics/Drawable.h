@@ -30,7 +30,7 @@ namespace Atlas
 		virtual DirectX::XMMATRIX GetTransformXM() = 0;
 	private:
 		std::vector<std::shared_ptr<Bindable>> m_Bindables;
-		IndexBuffer* m_IndexBuffer;
+		IndexBuffer* m_IndexBuffer = nullptr;
 		std::vector<Technique> m_Techniques;
 	};
 }
