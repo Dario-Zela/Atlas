@@ -23,7 +23,7 @@ namespace Atlas
 		//Get's the parent's transformation and adds it to it's projection
 		auto mat = DirectX::XMMatrixTranspose(m_Parent.GetTransformXM() * m_Projection);
 		//Updates the constant buffer
-		m_VertexBuffer->Update((void*)&mat, sizeof(mat));
+		m_VertexBuffer->ImmidiateUpdate((void*)&mat, sizeof(mat));
 		//Binds the buffer
 		m_VertexBuffer->ImmidiateBind();
 	}
@@ -33,7 +33,7 @@ namespace Atlas
 		//Get's the parent's transformation and adds it to it's projection
 		auto mat = DirectX::XMMatrixTranspose(m_Parent.GetTransformXM() * m_Projection);
 		//Updates the constant buffer
-		m_VertexBuffer->Update((void*)&mat, sizeof(mat));
+		m_VertexBuffer->Update((void*)&mat, sizeof(mat), context);
 		//Binds the buffer
 		m_VertexBuffer->Bind(context);
 	}

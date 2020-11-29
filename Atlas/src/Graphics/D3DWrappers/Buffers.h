@@ -65,7 +65,8 @@ namespace Atlas
 		static std::shared_ptr<ConstantBuffer> Create(void* data, uint sizeData);
 		static std::shared_ptr<ConstantBuffer> Create(uint sizeData);
 
-		void Update(void* data, uint sizeData);		//Updates the constant buffer
+		void ImmidiateUpdate(void* data, uint sizeData);		//Updates the constant buffer
+		void Update(void* data, uint sizeData, wrl::ComPtr<ID3D11DeviceContext> context);		//Updates the constant buffer
 
 		void ImmidiateBind() override {};		//Binds the buffer
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override {}

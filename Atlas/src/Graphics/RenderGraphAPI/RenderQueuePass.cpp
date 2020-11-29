@@ -16,7 +16,7 @@ namespace Atlas
 	void RenderQueuePass::Execute(wrl::ComPtr<ID3D11DeviceContext> context)
 	{
 		BindAll(context);
-
+		
 		for (const auto& job : m_Jobs)
 		{
 			job.Execute(context);

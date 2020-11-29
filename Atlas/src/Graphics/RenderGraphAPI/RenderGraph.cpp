@@ -22,20 +22,28 @@ namespace Atlas
 	{
 		AT_CORE_ASSERT(m_Finalised, "The Render Graph has not been finalised")
 
+		wrl::ComPtr<ID3D11CommandList> commandList = nullptr;
+
+		bool* passed = new bool[m_Passes.size()]();
+
+		auto passExecute = [&commandList, &passed](Pass* pass, wrl::ComPtr<ID3D11DeviceContext> context, int index)
+		{
+			pass->Execute(context);
+			if(index != 0) while (!passed[index - 1]);
+			context->FinishCommandList(FALSE, &commandList);
+			passed[index] = true;
+		};
+		
 		for (int i = 0; i < m_Passes.size(); i++)
 		{
-			m_ThreadPool.AddWork(std::bind(&Pass::Execute, m_Passes[i].get(), m_DeferedContexts[i].GetContext()));
+			m_ThreadPool.AddWork(std::bind(passExecute, m_Passes[i].get(), m_DeferedContexts[i].GetContext(), i));
 		}
-
+		
 		m_ThreadPool.Sync();
+		
+		Graphics::GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
 
-		for (int i = 0; i < m_Passes.size(); i++)
-		{
-			auto& context = m_DeferedContexts[i];
-			wrl::ComPtr<ID3D11CommandList> commandList = nullptr;
-			context.GetContext()->FinishCommandList(FALSE, &commandList);
-			Graphics::GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
-		}
+		delete[] passed;
 	}
 
 	void RenderGraph::ExecuteImmidiate()
@@ -81,7 +89,7 @@ namespace Atlas
 
 		AT_CORE_ASSERT_WARG(!(i == m_GlobalSinks.end()), "There is no global sink with the name {0}", sinkName)
 
-		(*i)->SetTarget(target);
+			(*i)->SetTarget(target);
 	}
 
 	void RenderGraph::AddGlobalSink(std::unique_ptr<Sink> sink)
@@ -97,9 +105,13 @@ namespace Atlas
 	void RenderGraph::Finalise()
 	{
 		AT_CORE_ASSERT(!m_Finalised, "The Render Graph has not been finalised")
-		
+
 		LinkGlobalSinks();
 
+		for (auto& pass : m_Passes)
+		{
+			pass->Finalise();
+		}
 
 		std::sort(m_Passes.begin(), m_Passes.end(), [](std::unique_ptr<Pass>& a, std::unique_ptr<Pass>& b)
 			{
@@ -118,10 +130,10 @@ namespace Atlas
 	{
 		AT_CORE_ASSERT(!m_Finalised, "The Render Graph has not been finalised")
 
-		for (auto& ownedPass : m_Passes)
-		{
-			AT_CORE_ASSERT_WARG(!(ownedPass->GetName() == pass->GetName()), "The pass name {0} already exists", pass->GetName())
-		}
+			for (auto& ownedPass : m_Passes)
+			{
+				AT_CORE_ASSERT_WARG(!(ownedPass->GetName() == pass->GetName()), "The pass name {0} already exists", pass->GetName())
+			}
 
 		pass->m_Level = LinkPassSinks(*pass);
 

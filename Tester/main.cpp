@@ -29,7 +29,7 @@ public:
 			step.AddBindable(Atlas::Graphics::GetDefaultViewPort());
 			tech.AddStep(step);
 		}
-
+		
 		m_Scene.AddTechnique(tech);
 		m_Scene.LinkTechniques(rg);
 
@@ -44,21 +44,21 @@ public:
 		DirectX::XMMATRIX trans = DirectX::XMMatrixRotationRollPitchYaw(objRot[0], objRot[1], objRot[2]) * camera->GetTransform();
 		m_Scene.Draw(m_Settings, trans);
 
-		auto start = std::chrono::high_resolution_clock::now();
-		rg.ExecuteImmidiate();
-		auto end = std::chrono::high_resolution_clock::now();
+		//auto start = std::chrono::high_resolution_clock::now();
+		//rg.ExecuteImmidiate();
+		//auto end = std::chrono::high_resolution_clock::now();
+		//
+		//tot += std::chrono::duration(end - start).count();
+		//num++;
 
-		tot += std::chrono::duration(end - start).count();
-		num++;
-
-		start = std::chrono::high_resolution_clock::now();
+		//auto start = std::chrono::high_resolution_clock::now();
 		rg.Execute();
-		end = std::chrono::high_resolution_clock::now();
-
-		tot2 += std::chrono::duration(end - start).count();
-		num2++;
-
-		std::cout << (int)((float)tot2 / num2) - (int)((float)tot / num) << std::endl;
+		//auto end = std::chrono::high_resolution_clock::now();
+		//
+		//tot2 += std::chrono::duration(end - start).count();
+		//num2++;
+		//
+		//std::cout << (uint)((float)tot2 / num2) << std::endl;//- (uint)((float)tot / num) << std::endl;
 
 		Atlas::Graphics::EndFrame(1);
 		rg.Reset();
@@ -70,10 +70,10 @@ private:
 	Atlas::Scene m_Scene;
 	Atlas::ModelDrawSettings m_Settings;
 	LambertianRenderGraph rg;
-	int tot = 0;
-	int num = 0;
-	int tot2 = 0;
-	int num2 = 0;
+	uint tot = 0;
+	uint num = 0;
+	uint tot2 = 0;
+	uint num2 = 0;
 
 };
 

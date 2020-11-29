@@ -228,7 +228,7 @@ namespace Atlas
 		return std::make_shared<ConstantBuffer>(sizeData);
 	}
 
-	void ConstantBuffer::Update(void* data, uint sizeData)
+	void ConstantBuffer::ImmidiateUpdate(void* data, uint sizeData)
 	{
 		//Get access to the buffer element's resources
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -239,6 +239,19 @@ namespace Atlas
 		
 		//Map the results to the element
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->Unmap(m_ConstantBuffer.Get(), 0));
+	}
+
+	void ConstantBuffer::Update(void* data, uint sizeData, wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Get access to the buffer element's resources
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		AT_CHECK_GFX_INFO(context->Map(m_ConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
+
+		//Write over the data
+		memcpy(mappedResource.pData, data, sizeData);
+
+		//Map the results to the element
+		AT_CHECK_GFX_INFO_VOID(context->Unmap(m_ConstantBuffer.Get(), 0));
 	}
 
 	//Vertex Shader Constant Buffer

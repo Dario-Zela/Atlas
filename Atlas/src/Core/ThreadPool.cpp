@@ -38,6 +38,7 @@ namespace Atlas
 
 	void ThreadPool::Sync()
 	{
+		while (!m_Jobs.empty());
 		while (!m_Mutex.IsSynced());
 	}
 
@@ -51,6 +52,7 @@ namespace Atlas
 				std::unique_lock<std::mutex> lock(m_Mutex);
 
 				m_Mutex.Waiting();
+				
 				m_Condition.wait(lock);
 
 				if (!m_Alive)
