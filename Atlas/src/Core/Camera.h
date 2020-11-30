@@ -1,5 +1,6 @@
 #pragma once
 #include "Window/GUI.h"
+#include "Core/TimeStep.h"
 #include <DirectXMath.h>
 
 namespace Atlas
@@ -17,7 +18,11 @@ namespace Atlas
 		~Camera();
 
 		//Updates the camera values
-		void Update();
+		void Update(TimeStep timeStep);
+		DirectX::XMFLOAT3 GetPosition() { return DirectX::XMFLOAT3{ m_Position[0], m_Position[1], m_Position[2] }; }
+		DirectX::XMFLOAT3 GetRotation() { return DirectX::XMFLOAT3{ m_Rotation[0], m_Rotation[1], m_Rotation[2] }; }
+		DirectX::XMVECTOR GetFront() { return DirectX::XMVector3Transform(DirectX::g_XMIdentityR2, DirectX::XMMatrixRotationRollPitchYaw(m_Rotation[1], m_Rotation[0], 0.0f));	}
+
 
 		//Gets the transform
 		DirectX::XMMATRIX GetTransform();

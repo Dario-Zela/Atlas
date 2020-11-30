@@ -26,13 +26,13 @@ public:
 
 	void Execute(wrl::ComPtr<ID3D11DeviceContext> context) override
 	{
-		m_RenderTarget->Clear(0,0,1,1);
+		m_RenderTarget->Clear(0,0,0,1);
 		m_DepthBuffer->Clear();
 	}
 
 	void ExecuteImmidiate() override
 	{
-		m_RenderTarget->Clear(0, 0, 1, 1);
+		m_RenderTarget->Clear(0, 0, 0, 1);
 		m_DepthBuffer->Clear();
 	}
 };
@@ -56,23 +56,6 @@ public:
 			AddPass(std::move(pass));
 		}
 
-		SetGlobalSinkTarget("backBuffer", "LambertianPass.renderTarget");
-		Finalise();
-	}
-};
-
-class LambertianRenderGraph2 : public Atlas::RenderGraph
-{
-public:
-	LambertianRenderGraph2()
-		: Atlas::RenderGraph()
-	{
-		{
-			auto pass = std::make_unique<LambertianPass>();
-			pass->SetSinkLink("renderTarget", "$.backBuffer");
-			pass->SetSinkLink("depthStencil", "$.defaultDepth");
-			AddPass(std::move(pass));
-		}
 		SetGlobalSinkTarget("backBuffer", "LambertianPass.renderTarget");
 		Finalise();
 	}

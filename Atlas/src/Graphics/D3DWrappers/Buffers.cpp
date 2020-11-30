@@ -180,7 +180,8 @@ namespace Atlas
 	//Constant Buffer
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	ConstantBuffer::ConstantBuffer(void* data, uint sizeData)
+	ConstantBuffer::ConstantBuffer(void* data, uint sizeData, uint slot)
+		: m_Slot(slot)
 	{
 		//The descriptor for a static constant buffer 
 		D3D11_BUFFER_DESC bufferDesc = {};
@@ -199,7 +200,8 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, &constantData, &m_ConstantBuffer))
 	}
 
-	ConstantBuffer::ConstantBuffer(uint sizeData)
+	ConstantBuffer::ConstantBuffer(uint sizeData, uint slot)
+		: m_Slot(slot)
 	{
 		//The descriptor for a static constant buffer 
 		D3D11_BUFFER_DESC bufferDesc = {};
@@ -212,20 +214,6 @@ namespace Atlas
 
 		//This creates the constant buffer element
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, nullptr, &m_ConstantBuffer))
-	}
-
-	std::shared_ptr<ConstantBuffer> ConstantBuffer::Create(void* data, uint sizeData)
-	{
-		//This simply creates the shared ptr as they are unique elements
-		//And should never be cloned
-		return std::make_shared<ConstantBuffer>(data, sizeData);
-	}
-
-	std::shared_ptr<ConstantBuffer> ConstantBuffer::Create(uint sizeData)
-	{
-		//This simply creates the shared ptr as they are unique elements
-		//And should never be cloned
-		return std::make_shared<ConstantBuffer>(sizeData);
 	}
 
 	void ConstantBuffer::ImmidiateUpdate(void* data, uint sizeData)
@@ -258,24 +246,24 @@ namespace Atlas
 	void VertexConstantBuffer::ImmidiateBind()
 	{
 		//Binds the element to the vertex shader
-		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->VSSetConstantBuffers(0, 1, m_ConstantBuffer.GetAddressOf()));
+		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->VSSetConstantBuffers(m_Slot, 1, m_ConstantBuffer.GetAddressOf()));
 	}
 
 	void VertexConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
 	{
 		//Binds the element to the vertex shader
-		AT_CHECK_GFX_INFO_VOID(context->VSSetConstantBuffers(0, 1, m_ConstantBuffer.GetAddressOf()));
+		AT_CHECK_GFX_INFO_VOID(context->VSSetConstantBuffers(m_Slot, 1, m_ConstantBuffer.GetAddressOf()));
 	}
 
 	//Pixel Shader Constant Buffer
 	void PixelConstantBuffer::ImmidiateBind()
 	{
 		//Binds the element to the pixel shader
-		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetConstantBuffers(0, 1, m_ConstantBuffer.GetAddressOf()));
+		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetConstantBuffers(m_Slot, 1, m_ConstantBuffer.GetAddressOf()));
 	}
 	void PixelConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
 	{
 		//Binds the element to the pixel shader
-		AT_CHECK_GFX_INFO_VOID(context->PSSetConstantBuffers(0, 1, m_ConstantBuffer.GetAddressOf()));
+		AT_CHECK_GFX_INFO_VOID(context->PSSetConstantBuffers(m_Slot, 1, m_ConstantBuffer.GetAddressOf()));
 	}
 }

@@ -5,16 +5,25 @@
 
 namespace Atlas
 {
+	struct NormalVerticies
+	{
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT3 normal;
+	};
+
 	//A wrapper over a list of indexed triangles, used to get a shape
 	class IndexedTriangleList
 	{
 	public:
 		//Constructor, takes a vector of verticies and a vector of indicies
 		IndexedTriangleList(std::vector<DirectX::XMFLOAT3> verteciesIn, std::vector<unsigned short> indeciesIn)
-			:m_Vertecies(std::move(verteciesIn)), m_Indecies(std::move(indeciesIn))
+			:m_Vertecies(verteciesIn), m_Indecies(std::move(indeciesIn))
 		{
 			AT_CORE_ASSERT(m_Vertecies.size() > 2, "Too few vertecies");
 			AT_CORE_ASSERT(m_Indecies.size() % 3 == 0, "The objects rappresented are not triangles");
+
+			for (auto vertex : m_Vertecies)
+				m_NormalsVerticies.push_back({ vertex, {0, 0, 0} });
 		}
 
 		//Allows you to transfom all of the verticies by a matrix
@@ -26,13 +35,35 @@ namespace Atlas
 				DirectX::XMStoreFloat3(&vertex, DirectX::XMVector3Transform(position, transform));
 			}
 		}
+
+		void SetNormalsIndependentFlat()
+		{
+			AT_CORE_ASSERT(m_Indecies.size() % 3 == 0 && m_Indecies.size() > 0, "Invalid Result");
+			for (size_t i = 0; i < m_Indecies.size(); i += 3)
+			{
+				auto& v0 = m_NormalsVerticies[m_Indecies[i]];
+				auto& v1 = m_NormalsVerticies[m_Indecies[i + 1]];
+				auto& v2 = m_NormalsVerticies[m_Indecies[i + 2]];
+				const auto p0 = DirectX::XMLoadFloat3(&v0.position);
+				const auto p1 = DirectX::XMLoadFloat3(&v1.position);
+				const auto p2 = DirectX::XMLoadFloat3(&v2.position);
+
+				const auto n = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(p1, p0), DirectX::XMVectorSubtract(p2, p0)));
+
+				DirectX::XMStoreFloat3(&v0.normal, n);
+				DirectX::XMStoreFloat3(&v1.normal, n);
+				DirectX::XMStoreFloat3(&v2.normal, n);
+			}
+		}
 		
 		//Getters for the data
 		std::vector<DirectX::XMFLOAT3> GetVertecies() { return m_Vertecies; }
+		std::vector<NormalVerticies> GetNormalVertecies() { return m_NormalsVerticies; }
 		std::vector<unsigned short> GetIndecies() { return m_Indecies; }
 		
 	private:
 		std::vector<DirectX::XMFLOAT3> m_Vertecies;
+		std::vector<NormalVerticies> m_NormalsVerticies;
 		std::vector<unsigned short> m_Indecies;
 	};
 

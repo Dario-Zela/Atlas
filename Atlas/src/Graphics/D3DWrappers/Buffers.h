@@ -57,13 +57,9 @@ namespace Atlas
 	{
 	public:
 		//Constructor, takes in the pointer to the data, the size of the data
-		ConstantBuffer(void* data, uint sizeData);
+		ConstantBuffer(void* data, uint sizeData, uint slot);
 		//Deferred constructor, takes in the size of the data only
-		ConstantBuffer(uint sizeData);
-
-		//The wrappers over the constructors to get a shared ptr
-		static std::shared_ptr<ConstantBuffer> Create(void* data, uint sizeData);
-		static std::shared_ptr<ConstantBuffer> Create(uint sizeData);
+		ConstantBuffer(uint sizeData, uint slot);
 
 		void ImmidiateUpdate(void* data, uint sizeData);		//Updates the constant buffer
 		void Update(void* data, uint sizeData, wrl::ComPtr<ID3D11DeviceContext> context);		//Updates the constant buffer
@@ -72,6 +68,7 @@ namespace Atlas
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override {}
 	protected:
 		wrl::ComPtr<ID3D11Buffer> m_ConstantBuffer;
+		uint m_Slot;
 	};
 
 	//A constant buffer used in the vertex shader
@@ -79,11 +76,15 @@ namespace Atlas
 	{
 	public:
 		//The constructors are wrapper over the general constant buffer constructors
-		VertexConstantBuffer(void* data, uint sizeData) : ConstantBuffer(data, sizeData) {}
-		VertexConstantBuffer(uint sizeData) : ConstantBuffer(sizeData) {}
+		VertexConstantBuffer(void* data, uint sizeData, uint slot = 0) : ConstantBuffer(data, sizeData, slot) {}
+		VertexConstantBuffer(uint sizeData, uint slot = 0) : ConstantBuffer(sizeData, slot) {}
+		
+		static std::shared_ptr<VertexConstantBuffer> Create(void* data, uint sizeData, uint slot = 0) { return std::make_shared<VertexConstantBuffer>(data, sizeData, slot); }
+		static std::shared_ptr<VertexConstantBuffer> Create(uint sizeData, uint slot = 0) { return std::make_shared<VertexConstantBuffer>(sizeData, slot); }
 
 		void ImmidiateBind() override;		//This binds the buffer to the vertex shader
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
+
 	};
 
 	//A constant buffer used in the pixel shader
@@ -91,8 +92,11 @@ namespace Atlas
 	{
 	public:
 		//The constructors are wrapper over the general constant buffer constructors
-		PixelConstantBuffer(void* data, uint sizeData) : ConstantBuffer(data, sizeData) {}
-		PixelConstantBuffer(uint sizeData) : ConstantBuffer(sizeData) {}
+		PixelConstantBuffer(void* data, uint sizeData, uint slot) : ConstantBuffer(data, sizeData, slot) {}
+		PixelConstantBuffer(uint sizeData, uint slot) : ConstantBuffer(sizeData, slot) {}
+
+		static std::shared_ptr<PixelConstantBuffer> Create(void* data, uint sizeData, uint slot = 0) { return std::make_shared<PixelConstantBuffer>(data, sizeData, slot); }
+		static std::shared_ptr<PixelConstantBuffer> Create(uint sizeData, uint slot = 0) { return std::make_shared<PixelConstantBuffer>(sizeData, slot); }
 
 		void ImmidiateBind() override;		//This binds the buffer to the pixel shader
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;

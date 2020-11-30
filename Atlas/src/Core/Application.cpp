@@ -41,10 +41,10 @@ namespace Atlas
 	Application::Application(std::string title, uint width, uint height)
 		: m_Minimised(false), m_EventManager(), m_Window(&m_EventManager)
 	{
-		//#ifdef AT_DEBUG
-		//	HWND hWnd = GetConsoleWindow();
-		//	ShowWindow(hWnd, SW_HIDE);
-		//#endif // AT_DEBUG
+		#ifndef AT_DEBUG
+			HWND hWnd = GetConsoleWindow();
+			ShowWindow(hWnd, SW_HIDE);
+		#endif // AT_DEBUG
 
 
 		AT_CORE_INFO("Initialising the window")
@@ -102,9 +102,9 @@ namespace Atlas
 				}
 
 				//In debug mode the title of the window is changed to the FPS
-				#ifdef AT_DEBUG
-					SetWindowTitle("FPS: " + std::to_string(1.0f / timeStep));
-				#endif
+				//#ifdef AT_DEBUG
+					SetWindowTitle("FPS: " + std::to_string(1 / timeStep));
+				//#endif
 
 				//Update the minimised flag
 				m_Minimised = m_Window.IsMinimised();

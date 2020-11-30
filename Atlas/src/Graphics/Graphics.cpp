@@ -94,6 +94,11 @@ namespace Atlas
 		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->DrawIndexed(indexCount, 0, 0));
 	}
 
+	void Graphics::Draw(uint vertexCount, wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		AT_CHECK_GFX_INFO_VOID(context->Draw(vertexCount, 0));
+	}
+
 	void Graphics::DrawIndexed(uint indexCount, wrl::ComPtr<ID3D11DeviceContext> context)
 	{
 		AT_CHECK_GFX_INFO_VOID(context->DrawIndexed(indexCount, 0, 0));
@@ -102,10 +107,5 @@ namespace Atlas
 	bool Graphics::IsInitialised()
 	{
 		return s_Instance;
-	}
-
-	void Graphics::Draw(uint vertexCount, wrl::ComPtr<ID3D11DeviceContext> context)
-	{
-		AT_CHECK_GFX_INFO_VOID(context->Draw(vertexCount, 0));
 	}
 }

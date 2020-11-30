@@ -19,3 +19,4 @@
 #include "Graphics/D3DWrappers/SimpleMeshCreator.h"
 #include "Graphics/D3DWrappers/TransformationConstantBuffer.h"
 #include "Core/ThreadPool.h"
+#include "Graphics\D3DWrappers\Texture.h"

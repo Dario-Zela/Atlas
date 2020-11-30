@@ -44,7 +44,7 @@ namespace Atlas
 
 	void ThreadPool::Sync()
 	{
-		while (!m_Jobs.empty()) if(m_Mutex.m_Max == 5) std::cout << "Await" <<std::endl;
+		while (!m_Jobs.empty());
 		while (!m_Mutex.IsSynced());
 	}
 

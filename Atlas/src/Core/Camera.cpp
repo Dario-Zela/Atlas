@@ -31,7 +31,7 @@ namespace Atlas
 		delete[] m_Rotation;
 	}
 
-	void Camera::Update()
+	void Camera::Update(TimeStep timeStep)
 	{
 		//If the user presses the Right mouse button
 		if (Input::IsMouseButtonPressed(MK_RBUTTON)) 
@@ -60,27 +60,27 @@ namespace Atlas
 			//This translates the position depending on which key has been pressed
 			if (Input::IsKeyPressed('W'))
 			{
-				Translate({ 0,0,1 });
+				Translate({ 0,0,timeStep });
 			}
 			else if (Input::IsKeyPressed('S'))
 			{
-				Translate({ 0,0,-1 });
+				Translate({ 0,0,-timeStep });
 			}
 			if (Input::IsKeyPressed('A'))
 			{
-				Translate({ -1,0,0 });
+				Translate({ -timeStep,0,0 });
 			}
 			else if (Input::IsKeyPressed('D'))
 			{
-				Translate({ 1,0,0 });
+				Translate({ timeStep,0,0 });
 			}
 			if (Input::IsKeyPressed('Q'))
 			{
-				Translate({ 0,1,0 });
+				Translate({ 0,timeStep,0 });
 			}
 			else if (Input::IsKeyPressed('E'))
 			{
-				Translate({ 0,-1,0 });
+				Translate({ 0,-timeStep,0 });
 			}
 
 		}
