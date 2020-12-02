@@ -55,7 +55,6 @@ public:
 			pass->SetSinkLink("depthStencil", "ClearPass.depthStencil");
 			AddPass(std::move(pass));
 		}
-
 		SetGlobalSinkTarget("backBuffer", "LambertianPass.renderTarget");
 		Finalise();
 	}

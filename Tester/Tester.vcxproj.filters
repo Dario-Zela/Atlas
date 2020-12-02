@@ -32,5 +32,9 @@
     <FxCompile Include="CubeVS.hlsl" />
     <FxCompile Include="LightVS.hlsl" />
     <FxCompile Include="CubePS.hlsl" />
+    <FxCompile Include="WindowPS.hlsl" />
+    <FxCompile Include="WindowVS.hlsl" />
+    <FxCompile Include="BrickWallVS.hlsl" />
+    <FxCompile Include="BrickWallPS.hlsl" />
   </ItemGroup>
 </Project>

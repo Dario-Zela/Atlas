@@ -12,7 +12,7 @@ namespace Atlas
 		void Execute(wrl::ComPtr<ID3D11DeviceContext> context) override;
 		void ExecuteImmidiate() override;
 		void Reset() override { m_Jobs.clear(); }
-	private:
+	protected:
 		std::vector<Job> m_Jobs;
 	};
 }

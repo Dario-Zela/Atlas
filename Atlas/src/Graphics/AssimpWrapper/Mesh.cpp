@@ -362,6 +362,9 @@ namespace Atlas
 
 			m_Transform = accumulatedTransform;
 
+			if ((settings.proprietiesFlags & (1 << 18)) != 0)
+				AddBindable(VertexConstantBuffer::Create(&m_Transform, sizeof(m_Transform), 1));
+
 			//Make the set flag to true
 			m_Set = true;
 		}

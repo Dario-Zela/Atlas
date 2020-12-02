@@ -1,15 +1,9 @@
-struct SV_OUT
-{
-	float4 pos : SV_POSITION;
-};
-
 cbuffer SV_IN
 {
 	matrix transform;
 };
 
-SV_OUT main(float3 pos : POSITION)
+float4 main(float3 pos : POSITION) : SV_POSITION
 {
-	SV_OUT vso = { mul(float4(pos, 1.0f) , transform)};
-	return vso;
+    return mul(float4(pos, 1.0f), transform);
 }

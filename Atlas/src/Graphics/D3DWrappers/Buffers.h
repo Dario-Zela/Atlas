@@ -69,6 +69,7 @@ namespace Atlas
 	protected:
 		wrl::ComPtr<ID3D11Buffer> m_ConstantBuffer;
 		uint m_Slot;
+		bool mod = false;
 	};
 
 	//A constant buffer used in the vertex shader
@@ -97,7 +98,6 @@ namespace Atlas
 
 		static std::shared_ptr<PixelConstantBuffer> Create(void* data, uint sizeData, uint slot = 0) { return std::make_shared<PixelConstantBuffer>(data, sizeData, slot); }
 		static std::shared_ptr<PixelConstantBuffer> Create(uint sizeData, uint slot = 0) { return std::make_shared<PixelConstantBuffer>(sizeData, slot); }
-
 		void ImmidiateBind() override;		//This binds the buffer to the pixel shader
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	};

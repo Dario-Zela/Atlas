@@ -60,6 +60,7 @@ namespace Atlas
 		SHININESS = 1 << 15,					//Defines the shininess of a phong-shaded material. This is actually the exponent of the phong specular equation
 		SHININESS_STRENGTH = 1 << 16,			//Scales the specular color of the material.
 		REFRACTI = 1 << 17,						//Defines the Index Of Refraction for the material. That's not supported by most file formats.
+		MODEL = 1 << 18							//Gets the saves the model matrix in slot 1
 	};
 
 	//////////////////////////////////////////////////////////////////

@@ -224,7 +224,7 @@ namespace Atlas
 
 		//Write over the data
 		memcpy(mappedResource.pData, data, sizeData);
-		
+
 		//Map the results to the element
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->Unmap(m_ConstantBuffer.Get(), 0));
 	}
