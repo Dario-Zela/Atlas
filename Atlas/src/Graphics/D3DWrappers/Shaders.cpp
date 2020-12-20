@@ -117,4 +117,220 @@ namespace Atlas
 		//Binds the pixel shader
 		AT_CHECK_GFX_INFO_VOID(context->PSSetShader(m_PixelShader.Get(), nullptr, 0))
 	}
+
+	//Domain Shader
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	DomainShader::DomainShader(std::string path)
+	{
+		//This converts the easier to call string format into a const wchar_t array
+		//As it is what is used in the D3DReadFileToBlob function
+
+		std::wstring widePath = L"";
+		for (char c : path)
+			widePath += (wchar_t)c;
+
+		//Creates the blob and then uses it to create the shader element
+		AT_CHECK_GFX_INFO(D3DReadFileToBlob(widePath.c_str(), &m_Blob))
+			AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateDomainShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_DomainShader))
+	}
+
+	std::shared_ptr<DomainShader> DomainShader::Create(std::string path)
+	{
+		//Get the UID and get the pointer to the data
+		std::string UID = GenerateUID(path);
+		auto test = BindableLib::Resolve(UID);
+
+		//If it isn't nullptr, cast it and return it
+		if (test)
+		{
+			return std::static_pointer_cast<DomainShader>(test);
+		}
+		//else create a shader and add it to the library before returning it
+		else
+		{
+			auto pixelShader = std::make_shared<DomainShader>(path);
+			BindableLib::Add(UID, pixelShader);
+			return std::static_pointer_cast<DomainShader>(BindableLib::Resolve(UID));
+		}
+	}
+
+	std::string DomainShader::GenerateUID(std::string path)
+	{
+		return std::string(typeid(DomainShader).name()) + '_' + path;
+	}
+
+	void DomainShader::ImmidiateBind()
+	{
+		//Binds the pixel shader
+		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->DSSetShader(m_DomainShader.Get(), nullptr, 0))
+	}
+
+	void DomainShader::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the pixel shader
+		AT_CHECK_GFX_INFO_VOID(context->DSSetShader(m_DomainShader.Get(), nullptr, 0))
+	}
+
+	//Hull Shader
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	HullShader::HullShader(std::string path)
+	{
+		//This converts the easier to call string format into a const wchar_t array
+//As it is what is used in the D3DReadFileToBlob function
+
+		std::wstring widePath = L"";
+		for (char c : path)
+			widePath += (wchar_t)c;
+
+		//Creates the blob and then uses it to create the shader element
+		AT_CHECK_GFX_INFO(D3DReadFileToBlob(widePath.c_str(), &m_Blob))
+			AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateHullShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_HullShader))
+	}
+
+	std::shared_ptr<HullShader> HullShader::Create(std::string path)
+	{
+		//Get the UID and get the pointer to the data
+		std::string UID = GenerateUID(path);
+		auto test = BindableLib::Resolve(UID);
+
+		//If it isn't nullptr, cast it and return it
+		if (test)
+		{
+			return std::static_pointer_cast<HullShader>(test);
+		}
+		//else create a shader and add it to the library before returning it
+		else
+		{
+			auto pixelShader = std::make_shared<HullShader>(path);
+			BindableLib::Add(UID, pixelShader);
+			return std::static_pointer_cast<HullShader>(BindableLib::Resolve(UID));
+		}
+	}
+
+	std::string HullShader::GenerateUID(std::string path)
+	{
+		return std::string();
+	}
+
+	void HullShader::ImmidiateBind()
+	{
+		//Binds the pixel shader
+		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->HSSetShader(m_HullShader.Get(), nullptr, 0))
+	}
+
+	void HullShader::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the pixel shader
+		AT_CHECK_GFX_INFO_VOID(context->HSSetShader(m_HullShader.Get(), nullptr, 0))
+	}
+
+	//Geometry Shader
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	GeometryShader::GeometryShader(std::string path)
+	{
+		//This converts the easier to call string format into a const wchar_t array
+//As it is what is used in the D3DReadFileToBlob function
+
+		std::wstring widePath = L"";
+		for (char c : path)
+			widePath += (wchar_t)c;
+
+		//Creates the blob and then uses it to create the shader element
+		AT_CHECK_GFX_INFO(D3DReadFileToBlob(widePath.c_str(), &m_Blob))
+			AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateGeometryShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_GeometryShader))
+	}
+
+	std::shared_ptr<GeometryShader> GeometryShader::Create(std::string path)
+	{
+		//Get the UID and get the pointer to the data
+		std::string UID = GenerateUID(path);
+		auto test = BindableLib::Resolve(UID);
+
+		//If it isn't nullptr, cast it and return it
+		if (test)
+		{
+			return std::static_pointer_cast<GeometryShader>(test);
+		}
+		//else create a shader and add it to the library before returning it
+		else
+		{
+			auto pixelShader = std::make_shared<GeometryShader>(path);
+			BindableLib::Add(UID, pixelShader);
+			return std::static_pointer_cast<GeometryShader>(BindableLib::Resolve(UID));
+		}
+	}
+
+	std::string GeometryShader::GenerateUID(std::string path)
+	{
+		return std::string();
+	}
+
+	void GeometryShader::ImmidiateBind()
+	{
+		//Binds the pixel shader
+		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->GSSetShader(m_GeometryShader.Get(), nullptr, 0))
+	}
+
+	void GeometryShader::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the pixel shader
+		AT_CHECK_GFX_INFO_VOID(context->GSSetShader(m_GeometryShader.Get(), nullptr, 0))
+	}
+
+	//Compute Shader
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	ComputeShader::ComputeShader(std::string path)
+	{
+		//This converts the easier to call string format into a const wchar_t array
+//As it is what is used in the D3DReadFileToBlob function
+
+		std::wstring widePath = L"";
+		for (char c : path)
+			widePath += (wchar_t)c;
+
+		//Creates the blob and then uses it to create the shader element
+		AT_CHECK_GFX_INFO(D3DReadFileToBlob(widePath.c_str(), &m_Blob))
+			AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateComputeShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_ComputeShader))
+	}
+
+	std::shared_ptr<ComputeShader> ComputeShader::Create(std::string path)
+	{
+		//Get the UID and get the pointer to the data
+		std::string UID = GenerateUID(path);
+		auto test = BindableLib::Resolve(UID);
+
+		//If it isn't nullptr, cast it and return it
+		if (test)
+		{
+			return std::static_pointer_cast<ComputeShader>(test);
+		}
+		//else create a shader and add it to the library before returning it
+		else
+		{
+			auto pixelShader = std::make_shared<ComputeShader>(path);
+			BindableLib::Add(UID, pixelShader);
+			return std::static_pointer_cast<ComputeShader>(BindableLib::Resolve(UID));
+		}
+	}
+
+	std::string ComputeShader::GenerateUID(std::string path)
+	{
+		return std::string();
+	}
+
+	void ComputeShader::ImmidiateBind()
+	{
+		//Binds the pixel shader
+		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->CSSetShader(m_ComputeShader.Get(), nullptr, 0))
+	}
+
+	void ComputeShader::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	{
+		//Binds the pixel shader
+		AT_CHECK_GFX_INFO_VOID(context->CSSetShader(m_ComputeShader.Get(), nullptr, 0))
+	}
 }

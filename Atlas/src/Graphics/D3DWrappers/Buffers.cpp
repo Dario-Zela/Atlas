@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Buffers.h"
 #include "Graphics/BindableLib.h"
+#include "Graphics\D3DWrappers\Targets.h"
 
 #include "Graphics/DxgiInfoManager.h"
 
@@ -180,9 +181,35 @@ namespace Atlas
 	//Constant Buffer
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	ConstantBuffer::ConstantBuffer(void* data, uint sizeData, uint slot)
+	ConstantBuffer::ConstantBuffer(void* data, uint sizeData, uint targets, uint slot)
 		: m_Slot(slot)
 	{
+		for (int i = 0; i < MAX_TARGETS; i++)
+		{
+			if ((targets & (1 << i)) != 0)
+				switch (i)
+				{
+				case 0:
+					m_Binds.push_back(&ID3D11DeviceContext::VSSetConstantBuffers);
+					break;
+				case 1:
+					m_Binds.push_back(&ID3D11DeviceContext::PSSetConstantBuffers);
+					break;
+				case 2:
+					m_Binds.push_back(&ID3D11DeviceContext::DSSetConstantBuffers);
+					break;
+				case 3:
+					m_Binds.push_back(&ID3D11DeviceContext::HSSetConstantBuffers);
+					break;
+				case 4:
+					m_Binds.push_back(&ID3D11DeviceContext::GSSetConstantBuffers);
+					break;
+				case 5:
+					m_Binds.push_back(&ID3D11DeviceContext::CSSetConstantBuffers);
+					break;
+				}
+		}
+
 		//The descriptor for a static constant buffer 
 		D3D11_BUFFER_DESC bufferDesc = {};
 		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -200,9 +227,35 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, &constantData, &m_ConstantBuffer))
 	}
 
-	ConstantBuffer::ConstantBuffer(uint sizeData, uint slot)
+	ConstantBuffer::ConstantBuffer(uint sizeData, uint targets, uint slot)
 		: m_Slot(slot)
 	{
+		for (int i = 0; i < MAX_TARGETS; i++)
+		{
+			if ((targets & (1 << i)) != 0)
+				switch (i)
+				{
+				case 0:
+					m_Binds.push_back(&ID3D11DeviceContext::VSSetConstantBuffers);
+					break;
+				case 1:
+					m_Binds.push_back(&ID3D11DeviceContext::PSSetConstantBuffers);
+					break;
+				case 2:
+					m_Binds.push_back(&ID3D11DeviceContext::DSSetConstantBuffers);
+					break;
+				case 3:
+					m_Binds.push_back(&ID3D11DeviceContext::HSSetConstantBuffers);
+					break;
+				case 4:
+					m_Binds.push_back(&ID3D11DeviceContext::GSSetConstantBuffers);
+					break;
+				case 5:
+					m_Binds.push_back(&ID3D11DeviceContext::CSSetConstantBuffers);
+					break;
+				}
+		}
+
 		//The descriptor for a static constant buffer 
 		D3D11_BUFFER_DESC bufferDesc = {};
 		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -216,8 +269,78 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, nullptr, &m_ConstantBuffer))
 	}
 
+	std::shared_ptr<ConstantBuffer> ConstantBuffer::Create(void* data, uint sizeData, std::string tag, uint targets, uint slot)
+	{
+		//Get the UID and get the pointer to the data
+		std::string UID = GenerateUID(tag);
+		auto test = BindableLib::Resolve(UID);
+
+		//If it isn't nullptr, cast it and return it
+		if (test)
+		{
+			return std::static_pointer_cast<ConstantBuffer>(test);
+		}
+		//else create a index buffer and add it to the library before returning it
+		else
+		{
+			auto indexBuffer = std::make_shared<ConstantBuffer>(data, sizeData, targets, slot);
+			BindableLib::Add(UID, indexBuffer);
+			return std::static_pointer_cast<ConstantBuffer>(BindableLib::Resolve(UID));
+		}
+	}
+
+	std::shared_ptr<ConstantBuffer> ConstantBuffer::Create(uint sizeData, std::string tag, uint targets, uint slot)
+	{
+		//Get the UID and get the pointer to the data
+		std::string UID = GenerateUID(tag);
+		auto test = BindableLib::Resolve(UID);
+
+		//If it isn't nullptr, cast it and return it
+		if (test)
+		{
+			return std::static_pointer_cast<ConstantBuffer>(test);
+		}
+		//else create a index buffer and add it to the library before returning it
+		else
+		{
+			auto indexBuffer = std::make_shared<ConstantBuffer>(sizeData, targets, slot);
+			BindableLib::Add(UID, indexBuffer);
+			return std::static_pointer_cast<ConstantBuffer>(BindableLib::Resolve(UID));
+		}
+	}
+
+	std::shared_ptr<ConstantBuffer> ConstantBuffer::Get(std::string tag)
+	{
+		//Get the UID and get the pointer to the data
+		std::string UID = GenerateUID(tag);
+		auto test = BindableLib::Resolve(UID);
+
+		//If it isn't nullptr, cast it and return it
+		if (test)
+		{
+			return std::static_pointer_cast<ConstantBuffer>(test);
+		}
+		//else return nullptr
+		else
+		{
+			//Log the lack of buffer
+			AT_WARN("There is no constsnt buffer that uses the tag {0}", tag)
+				return nullptr;
+		}
+	}
+
+	std::string ConstantBuffer::GenerateUID(std::string tag)
+	{
+		return std::string(typeid(IndexBuffer).name()) + '_' + tag;
+	}
+
 	void ConstantBuffer::ImmidiateUpdate(void* data, uint sizeData)
 	{
+		//Lock the thread so that it cannot be
+		//Edited twice at the same time
+		//It will be unlocked only after a bind
+		m_Mutex.lock();
+
 		//Get access to the buffer element's resources
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		AT_CHECK_GFX_INFO(Graphics::GetContext()->Map(m_ConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
@@ -231,6 +354,10 @@ namespace Atlas
 
 	void ConstantBuffer::Update(void* data, uint sizeData, wrl::ComPtr<ID3D11DeviceContext> context)
 	{
+		//Lock the thread so that it cannot be
+		//Edited twice at the same time
+		m_Mutex.lock();
+
 		//Get access to the buffer element's resources
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		AT_CHECK_GFX_INFO(context->Map(m_ConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
@@ -242,28 +369,24 @@ namespace Atlas
 		AT_CHECK_GFX_INFO_VOID(context->Unmap(m_ConstantBuffer.Get(), 0));
 	}
 
-	//Vertex Shader Constant Buffer
-	void VertexConstantBuffer::ImmidiateBind()
+	void ConstantBuffer::ImmidiateBind()
 	{
-		//Binds the element to the vertex shader
-		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->VSSetConstantBuffers(m_Slot, 1, m_ConstantBuffer.GetAddressOf()));
+		//Binds the element to the shaders
+		for (auto& bind : m_Binds)
+		{
+			AT_CHECK_GFX_INFO_VOID(bind(Graphics::GetContext().Get(), m_Slot, 1, m_ConstantBuffer.GetAddressOf()))
+		}
+
+		//If the mutex is locked, unlock it
+		m_Mutex.unlock();
 	}
 
-	void VertexConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
+	void ConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
 	{
-		//Binds the element to the vertex shader
-		AT_CHECK_GFX_INFO_VOID(context->VSSetConstantBuffers(m_Slot, 1, m_ConstantBuffer.GetAddressOf()));
-	}
-
-	//Pixel Shader Constant Buffer
-	void PixelConstantBuffer::ImmidiateBind()
-	{
-		//Binds the element to the pixel shader
-		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetConstantBuffers(m_Slot, 1, m_ConstantBuffer.GetAddressOf()));
-	}
-	void PixelConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
-	{
-		//Binds the element to the pixel shader
-		AT_CHECK_GFX_INFO_VOID(context->PSSetConstantBuffers(m_Slot, 1, m_ConstantBuffer.GetAddressOf()));
+		//Binds the element to the shaders
+		for (auto& bind : m_Binds)
+		{
+			AT_CHECK_GFX_INFO_VOID(bind(context.Get(), m_Slot, 1, m_ConstantBuffer.GetAddressOf()))
+		}
 	}
 }

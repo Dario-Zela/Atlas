@@ -6,6 +6,7 @@
 #include "Graphics/D3DWrappers/Texture.h"
 #include "Graphics/D3DWrappers/TransformationConstantBuffer.h"
 #include "Graphics/D3DWrappers/Topology.h"
+#include "Graphics\D3DWrappers\Targets.h"
 
 #include <filesystem>
 
@@ -104,6 +105,9 @@ namespace Atlas
 			//Else clear the bindables
 			ClearBindables();
 
+			uint propertiesFlags = settings.perMeshProperties.find(m_Name) == settings.perMeshProperties.end() ? settings.proprietiesFlags : settings.perMeshProperties[m_Name];
+			uint textureFlags = settings.perMeshTextures.find(m_Name) == settings.perMeshTextures.end() ? settings.textureFlags : settings.perMeshTextures[m_Name];
+
 			//Create the vertex and a reference to needed
 			//settings
 			Vertex vertex;
@@ -117,7 +121,7 @@ namespace Atlas
 				proprieties[i - 1] = false;
 
 				//And add the appropriate data
-				if ((settings.proprietiesFlags & (1 << i)) != 0)
+				if ((propertiesFlags & (1 << i)) != 0)
 				{
 					vertex.AddAttribute(s_ProprietiesData.Data[i]);
 					proprieties[i - 1] = true;
@@ -183,7 +187,7 @@ namespace Atlas
 			for (uint i = 5; i < MAX_MESH_FLAGS_SIZE; i++)
 			{
 				//If the propriety has been activated
-				if ((settings.proprietiesFlags & (1 << i)) != 0)
+				if ((propertiesFlags & (1 << i)) != 0)
 				{
 					switch (i)
 					{
@@ -322,23 +326,23 @@ namespace Atlas
 			}
 
 			//If the stide is not 0 add a vertex constant buffer
-			if (strideCBuff != 0) AddBindable(VertexConstantBuffer::Create(cbuffData.data(), strideCBuff));
+			if (strideCBuff != 0) AddBindable(ConstantBuffer::Create(cbuffData.data(), strideCBuff, m_Name + "Proprieties", (uint)TargetShader::VertexShader));
 
 			//The index buffer is created
 			AddBindable(IndexBuffer::Create(m_Indecies.data(), (uint)m_Indecies.size() * sizeof(unsigned short), m_Name));
 
 			//Checks that the textures are added propperly
-			AT_CORE_ASSERT(!(settings.textureFlags > 0 && !proprieties[1]), "Tried to request textures without adding texture coordinates");
-			AT_CORE_ASSERT(!(settings.textureFlags == 0 && proprieties[1]), "Tried to request textures without specifying what textures");
+			AT_CORE_ASSERT(!(textureFlags > 0 && !proprieties[1]), "Tried to request textures without adding texture coordinates");
+			AT_CORE_ASSERT(!(textureFlags == 0 && proprieties[1]), "Tried to request textures without specifying what textures");
 
 			//Add ther respective textures
-			if (proprieties[1] && settings.textureFlags > 0)
+			if (proprieties[1] && textureFlags > 0)
 			{
 				//The slot is incremented to allow for more then one texture at a time
 				int slot = 0;
 				for (int i = 0; i < MAX_MESH_FLAGS_SIZE; i++)
 				{
-					if ((settings.textureFlags & 1 << i) == 1 << i)
+					if ((textureFlags & 1 << i) == 1 << i)
 					{
 						//Texture and sampler are bound
 						AddBindable(GetTexture((aiTextureType)i, slot, settings));
@@ -353,18 +357,18 @@ namespace Atlas
 			//If the view matrix is available, it is added to the transformation constant buffer
 			if (DirectX::XMMatrixIsNaN(settings.viewMatrix))
 			{
-				AddBindable(TransformationConstantBuffer::Create(*this, DirectX::XMMatrixIdentity()));
+				AddBindable(TransformationConstantBuffer::Create(*this, DirectX::XMMatrixIdentity(), strideCBuff != 0 ? 1 : 0));
 			}
 			else
 			{
-				AddBindable(TransformationConstantBuffer::Create(*this, settings.viewMatrix));
+				AddBindable(TransformationConstantBuffer::Create(*this, settings.viewMatrix, strideCBuff != 0 ? 1 : 0));
 			}
 
 			m_Transform = accumulatedTransform;
 
-			if ((settings.proprietiesFlags & (1 << 18)) != 0)
-				AddBindable(VertexConstantBuffer::Create(&m_Transform, sizeof(m_Transform), 1));
-
+			if ((propertiesFlags & (1 << 18)) != 0)
+				AddBindable(ConstantBuffer::Create(&m_Transform, sizeof(m_Transform), m_Name + "ModelTransform", (uint)TargetShader::VertexShader, strideCBuff != 0 ? 2 : 1));
+			
 			//Make the set flag to true
 			m_Set = true;
 		}

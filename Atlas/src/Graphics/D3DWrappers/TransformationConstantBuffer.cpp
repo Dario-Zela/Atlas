@@ -1,21 +1,22 @@
 #include "pch.h"
 #include "TransformationConstantBuffer.h"
+#include "Targets.h"
 
 namespace Atlas
 {
-	TransformationConstantBuffer::TransformationConstantBuffer(Drawable& parent, DirectX::XMMATRIX projection)
+	TransformationConstantBuffer::TransformationConstantBuffer(Drawable& parent, DirectX::XMMATRIX projection, uint slot)
 		:m_Parent(parent), m_VertexBuffer(nullptr)
 	{
 		//Set the vertex constant buffer and the projection matrix
-		m_VertexBuffer = std::make_unique<VertexConstantBuffer>((uint)sizeof(DirectX::XMMATRIX));
+		m_VertexBuffer = std::make_unique<ConstantBuffer>((uint)sizeof(DirectX::XMMATRIX), (uint)TargetShader::VertexShader, slot);
 		m_Projection = projection;
 	}
 
-	std::shared_ptr<TransformationConstantBuffer> TransformationConstantBuffer::Create(Drawable& parent, DirectX::XMMATRIX projection)
+	std::shared_ptr<TransformationConstantBuffer> TransformationConstantBuffer::Create(Drawable& parent, DirectX::XMMATRIX projection, uint slot)
 	{
 		//This simply creates the shared ptr as they are unique elements
 		//And should never be cloned
-		return std::make_shared<TransformationConstantBuffer>(parent, projection);
+		return std::make_shared<TransformationConstantBuffer>(parent, projection, slot);
 	}
 
 	void TransformationConstantBuffer::ImmidiateBind()

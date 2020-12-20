@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics/Graphics.h"
 #include "Graphics/Bindable.h"
+#include <mutex>
 
 namespace Atlas
 {
@@ -53,52 +54,38 @@ namespace Atlas
 	//Constant Buffer types
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Wraps a d3d11 buffer object for use as a constant buffer
+
+	class TransformationConstantBuffer;
+
 	class ConstantBuffer : public Bindable
 	{
+		friend TransformationConstantBuffer;
 	public:
 		//Constructor, takes in the pointer to the data, the size of the data
-		ConstantBuffer(void* data, uint sizeData, uint slot);
+		ConstantBuffer(void* data, uint sizeData, uint targets, uint slot);
 		//Deferred constructor, takes in the size of the data only
-		ConstantBuffer(uint sizeData, uint slot);
+		ConstantBuffer(uint sizeData, uint targets, uint slot);
+
+		static std::shared_ptr<ConstantBuffer> Create(void* data, uint sizeData, std::string tag, uint targets = 0, uint slot = 0);
+		static std::shared_ptr<ConstantBuffer> Create(uint sizeData, std::string tag, uint targets = 0, uint slot = 0);
+
+		//Gets a vertex buffer if it has been previously constructed
+		//Returns nullptr otherwise
+		static std::shared_ptr<ConstantBuffer> Get(std::string tag);
+
+		//Generates the unique identifier for the buffer
+		static std::string GenerateUID(std::string tag);
 
 		void ImmidiateUpdate(void* data, uint sizeData);		//Updates the constant buffer
 		void Update(void* data, uint sizeData, wrl::ComPtr<ID3D11DeviceContext> context);		//Updates the constant buffer
 
-		void ImmidiateBind() override {};		//Binds the buffer
-		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override {}
+		void ImmidiateBind() override;		//Binds the buffer
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	protected:
+		std::mutex m_Mutex;
+		std::vector<std::function<void(ID3D11DeviceContext*, UINT, UINT, ID3D11Buffer* const*)>> m_Binds;
 		wrl::ComPtr<ID3D11Buffer> m_ConstantBuffer;
 		uint m_Slot;
 		bool mod = false;
-	};
-
-	//A constant buffer used in the vertex shader
-	class VertexConstantBuffer : public ConstantBuffer
-	{
-	public:
-		//The constructors are wrapper over the general constant buffer constructors
-		VertexConstantBuffer(void* data, uint sizeData, uint slot = 0) : ConstantBuffer(data, sizeData, slot) {}
-		VertexConstantBuffer(uint sizeData, uint slot = 0) : ConstantBuffer(sizeData, slot) {}
-		
-		static std::shared_ptr<VertexConstantBuffer> Create(void* data, uint sizeData, uint slot = 0) { return std::make_shared<VertexConstantBuffer>(data, sizeData, slot); }
-		static std::shared_ptr<VertexConstantBuffer> Create(uint sizeData, uint slot = 0) { return std::make_shared<VertexConstantBuffer>(sizeData, slot); }
-
-		void ImmidiateBind() override;		//This binds the buffer to the vertex shader
-		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
-
-	};
-
-	//A constant buffer used in the pixel shader
-	class PixelConstantBuffer : public ConstantBuffer
-	{
-	public:
-		//The constructors are wrapper over the general constant buffer constructors
-		PixelConstantBuffer(void* data, uint sizeData, uint slot) : ConstantBuffer(data, sizeData, slot) {}
-		PixelConstantBuffer(uint sizeData, uint slot) : ConstantBuffer(sizeData, slot) {}
-
-		static std::shared_ptr<PixelConstantBuffer> Create(void* data, uint sizeData, uint slot = 0) { return std::make_shared<PixelConstantBuffer>(data, sizeData, slot); }
-		static std::shared_ptr<PixelConstantBuffer> Create(uint sizeData, uint slot = 0) { return std::make_shared<PixelConstantBuffer>(sizeData, slot); }
-		void ImmidiateBind() override;		//This binds the buffer to the pixel shader
-		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	};
 }

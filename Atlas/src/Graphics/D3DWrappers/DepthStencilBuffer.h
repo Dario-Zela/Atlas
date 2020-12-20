@@ -7,6 +7,7 @@ namespace wrl = Microsoft::WRL;
 namespace Atlas
 {
 	class RenderTarget;
+	class Texture;
 
 	class DepthStencilBuffer : public Buffer
 	{
@@ -26,6 +27,8 @@ namespace Atlas
 		void ImmidiateBind();
 		void ImmidiateBind(RenderTarget* renderTarget);
 
+		std::shared_ptr<Texture> GetAsTexture(uint slot);
+
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context);
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context, RenderTarget* renderTarget);
 
@@ -36,5 +39,6 @@ namespace Atlas
 		wrl::ComPtr<ID3D11DepthStencilView> GetDepthStencilBuffer() { return m_DepthStencilView; }
 	private:
 		wrl::ComPtr<ID3D11DepthStencilView> m_DepthStencilView;
+		wrl::ComPtr<ID3D11Texture2D> m_Texture;
 	};
 }

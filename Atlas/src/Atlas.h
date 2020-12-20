@@ -20,3 +20,4 @@
 #include "Graphics/D3DWrappers/TransformationConstantBuffer.h"
 #include "Core/ThreadPool.h"
 #include "Graphics\D3DWrappers\Texture.h"
+#include "Graphics\D3DWrappers\Rasteriser.h"

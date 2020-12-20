@@ -3,12 +3,39 @@
 #include <stb_image.h>
 #include "Graphics/DxgiInfoManager.h"
 #include "Graphics/BindableLib.h"
+#include "Graphics\D3DWrappers\Targets.h"
 
 namespace Atlas 
 {
-    Texture::Texture(std::string path, bool mipMapping, uint slot)
+    Texture::Texture(std::string path, bool mipMapping, uint targets, uint slot)
         : m_Slot(slot)
     {
+        for (int i = 0; i < MAX_TARGETS; i++)
+        {
+            if ((targets & (1 << i)) != 0)
+                switch (i)
+                {
+                case 0:
+                    m_Binds.push_back(&ID3D11DeviceContext::VSSetShaderResources);
+                    break;            
+                case 1:               
+                    m_Binds.push_back(&ID3D11DeviceContext::PSSetShaderResources);
+                    break;            
+                case 2:               
+                    m_Binds.push_back(&ID3D11DeviceContext::DSSetShaderResources);
+                    break;            
+                case 3:               
+                    m_Binds.push_back(&ID3D11DeviceContext::HSSetShaderResources);
+                    break;           
+                case 4:              
+                    m_Binds.push_back(&ID3D11DeviceContext::GSSetShaderResources);
+                    break;          
+                case 5:             
+                    m_Binds.push_back(&ID3D11DeviceContext::CSSetShaderResources);
+                    break;
+                }
+        }
+
 		int width, height, channels;
         //Set stbi to flip the image vertically
 		stbi_set_flip_vertically_on_load(1);
@@ -55,9 +82,35 @@ namespace Atlas
 		stbi_image_free(data);
     }
 
-    Texture::Texture(uint width, uint height, void* data, uint slot)
+    Texture::Texture(uint width, uint height, void* data, uint targets, uint slot)
         : m_Slot(slot)
     {
+        for (int i = 0; i < MAX_TARGETS; i++)
+        {
+            if ((targets & (1 << i)) != 0)
+                switch (i)
+                {
+                case 0:
+                    m_Binds.push_back(&ID3D11DeviceContext::VSSetShaderResources);
+                    break;
+                case 1:
+                    m_Binds.push_back(&ID3D11DeviceContext::PSSetShaderResources);
+                    break;
+                case 2:
+                    m_Binds.push_back(&ID3D11DeviceContext::DSSetShaderResources);
+                    break;
+                case 3:
+                    m_Binds.push_back(&ID3D11DeviceContext::HSSetShaderResources);
+                    break;
+                case 4:
+                    m_Binds.push_back(&ID3D11DeviceContext::GSSetShaderResources);
+                    break;
+                case 5:
+                    m_Binds.push_back(&ID3D11DeviceContext::CSSetShaderResources);
+                    break;
+                }
+        }
+
         //Create a texture descriptor
         D3D11_TEXTURE2D_DESC textureDescriptor = {};
         textureDescriptor.Width = width;
@@ -92,7 +145,19 @@ namespace Atlas
         AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateShaderResourceView(texture.Get(), &shaderResourceDescriptor, &m_Texture));
     }
 
-    std::shared_ptr<Texture> Texture::Create(std::string path, bool mipMapping, uint slot)
+    Texture::Texture(ID3D11Texture2D* texture, uint slot)
+        : m_Slot(slot)
+    {
+        //Create the desrcriptor for the shader resource view
+        D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceDescriptor = {};
+        shaderResourceDescriptor.Format = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+        shaderResourceDescriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+
+        //Crete the shader resource view
+        AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateShaderResourceView(texture, &shaderResourceDescriptor, &m_Texture));
+    }
+
+    std::shared_ptr<Texture> Texture::Create(std::string path, bool mipMapping, uint targets, uint slot)
     {
         //Get the UID and get the pointer to the data
         std::string UID = GenerateUID(path + "_" + std::to_string(mipMapping), slot, mipMapping);
@@ -106,13 +171,13 @@ namespace Atlas
         //else create a texture and add it to the library before returning it
         else
         {
-            auto vertexShader = std::make_shared<Texture>(path, mipMapping, slot);
+            auto vertexShader = std::make_shared<Texture>(path, mipMapping, targets, slot);
             BindableLib::Add(UID, vertexShader);
             return std::static_pointer_cast<Texture>(BindableLib::Resolve(UID));
         }
     }
 
-    std::shared_ptr<Texture> Texture::Create(uint width, uint height, void* data, uint slot)
+    std::shared_ptr<Texture> Texture::Create(uint width, uint height, void* data, uint targets, uint slot)
     {
         //Get the UID and get the pointer to the data
         std::string UID = GenerateUID(std::to_string(*(uint*)data), slot, false);
@@ -126,7 +191,7 @@ namespace Atlas
         //else create a texture and add it to the library before returning it
         else
         {
-            auto vertexShader = std::make_shared<Texture>(width, height, data, slot);
+            auto vertexShader = std::make_shared<Texture>(width, height, data, targets, slot);
             BindableLib::Add(UID, vertexShader);
             return std::static_pointer_cast<Texture>(BindableLib::Resolve(UID));
         }
@@ -139,13 +204,19 @@ namespace Atlas
 
     void Texture::ImmidiateBind()
     {
-        //Binds the texture
-        AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetShaderResources(m_Slot, 1, m_Texture.GetAddressOf()));
+        //Binds the element to the shaders
+        for (auto& bind : m_Binds)
+        {
+            AT_CHECK_GFX_INFO_VOID(bind(Graphics::GetContext().Get(), m_Slot, 1, m_Texture.GetAddressOf()))
+        }
     }
 
     void Texture::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
     {
-        //Binds the texture
-        AT_CHECK_GFX_INFO_VOID(context->PSSetShaderResources(m_Slot, 1, m_Texture.GetAddressOf()));
+        //Binds the element to the shaders
+        for (auto& bind : m_Binds)
+        {
+            AT_CHECK_GFX_INFO_VOID(bind(context.Get(), m_Slot, 1, m_Texture.GetAddressOf()))
+        }
     }
 }

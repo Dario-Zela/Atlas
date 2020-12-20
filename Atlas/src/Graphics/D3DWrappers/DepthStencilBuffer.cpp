@@ -3,6 +3,7 @@
 #include "Graphics/Graphics.h"
 #include "Graphics/DxgiInfoManager.h"
 #include "Graphics/D3DWrappers/RenderTarget.h"
+#include "Graphics\D3DWrappers/Texture.h"
 #include "Core/Input.h"
 
 namespace Atlas
@@ -21,9 +22,6 @@ namespace Atlas
 		//Bind the state
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetDepthStencilState(depthState.Get(), 1));
 
-
-		//Create the texture
-		wrl::ComPtr<ID3D11Texture2D> depthTexture = {};
 		D3D11_TEXTURE2D_DESC descTex;
 		descTex.Width = (uint)width;
 		descTex.Height = (uint)height;
@@ -36,14 +34,14 @@ namespace Atlas
 		descTex.CPUAccessFlags = 0;
 		descTex.MiscFlags = 0;
 		descTex.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateTexture2D(&descTex, nullptr, &depthTexture));
+		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateTexture2D(&descTex, nullptr, &m_Texture));
 
 		//Create Texture View
 		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 		descDSV.Format = DXGI_FORMAT_D32_FLOAT;
 		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		descDSV.Texture2D.MipSlice = 0;
-		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateDepthStencilView(depthTexture.Get(), &descDSV, &m_DepthStencilView));
+		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateDepthStencilView(m_Texture.Get(), &descDSV, &m_DepthStencilView));
 	}
 
 	DepthStencilBuffer::DepthStencilBuffer() { }
@@ -69,6 +67,12 @@ namespace Atlas
 	void DepthStencilBuffer::ImmidiateBind(RenderTarget* renderTarget)
 	{
 		renderTarget->ImmidiateBind(m_DepthStencilView.Get());
+	}
+
+	std::shared_ptr<Texture> DepthStencilBuffer::GetAsTexture(uint slot)
+	{
+		//This should not be available from the BindableLib as it would duplicate data
+		return std::make_shared<Texture>(m_Texture.Get(), slot);
 	}
 
 	void DepthStencilBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)

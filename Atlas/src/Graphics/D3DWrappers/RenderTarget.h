@@ -32,6 +32,8 @@ namespace Atlas
 		void ImmidiateBind();
 		void ImmidiateBind(ID3D11DepthStencilView* depthStencilBuffer);
 
+		std::shared_ptr<Texture> GetAsTexture(uint slot);
+
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context);
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context, ID3D11DepthStencilView* depthStencilBuffer);
 
@@ -40,6 +42,8 @@ namespace Atlas
 		wrl::ComPtr<ID3D11RenderTargetView> GetTargetView() { return m_RenderTargetView; }
 	private:
 		wrl::ComPtr<ID3D11RenderTargetView> m_RenderTargetView;
+		wrl::ComPtr<ID3D11Texture2D> m_Texture;
+
 		uint m_Width;
 		uint m_Height;
 	};

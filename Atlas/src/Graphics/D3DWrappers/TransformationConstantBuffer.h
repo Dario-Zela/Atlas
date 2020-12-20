@@ -10,15 +10,15 @@ namespace Atlas
 	{
 	public:
 		//Constructor, it takes it's parent as well as the projection matrix
-		TransformationConstantBuffer(Drawable& parent, DirectX::XMMATRIX projection);
+		TransformationConstantBuffer(Drawable& parent, DirectX::XMMATRIX projection, uint slot);
 
 		//The wrapper over the constructor to get a shared ptr
-		static std::shared_ptr<TransformationConstantBuffer> Create(Drawable& parent, DirectX::XMMATRIX projection);
+		static std::shared_ptr<TransformationConstantBuffer> Create(Drawable& parent, DirectX::XMMATRIX projection, uint slot = 0);
 
 		void ImmidiateBind() override;	//Binds the layout
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
-		std::unique_ptr<VertexConstantBuffer> m_VertexBuffer;
+		std::unique_ptr<ConstantBuffer> m_VertexBuffer;
 		Drawable& m_Parent;
 		DirectX::XMMATRIX m_Projection;
 	};

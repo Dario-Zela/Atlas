@@ -2,6 +2,7 @@
 #include "RenderTarget.h"
 #include "Graphics/Graphics.h"
 #include "Graphics/DxgiInfoManager.h"
+#include "Graphics\D3DWrappers\Texture.h"
 
 namespace Atlas
 {
@@ -20,9 +21,9 @@ namespace Atlas
 		textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 		textureDesc.CPUAccessFlags = 0;
 		textureDesc.MiscFlags = 0;
-		wrl::ComPtr<ID3D11Texture2D> Texture;
+
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateTexture2D(
-			&textureDesc, nullptr, &Texture
+			&textureDesc, nullptr, &m_Texture
 		));
 
 		D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc = {};
@@ -30,7 +31,7 @@ namespace Atlas
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		renderTargetViewDesc.Texture2D = D3D11_TEX2D_RTV{ 0 };
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateRenderTargetView(
-			Texture.Get(), &renderTargetViewDesc, &m_RenderTargetView
+			m_Texture.Get(), &renderTargetViewDesc, &m_RenderTargetView
 		));
 	}
 
@@ -48,6 +49,8 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateRenderTargetView(
 			texture, &renderTargetViewDesc, &m_RenderTargetView
 		));
+
+		m_Texture.Swap(texture);
 	}
 
 	RenderTarget::RenderTarget() { }
@@ -72,6 +75,12 @@ namespace Atlas
 	void RenderTarget::ImmidiateBind(ID3D11DepthStencilView* depthStencilBuffer)
 	{
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), depthStencilBuffer));
+	}
+
+	std::shared_ptr<Texture> RenderTarget::GetAsTexture(uint slot)
+	{
+		//This should not be available from the BindableLib as it would duplicate data
+		return std::make_shared<Texture>(m_Texture.Get(), slot);
 	}
 
 	void RenderTarget::Bind(wrl::ComPtr<ID3D11DeviceContext> context)

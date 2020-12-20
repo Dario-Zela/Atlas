@@ -71,10 +71,10 @@ public:
 		AddBindable(Atlas::InputLayout::Create(std::move(elemnts), blob, "MeshLayout"));
 
 		AddBindable(Atlas::Texture::Create(R"(C:\Users\Dario\Downloads\container2.png)", false, 0));
-		AddBindable(Atlas::Sampler::Create(false, false, 0, 0));
+		AddBindable(Atlas::Sampler::Create(true, true, 14, 0));
 
 		AddBindable(Atlas::Texture::Create(R"(C:\Users\Dario\Downloads\container2_specular.png)", false, 1));
-		AddBindable(Atlas::Sampler::Create(false, false, 0, 1));
+		AddBindable(Atlas::Sampler::Create(true, true, 14, 1));
 
 		AddBindable(Atlas::VertexBuffer::Create(vertex.data(), vertex.size() * sizeof(Vertex), sizeof(Vertex), "Cube"));
 		AddBindable(Atlas::IndexBuffer::Create(vertecies.GetIndecies().data(), vertecies.GetIndecies().size() * sizeof(unsigned short), "Cube"));

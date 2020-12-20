@@ -8,7 +8,7 @@ class Test : public Atlas::Layer
 {
 public:
 	Test()
-		:scene(R"(C:\Users\Dario\Desktop\Dario\Atlas\Tester\assets\Models\sponza\glTF\Sponza.gltf)")
+		:scene(R"(C:\Users\Dario\Desktop\Dario\Atlas\Tester\assets\Models\resources\objects\backpack\backpack.obj)")
 	{
 		camera = new Atlas::Camera(1000, -1000, 10);
 
@@ -16,9 +16,11 @@ public:
 
 		dir = new DirectX::XMFLOAT3();
 
+		att = new DirectX::XMFLOAT3();
+
 		settings.addMipMapping = true;
 		settings.proprietiesFlags = (uint)(Atlas::MeshProprietiesFlags::TEXTURE_COORDINATES | Atlas::MeshProprietiesFlags::MODEL);
-		settings.textureFlags = (uint)(Atlas::MeshTextureFlags::DIFFUSE | Atlas::MeshTextureFlags::NORMALS);
+		settings.textureFlags = (uint)(Atlas::MeshTextureFlags::DIFFUSE | Atlas::MeshTextureFlags::NORMALS | Atlas::MeshTextureFlags::SPECULAR);
 		settings.viewMatrix = DirectX::XMMatrixPerspectiveLH(1, 0.7f, 1, 100000);
 
 		gui.Init();
@@ -26,108 +28,82 @@ public:
 		gui.AddSliderFloat3("LightPos2", (float*)&lightPos[1], -10, 10, 0.1f);
 		gui.AddSliderFloat3("LightPos3", (float*)&lightPos[2], -10, 10, 0.1f);
 		gui.AddSliderFloat3("LightPos4", (float*)&lightPos[3], -10, 10, 0.1f);
-		gui.AddSliderFloat3("DirectionalLight", (float*)dir, -10, 10, 0.1f);
+		gui.AddSliderFloat3("Attenuation", (float*)att, 0, 10, 0.1f);
 
-		//for(int i = 0; i < 10; i++)
-		//	cube.push_back(std::make_unique<BrickWall>(camera, lightPos, dir));
+		for(int i = 0; i < 10; i++)
+			cube.push_back(std::make_unique<Cube>(camera, lightPos, dir));
 		for (int i = 0; i < 4; i++)
 			light.push_back(std::make_unique<Light>(&lightPos[i], camera));
 
-		Atlas::Technique tech("default");
-		{
-			Atlas::Step step("LambertianPass");
-			cameraBuff = Atlas::PixelConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 3);
-		
-			step.AddBindable(cameraBuff);
-		
-			Pointlight = Atlas::PixelConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 5 * 4, 1);
-		
-			step.AddBindable(Pointlight);
-		
-			std::vector<DirectX::XMFLOAT4> data;
-		
-			data.push_back({ 1.0f, 0.5f, 0.31f,0 });
-			data.push_back({ 1.0f, 0.5f, 0.31f, 0 });
-			data.push_back({ 0.5f, 0.5f, 0.5f, 32 });
-		
-			step.AddBindable(Atlas::PixelConstantBuffer::Create(data.data(), sizeof(DirectX::XMFLOAT4) * data.size(), 2));
-		
-			auto vs = Atlas::VertexShader::Create("BrickWallVS.cso");
-			auto blob = vs->GetBlob();
-			step.AddBindable(std::move(vs));
-			step.AddBindable(Atlas::PixelShader::Create("BrickWallPS.cso"));
-			step.AddBindable(Atlas::InputLayout::Create({ {"POSITION", DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT},
-														  {"TEXCOORD", DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT }}, blob, "Mesh"));
-
-			step.AddBindable(Atlas::Sampler::Create(true, true, 7, 0));
-		
-			step.AddBindable(Atlas::Sampler::Create(true, true, 7, 1));
-			step.AddBindable(Atlas::Topology::Create());
-			step.AddBindable(Atlas::Blendable::Create(true, 0));
-			step.AddBindable(Atlas::Graphics::GetDefaultViewPort());
-			tech.AddStep(step);
-		}
+		//Atlas::Technique tech("default");
+		//{
+		//	Atlas::Step step("LambertianPass");
+		//	cameraBuff = Atlas::PixelConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 3);
+		//
+		//	step.AddBindable(cameraBuff);
+		//
+		//	Pointlight = Atlas::PixelConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 5 * 4, 1);
+		//
+		//	step.AddBindable(Pointlight);
+		//
+		//	std::vector<DirectX::XMFLOAT4> data;
+		//
+		//	data.push_back({ 1.0f, 0.5f, 0.31f,0 });
+		//	data.push_back({ 1.0f, 0.5f, 0.31f, 0 });
+		//	data.push_back({ 0.5f, 0.5f, 0.5f, 32 });
+		//
+		//	step.AddBindable(Atlas::PixelConstantBuffer::Create(data.data(), sizeof(DirectX::XMFLOAT4) * data.size(), 2));
+		//
+		//	auto vs = Atlas::VertexShader::Create("BrickWallVS.cso");
+		//	auto blob = vs->GetBlob();
+		//	step.AddBindable(std::move(vs));
+		//	step.AddBindable(Atlas::PixelShader::Create("BrickWallPS.cso"));
+		//	step.AddBindable(Atlas::InputLayout::Create({ {"POSITION", DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT},
+		//												  {"TEXCOORD", DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT }}, blob, "Mesh"));
+		//
+		//	step.AddBindable(Atlas::Sampler::Create(true, true, 7));
+		//	step.AddBindable(Atlas::Topology::Create());
+		//	step.AddBindable(Atlas::Blendable::Create(true, 0));
+		//	step.AddBindable(Atlas::Graphics::GetDefaultViewPort());
+		//	tech.AddStep(step);
+		//}
 
 		Atlas::Technique tech2("default2");
 		{
 			Atlas::Step step("LambertianPass");
 			step.AddBindable(Atlas::Graphics::GetDefaultViewPort());
+			step.AddBindable(Atlas::Rasteriser::Create(true, true));
 			tech2.AddStep(step);
 		}
 
-		scene.AddTechnique(tech);
-		scene.LinkTechniques(rg);
+		//scene.AddTechnique(tech);
+		//scene.LinkTechniques(rg);
 
-		//for (int i = 0; i < 10; i++)
-		//{
-		//	cube[i]->AddTechnique(tech);
-		//	cube[i]->LinkTechniques(rg);
-		//}
+		for (int i = 0; i < 10; i++)
+		{
+			cube[i]->AddTechnique(tech2);
+			cube[i]->LinkTechniques(rg);
+		}
 
 		for (int i = 0; i < 4; i++)
 		{
 			light[i]->AddTechnique(tech2);
 			light[i]->LinkTechniques(rg);
 		}
-		//screen.AddTechnique(tech);
-		//screen.LinkTechniques(rg);
+		screen.AddTechnique(tech2);
+		screen.LinkTechniques(rg);
 	}
 
 	void OnUpdate(Atlas::TimeStep ts) override
 	{
 		camera->Update(ts);
 
-		//for (int i = 0; i < 10; i++)
-		//	cube[i]->Submit();
+		for (int i = 0; i < 10; i++)
+			cube[i]->Submit();
 		for (int i = 0; i < 4; i++)
 			light[i]->Submit();
 
-		//screen.Submit();
-
-		{
-			std::vector<DirectX::XMFLOAT4> data;
-
-			auto front = camera->GetFront().m128_f32;
-
-			data.push_back({ camera->GetPosition().x, camera->GetPosition().y,camera->GetPosition().z, 0 });
-			data.push_back({ front[0], front[1], front[2], 0 });
-			data.push_back({ cos(DirectX::XMConvertToRadians(5)), cos(DirectX::XMConvertToRadians(7)), 0, 0 });
-
-			cameraBuff->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
-
-			data.clear();
-			for (int i = 0; i < 4; i++)
-			{
-				data.push_back({ lightPos[i].x, lightPos[i].y, lightPos[i].z, 0 });
-				data.push_back({ 1.0f,	0.09f,	0.032f ,0 });
-				data.push_back({ 0.01f, 0.01f, 0.01f, 0 });
-				data.push_back({ 0.5f, 0.5f, 0.5f, 0 });
-				data.push_back({ 1.0f, 1.0f, 1.0f, 0 });
-			}
-			Pointlight->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
-		}
-
-		scene.Draw(settings, *&camera->GetTransform());
+		screen.Submit();
 
 		rg.Execute();
 
@@ -139,9 +115,10 @@ private:
 	Atlas::Scene scene;
 	DirectX::XMFLOAT3* lightPos;
 	DirectX::XMFLOAT3* dir;
-	//std::vector<std::unique_ptr<BrickWall>> cube;
+	DirectX::XMFLOAT3* att;
+	std::vector<std::unique_ptr<Cube>> cube;
 	Atlas::GUI gui;
-	//Screen screen;
+	Screen screen;
 	Atlas::ModelDrawSettings settings;
 	std::vector<std::unique_ptr<Light>> light;
 	LambertianRenderGraph rg;

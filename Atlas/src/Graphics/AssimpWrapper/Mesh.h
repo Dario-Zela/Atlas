@@ -10,6 +10,8 @@ namespace Atlas
 	{
 		uint proprietiesFlags = 0;
 		uint textureFlags = 0;
+		std::unordered_map<std::string, uint> perMeshProperties;
+		std::unordered_map<std::string, uint> perMeshTextures;
 		bool reSet = false;
 		bool addMipMapping = false;
 		DirectX::XMMATRIX viewMatrix;
