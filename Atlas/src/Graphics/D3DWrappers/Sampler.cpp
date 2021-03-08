@@ -53,8 +53,8 @@ namespace Atlas
         //else create a sampler and add it to the library before returning it
         else
         {
-            auto vertexShader = std::make_shared<Sampler>(slot, mipMapping, Anisotropy, maxAnisotropy);
-            BindableLib::Add(UID, vertexShader);
+            auto sampler = new Sampler(slot, mipMapping, Anisotropy, maxAnisotropy);
+            BindableLib::Add(UID, std::shared_ptr<Sampler>(std::move(sampler)));
             return std::static_pointer_cast<Sampler>(BindableLib::Resolve(UID));
         }
     }

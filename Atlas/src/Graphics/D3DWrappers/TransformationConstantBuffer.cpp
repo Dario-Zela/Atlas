@@ -8,7 +8,7 @@ namespace Atlas
 		:m_Parent(parent), m_VertexBuffer(nullptr)
 	{
 		//Set the vertex constant buffer and the projection matrix
-		m_VertexBuffer = std::make_unique<ConstantBuffer>((uint)sizeof(DirectX::XMMATRIX), (uint)TargetShader::VertexShader, slot);
+		m_VertexBuffer = std::unique_ptr<ConstantBuffer>(new ConstantBuffer((uint)sizeof(DirectX::XMMATRIX), (uint)TargetShader::VertexShader, slot));
 		m_Projection = projection;
 	}
 
@@ -16,7 +16,7 @@ namespace Atlas
 	{
 		//This simply creates the shared ptr as they are unique elements
 		//And should never be cloned
-		return std::make_shared<TransformationConstantBuffer>(parent, projection, slot);
+		return std::move(std::shared_ptr<TransformationConstantBuffer>(std::move(new TransformationConstantBuffer(parent, projection, slot))));
 	}
 
 	void TransformationConstantBuffer::ImmidiateBind()

@@ -1,14 +1,14 @@
 #include "Header1.h"
-#include "Header.h"
-typedef unsigned long long ull;
 
 static Atlas::Camera* camera;
+
+#include "Header.h"
+typedef unsigned long long ull;
 
 class Test : public Atlas::Layer
 {
 public:
 	Test()
-		:scene(R"(C:\Users\Dario\Desktop\Dario\Atlas\Tester\assets\Models\resources\objects\backpack\backpack.obj)")
 	{
 		camera = new Atlas::Camera(1000, -1000, 10);
 
@@ -29,6 +29,8 @@ public:
 		gui.AddSliderFloat3("LightPos3", (float*)&lightPos[2], -10, 10, 0.1f);
 		gui.AddSliderFloat3("LightPos4", (float*)&lightPos[3], -10, 10, 0.1f);
 		gui.AddSliderFloat3("Attenuation", (float*)att, 0, 10, 0.1f);
+
+		gui.AddCheckBox("Flip", &m_Flip);
 
 		for(int i = 0; i < 10; i++)
 			cube.push_back(std::make_unique<Cube>(camera, lightPos, dir));
@@ -68,35 +70,19 @@ public:
 		//	tech.AddStep(step);
 		//}
 
-		Atlas::Technique tech2("default2");
-		{
-			Atlas::Step step("LambertianPass");
-			step.AddBindable(Atlas::Graphics::GetDefaultViewPort());
-			step.AddBindable(Atlas::Rasteriser::Create(true, true));
-			tech2.AddStep(step);
-		}
-
 		//scene.AddTechnique(tech);
 		//scene.LinkTechniques(rg);
 
 		for (int i = 0; i < 10; i++)
 		{
-			cube[i]->AddTechnique(tech2);
 			cube[i]->LinkTechniques(rg);
 		}
 
 		for (int i = 0; i < 4; i++)
 		{
-			light[i]->AddTechnique(tech2);
 			light[i]->LinkTechniques(rg);
 		}
-		screen.AddTechnique(tech2);
 		screen.LinkTechniques(rg);
-	}
-
-	void OnUpdate(Atlas::TimeStep ts) override
-	{
-		camera->Update(ts);
 
 		for (int i = 0; i < 10; i++)
 			cube[i]->Submit();
@@ -104,26 +90,39 @@ public:
 			light[i]->Submit();
 
 		screen.Submit();
+	}
+
+	void OnUpdate(Atlas::TimeStep ts) override
+	{
+		camera->Update(ts);
+
+		if (m_Flip != m_FlipPre)
+		{
+			camera->Flip();
+			m_FlipPre = m_Flip;
+		}
 
 		rg.Execute();
 
 		Atlas::Graphics::EndFrame(1);
-		rg.Reset();
 	}
 
 private:
-	Atlas::Scene scene;
 	DirectX::XMFLOAT3* lightPos;
 	DirectX::XMFLOAT3* dir;
 	DirectX::XMFLOAT3* att;
 	std::vector<std::unique_ptr<Cube>> cube;
 	Atlas::GUI gui;
 	Screen screen;
+	bool m_Flip;
+	bool m_FlipPre;
 	Atlas::ModelDrawSettings settings;
 	std::vector<std::unique_ptr<Light>> light;
 	LambertianRenderGraph rg;
-	std::shared_ptr<Atlas::PixelConstantBuffer> cameraBuff;
-	std::shared_ptr<Atlas::PixelConstantBuffer> Pointlight;
+	std::shared_ptr<Atlas::ConstantBuffer> cameraBuff;
+	std::shared_ptr<Atlas::ConstantBuffer> Pointlight;
+
+	int x = 0;
 };
 
 //Bugged, need to make the backbuffer || depthBuffer be the same between these calls 
@@ -188,7 +187,7 @@ public:
 	TestApp()
 		: Atlas::Application("Test", 1024, 700)
 	{
-		PushLayer(new Test());
+		InnerPushLayer(new Test());
 		//PushLayer(new Test2());
 	}
 

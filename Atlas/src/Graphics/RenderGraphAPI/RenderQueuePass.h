@@ -4,15 +4,27 @@
 
 namespace Atlas
 {
+	//A special type of pass that will allow drawing objects
+	//It needs to be inherited
 	class RenderQueuePass : public Pass
 	{
 	public:
+		//Constructs a render queue with an approprate name
 		RenderQueuePass(std::string name);
+		//Adds a job to the job queue
 		void Accept(Job job);
+
+		//Executes all jobs on a deferred render context
+		//Should be inherited for custom executions
 		void Execute(wrl::ComPtr<ID3D11DeviceContext> context) override;
+		//Executes all jobs on an immidiate render context
+		//Should be inherited for custom executions
 		void ExecuteImmidiate() override;
+		
+		//Clears the job queue
 		void Reset() override { m_Jobs.clear(); }
 	protected:
+		//The job queue
 		std::vector<Job> m_Jobs;
 	};
 }

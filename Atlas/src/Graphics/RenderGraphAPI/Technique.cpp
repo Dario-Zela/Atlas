@@ -4,12 +4,15 @@
 
 namespace Atlas
 {
+	//Sets the values
 	Technique::Technique(std::string name, bool startActive)
 		: m_Name(std::move(name)), m_Active(startActive) { }
 
-	void Technique::Submit(const Drawable& drawable)
+	void Technique::Submit(Drawable& drawable)
 	{
+		//If the technique is active
 		if(m_Active)
+			//Submit each step
 			for (Step& step : m_Steps)
 			{
 				step.Submit(drawable);
@@ -18,6 +21,7 @@ namespace Atlas
 
 	void Technique::Link(RenderGraph& renderGraph)
 	{
+		//Link each step to the render graph
 		for (Step& step : m_Steps)
 		{
 			step.Link(renderGraph);

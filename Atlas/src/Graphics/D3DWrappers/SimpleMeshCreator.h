@@ -5,7 +5,7 @@
 
 namespace Atlas
 {
-	struct NormalVerticies
+	struct NormalVertex
 	{
 		DirectX::XMFLOAT3 position;
 		DirectX::XMFLOAT3 normal;
@@ -22,19 +22,33 @@ namespace Atlas
 			AT_CORE_ASSERT(m_Vertecies.size() > 2, "Too few vertecies");
 			AT_CORE_ASSERT(m_Indecies.size() % 3 == 0, "The objects rappresented are not triangles");
 
+			//Create the normal + position list
 			for (auto vertex : m_Vertecies)
 				m_NormalsVerticies.push_back({ vertex, {0, 0, 0} });
+
+			SetNormalsIndependentFlat();
 		}
 
 		//Allows you to transfom all of the verticies by a matrix
 		void Transform(DirectX::XMMATRIX transform)
 		{
+			//Change positions
 			for (auto& vertex : m_Vertecies)
 			{
 				const DirectX::XMVECTOR position = DirectX::XMLoadFloat3(&vertex);
 				DirectX::XMStoreFloat3(&vertex, DirectX::XMVector3Transform(position, transform));
 			}
+
+			//Recalculate the normals
+			SetNormalsIndependentFlat();
 		}
+		
+		//Getters for the data
+		std::vector<DirectX::XMFLOAT3> GetVertecies() { return m_Vertecies; }
+		std::vector<NormalVertex> GetNormalVertecies() { return m_NormalsVerticies; }
+		std::vector<unsigned short> GetIndecies() { return m_Indecies; }
+		
+	private:
 
 		void SetNormalsIndependentFlat()
 		{
@@ -55,15 +69,9 @@ namespace Atlas
 				DirectX::XMStoreFloat3(&v2.normal, n);
 			}
 		}
-		
-		//Getters for the data
-		std::vector<DirectX::XMFLOAT3> GetVertecies() { return m_Vertecies; }
-		std::vector<NormalVerticies> GetNormalVertecies() { return m_NormalsVerticies; }
-		std::vector<unsigned short> GetIndecies() { return m_Indecies; }
-		
-	private:
+
 		std::vector<DirectX::XMFLOAT3> m_Vertecies;
-		std::vector<NormalVerticies> m_NormalsVerticies;
+		std::vector<NormalVertex> m_NormalsVerticies;
 		std::vector<unsigned short> m_Indecies;
 	};
 
@@ -312,7 +320,7 @@ namespace Atlas
 	{
 		static IndexedTriangleList MakeTessalated(uint baseDivisions)
 		{
-			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertecies");
+			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a Cylinder/Prism with less then 3 base vertecies");
 
 			const auto base = DirectX::XMVectorSet(1, 0, -1, 0);
 			const auto offset= DirectX::XMVectorSet(0, 0, 2, 0);

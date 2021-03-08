@@ -44,8 +44,8 @@ namespace Atlas
 		//else create a vertex buffer and add it to the library before returning it
 		else
 		{
-			auto vertexBuffer = std::make_shared<VertexBuffer>(data, sizeData, sizeVertex);
-			BindableLib::Add(UID, vertexBuffer);
+			auto vertexBuffer = new VertexBuffer(data, sizeData, sizeVertex);
+			BindableLib::Add(UID, std::shared_ptr<VertexBuffer>(std::move(vertexBuffer)));
 			return std::static_pointer_cast<VertexBuffer>(BindableLib::Resolve(UID));
 		}
 	}
@@ -125,8 +125,8 @@ namespace Atlas
 		//else create a index buffer and add it to the library before returning it
 		else
 		{
-			auto indexBuffer = std::make_shared<IndexBuffer>(data, size);
-			BindableLib::Add(UID, indexBuffer);
+			auto indexBuffer = new IndexBuffer(data, size);
+			BindableLib::Add(UID, std::shared_ptr<IndexBuffer>(std::move(indexBuffer)));
 			return std::static_pointer_cast<IndexBuffer>(BindableLib::Resolve(UID));
 		}
 	}
@@ -283,8 +283,8 @@ namespace Atlas
 		//else create a index buffer and add it to the library before returning it
 		else
 		{
-			auto indexBuffer = std::make_shared<ConstantBuffer>(data, sizeData, targets, slot);
-			BindableLib::Add(UID, indexBuffer);
+			auto indexBuffer = new ConstantBuffer(data, sizeData, targets, slot);
+			BindableLib::Add(UID, std::shared_ptr<ConstantBuffer>(std::move(indexBuffer)));
 			return std::static_pointer_cast<ConstantBuffer>(BindableLib::Resolve(UID));
 		}
 	}
@@ -303,8 +303,8 @@ namespace Atlas
 		//else create a index buffer and add it to the library before returning it
 		else
 		{
-			auto indexBuffer = std::make_shared<ConstantBuffer>(sizeData, targets, slot);
-			BindableLib::Add(UID, indexBuffer);
+			auto indexBuffer = new ConstantBuffer(sizeData, targets, slot);
+			BindableLib::Add(UID, std::shared_ptr<ConstantBuffer>(std::move(indexBuffer)));
 			return std::static_pointer_cast<ConstantBuffer>(BindableLib::Resolve(UID));
 		}
 	}
@@ -318,7 +318,7 @@ namespace Atlas
 		//If it isn't nullptr, cast it and return it
 		if (test)
 		{
-			return std::static_pointer_cast<ConstantBuffer>(test);
+			return std::move(std::static_pointer_cast<ConstantBuffer>(test));
 		}
 		//else return nullptr
 		else
@@ -331,7 +331,7 @@ namespace Atlas
 
 	std::string ConstantBuffer::GenerateUID(std::string tag)
 	{
-		return std::string(typeid(IndexBuffer).name()) + '_' + tag;
+		return std::string(typeid(ConstantBuffer).name()) + '_' + tag;
 	}
 
 	void ConstantBuffer::ImmidiateUpdate(void* data, uint sizeData)
@@ -350,6 +350,10 @@ namespace Atlas
 
 		//Map the results to the element
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->Unmap(m_ConstantBuffer.Get(), 0));
+
+
+		//If the mutex is locked, unlock it
+		m_Mutex.unlock();
 	}
 
 	void ConstantBuffer::Update(void* data, uint sizeData, wrl::ComPtr<ID3D11DeviceContext> context)
@@ -367,6 +371,10 @@ namespace Atlas
 
 		//Map the results to the element
 		AT_CHECK_GFX_INFO_VOID(context->Unmap(m_ConstantBuffer.Get(), 0));
+
+
+		//If the mutex is locked, unlock it
+		m_Mutex.unlock();
 	}
 
 	void ConstantBuffer::ImmidiateBind()
@@ -377,8 +385,6 @@ namespace Atlas
 			AT_CHECK_GFX_INFO_VOID(bind(Graphics::GetContext().Get(), m_Slot, 1, m_ConstantBuffer.GetAddressOf()))
 		}
 
-		//If the mutex is locked, unlock it
-		m_Mutex.unlock();
 	}
 
 	void ConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)

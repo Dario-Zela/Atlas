@@ -19,11 +19,11 @@ namespace Atlas
 		{
 			return std::static_pointer_cast<Topology>(test);
 		}
-		//else create a vertex buffer and add it to the library before returning it
+		//else create a topology and add it to the library before returning it
 		else
 		{
-			auto topologyWrapper = std::make_shared<Topology>(topology);
-			BindableLib::Add(UID, topologyWrapper);
+			auto topologyWrapper = new Topology(topology);
+			BindableLib::Add(UID, std::shared_ptr<Topology>(std::move(topologyWrapper)));
 			return std::static_pointer_cast<Topology>(BindableLib::Resolve(UID));
 		}
 	}

@@ -357,17 +357,17 @@ namespace Atlas
 			//If the view matrix is available, it is added to the transformation constant buffer
 			if (DirectX::XMMatrixIsNaN(settings.viewMatrix))
 			{
-				AddBindable(TransformationConstantBuffer::Create(*this, DirectX::XMMatrixIdentity(), strideCBuff != 0 ? 1 : 0));
+				AddBindable(TransformationConstantBuffer::Create(*this, DirectX::XMMatrixIdentity(), strideCBuff ? 1 : 0));
 			}
 			else
 			{
-				AddBindable(TransformationConstantBuffer::Create(*this, settings.viewMatrix, strideCBuff != 0 ? 1 : 0));
+				AddBindable(TransformationConstantBuffer::Create(*this, settings.viewMatrix, strideCBuff ? 1 : 0));
 			}
 
 			m_Transform = accumulatedTransform;
 
 			if ((propertiesFlags & (1 << 18)) != 0)
-				AddBindable(ConstantBuffer::Create(&m_Transform, sizeof(m_Transform), m_Name + "ModelTransform", (uint)TargetShader::VertexShader, strideCBuff != 0 ? 2 : 1));
+				AddBindable(ConstantBuffer::Create(&m_Transform, sizeof(m_Transform), m_Name + "ModelTransform", (uint)TargetShader::VertexShader, strideCBuff ? 2 : 1));
 			
 			//Make the set flag to true
 			m_Set = true;

@@ -18,6 +18,10 @@ namespace Atlas
 		//This pushes the data of one vertex into memory
 		void PushVertexData(void* data);
 
+		//Finalises the structure of the Vertex
+		//Must be done before data is pushed into the vertex
+		void Finalise() { m_Finalised = true; }
+
 		//These function get the input layout and vertex buffer
 		//Abstracting the creation of these elements
 		std::shared_ptr<InputLayout> GetInputLayout(wrl::ComPtr<ID3DBlob> blob, std::string tag);
@@ -26,5 +30,6 @@ namespace Atlas
 		std::vector<InputElement> m_VertexDescriptor;
 		std::vector<byte> m_Data;
 		int m_Stride;
+		bool m_Finalised;
 	};
 }

@@ -9,8 +9,6 @@ namespace Atlas
 	class VertexBuffer : public Bindable
 	{
 	public:
-		//Constructor, takes in the pointer to the data, the size of the data and the size of a vertex
-		VertexBuffer(void* data, uint sizeData, uint sizeVertex);	
 		//The wrapper over the constructor to get a shared ptr
 		static std::shared_ptr<VertexBuffer> Create(void* data, uint sizeData, uint sizeVertex, std::string tag);
 
@@ -20,9 +18,14 @@ namespace Atlas
 
 		//Generates the unique identifier for the buffer
 		static std::string GenerateUID(std::string tag);
-		void ImmidiateBind() override;		//Binds the buffer
+		
+		//Binds the buffer
+		void ImmidiateBind() override;		
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
+		//Constructor, takes in the pointer to the data, the size of the data and the size of a vertex
+		VertexBuffer(void* data, uint sizeData, uint sizeVertex);	
+
 		wrl::ComPtr<ID3D11Buffer> m_VertexBuffer;
 		uint m_Stride;
 	};
@@ -31,8 +34,6 @@ namespace Atlas
 	class IndexBuffer : public Bindable
 	{
 	public:
-		//Constructor, takes in the pointer to the data, the size of the data
-		IndexBuffer(unsigned short* data, uint size);
 		//The wrapper over the constructor to get a shared ptr
 		static std::shared_ptr<IndexBuffer> Create(unsigned short* data, uint size, std::string tag);
 
@@ -47,6 +48,9 @@ namespace Atlas
 
 		uint GetCount() const;		//Gets the number of elements
 	private:
+		//Constructor, takes in the pointer to the data, the size of the data
+		IndexBuffer(unsigned short* data, uint size);
+
 		wrl::ComPtr<ID3D11Buffer> m_IndexBuffer;
 	};
 
@@ -61,11 +65,6 @@ namespace Atlas
 	{
 		friend TransformationConstantBuffer;
 	public:
-		//Constructor, takes in the pointer to the data, the size of the data
-		ConstantBuffer(void* data, uint sizeData, uint targets, uint slot);
-		//Deferred constructor, takes in the size of the data only
-		ConstantBuffer(uint sizeData, uint targets, uint slot);
-
 		static std::shared_ptr<ConstantBuffer> Create(void* data, uint sizeData, std::string tag, uint targets = 0, uint slot = 0);
 		static std::shared_ptr<ConstantBuffer> Create(uint sizeData, std::string tag, uint targets = 0, uint slot = 0);
 
@@ -81,11 +80,16 @@ namespace Atlas
 
 		void ImmidiateBind() override;		//Binds the buffer
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
+
 	protected:
+		//Constructor, takes in the pointer to the data, the size of the data
+		ConstantBuffer(void* data, uint sizeData, uint targets, uint slot);
+		//Deferred constructor, takes in the size of the data only
+		ConstantBuffer(uint sizeData, uint targets, uint slot);
+
 		std::mutex m_Mutex;
 		std::vector<std::function<void(ID3D11DeviceContext*, UINT, UINT, ID3D11Buffer* const*)>> m_Binds;
 		wrl::ComPtr<ID3D11Buffer> m_ConstantBuffer;
 		uint m_Slot;
-		bool mod = false;
 	};
 }

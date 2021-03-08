@@ -43,8 +43,8 @@ namespace Atlas
 		//else create an input layout and add it to the library before returning it
 		else
 		{
-			auto inputLayout = std::make_shared<InputLayout>(layout, vertexBufferBlob);
-			BindableLib::Add(UID, inputLayout);
+			auto inputLayout = new InputLayout(layout, vertexBufferBlob);
+			BindableLib::Add(UID, std::shared_ptr<InputLayout>(std::move(inputLayout)));
 			return std::static_pointer_cast<InputLayout>(BindableLib::Resolve(UID));
 		}
 	}

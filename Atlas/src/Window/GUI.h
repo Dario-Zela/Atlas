@@ -38,11 +38,14 @@ namespace Atlas
 		//Whether or not the gui window is alive
 		bool m_Alive;
 
+	private:
+		//The Window Procedure
+		static LRESULT CALLBACK GUIProc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam);
+
 		//Maps of the elements that are being accessed
 		static std::unordered_map<HWND, std::tuple<void*, SliderData>> m_SliderElements;
 		static std::unordered_map<HWND, bool*> m_ButtonElements;
 
-	private:
 		int m_TimeAfterTest;
 		int m_Widgets;
 		HWND m_hWnd;

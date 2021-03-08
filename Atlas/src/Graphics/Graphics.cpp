@@ -11,7 +11,7 @@ namespace Atlas
 
 	Graphics::~Graphics()
 	{
-		BindableLib::Relese();
+		BindableLib::Release();
 	}
 
 	void Graphics::Init(HWND hwnd)
@@ -64,7 +64,8 @@ namespace Atlas
 		//This gets the back buffer render target 
 		wrl::ComPtr<ID3D11Texture2D> backBuffer = nullptr;
 		AT_CHECK_GFX_INFO(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &backBuffer));
-		m_RenderTarget = std::make_shared<RenderTarget>(backBuffer.Get());
+
+		m_RenderTarget = RenderTarget::Create(backBuffer.Get());
 
 		//Initialise the Bindable library
 		BindableLib::Init();

@@ -9,6 +9,7 @@ namespace Atlas
 	Rasteriser::Rasteriser(bool antialiedLine, bool multiSampling, D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode,
 		bool frontAnticlockwise, int depthBias, float DepthBiasClamp, float SlopeScaledDepthBias, bool enableDepthClip, bool enableScissorCulling)
 	{
+		//Create the descriptor
 		D3D11_RASTERIZER_DESC desc;
 		desc.FillMode = fillMode;
 		desc.CullMode = cullMode;
@@ -21,6 +22,7 @@ namespace Atlas
 		desc.MultisampleEnable = multiSampling;
 		desc.AntialiasedLineEnable = antialiedLine;
 
+		//And generate the D3D11 state
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateRasterizerState(&desc, &m_Rasteriser));
 	}
 
@@ -37,19 +39,20 @@ namespace Atlas
 		{
 			return std::static_pointer_cast<Rasteriser>(test);
 		}
-		//else create a shader and add it to the library before returning it
+		//else create a rasteriser and add it to the library before returning it
 		else
 		{
-			auto vertexShader = std::make_shared<Rasteriser>(antialiedLine, multiSampling, cullMode, fillMode, frontAnticlockwise,
+			auto rasteriser = new Rasteriser(antialiedLine, multiSampling, cullMode, fillMode, frontAnticlockwise,
 				depthBias, DepthBiasClamp, SlopeScaledDepthBias, enableDepthClip, enableScissorCulling);
-			BindableLib::Add(UID, vertexShader);
+			BindableLib::Add(UID, std::shared_ptr<Rasteriser>(std::move(rasteriser)));
 			return std::static_pointer_cast<Rasteriser>(BindableLib::Resolve(UID));
 		}
 	}
 
 	std::string Rasteriser::GenerateUID(bool antialiedLine, bool multiSampling, D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode, bool frontAnticlockwise, int depthBias, float DepthBiasClamp, float SlopeScaledDepthBias, bool enableDepthClip, bool enableScissorCulling)
 	{
-		return std::string(typeid(Rasteriser).name()) + '_' + '_' + std::to_string(fillMode)
+		//Creates the unique identifier for the class
+		return std::string(typeid(Rasteriser).name()) + '_' + std::to_string(fillMode)
 			+ '_' + std::to_string(cullMode) + '_' + std::to_string(frontAnticlockwise)
 			+ '_' + std::to_string(depthBias) + '_' + std::to_string(DepthBiasClamp)
 			+ '_' + std::to_string(SlopeScaledDepthBias) + '_' + std::to_string(enableDepthClip)

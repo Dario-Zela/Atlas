@@ -36,8 +36,8 @@ namespace Atlas
 		//else create a shader and add it to the library before returning it
 		else
 		{
-			auto vertexShader = std::make_shared<VertexShader>(path);
-			BindableLib::Add(UID, vertexShader);
+			auto vertexShader = new VertexShader(path);
+			BindableLib::Add(UID, std::shared_ptr<VertexShader>(std::move(vertexShader)));
 			return std::static_pointer_cast<VertexShader>(BindableLib::Resolve(UID));
 		}
 	}
@@ -95,8 +95,8 @@ namespace Atlas
 		//else create a shader and add it to the library before returning it
 		else
 		{
-			auto pixelShader = std::make_shared<PixelShader>(path);
-			BindableLib::Add(UID, pixelShader);
+			auto pixelShader = new PixelShader(path);
+			BindableLib::Add(UID, std::shared_ptr<PixelShader>(std::move(pixelShader)));
 			return std::static_pointer_cast<PixelShader>(BindableLib::Resolve(UID));
 		}
 	}
@@ -149,8 +149,8 @@ namespace Atlas
 		//else create a shader and add it to the library before returning it
 		else
 		{
-			auto pixelShader = std::make_shared<DomainShader>(path);
-			BindableLib::Add(UID, pixelShader);
+			auto domainShader = new DomainShader(path);
+			BindableLib::Add(UID, std::shared_ptr<DomainShader>(std::move(domainShader)));
 			return std::static_pointer_cast<DomainShader>(BindableLib::Resolve(UID));
 		}
 	}
@@ -203,8 +203,8 @@ namespace Atlas
 		//else create a shader and add it to the library before returning it
 		else
 		{
-			auto pixelShader = std::make_shared<HullShader>(path);
-			BindableLib::Add(UID, pixelShader);
+			auto hullShader = new HullShader(path);
+			BindableLib::Add(UID, std::shared_ptr<HullShader>(std::move(hullShader)));
 			return std::static_pointer_cast<HullShader>(BindableLib::Resolve(UID));
 		}
 	}
@@ -257,8 +257,8 @@ namespace Atlas
 		//else create a shader and add it to the library before returning it
 		else
 		{
-			auto pixelShader = std::make_shared<GeometryShader>(path);
-			BindableLib::Add(UID, pixelShader);
+			auto geometryShader = new GeometryShader(path);
+			BindableLib::Add(UID, std::shared_ptr<GeometryShader>(std::move(geometryShader)));
 			return std::static_pointer_cast<GeometryShader>(BindableLib::Resolve(UID));
 		}
 	}
@@ -311,8 +311,8 @@ namespace Atlas
 		//else create a shader and add it to the library before returning it
 		else
 		{
-			auto pixelShader = std::make_shared<ComputeShader>(path);
-			BindableLib::Add(UID, pixelShader);
+			auto computeShader = new ComputeShader(path);
+			BindableLib::Add(UID, std::shared_ptr<ComputeShader>(std::move(computeShader)));
 			return std::static_pointer_cast<ComputeShader>(BindableLib::Resolve(UID));
 		}
 	}

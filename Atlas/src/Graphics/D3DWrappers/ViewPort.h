@@ -7,9 +7,6 @@ namespace Atlas
 	class ViewPort : public Bindable
 	{
 	public:
-		//Constructor, requires the dimensions of the viewport
-		ViewPort(float x, float y, float width, float height, float zMin, float zMax);
-
 		//The wrapper over the constructor to get a shared ptr
 		static std::shared_ptr<ViewPort> Create(float x, float y, float width, float height, float zMin, float zMax);
 		
@@ -19,6 +16,9 @@ namespace Atlas
 		void ImmidiateBind() override;		//Binds the layout
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
+		//Constructor, requires the dimensions of the viewport
+		ViewPort(float x, float y, float width, float height, float zMin, float zMax);
+
 		D3D11_VIEWPORT m_ViewPort;
 	};
 }

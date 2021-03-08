@@ -8,17 +8,15 @@ public:
 		: camera(camera), lightPos(lightPos), dir(dir)
 	{
 		auto vertecies = Atlas::Cube::MakeIndipendentFaces();
-		vertecies.SetNormalsIndependentFlat();
 
 		struct Vertex
 		{
 			DirectX::XMFLOAT3 pos;
-			DirectX::XMFLOAT3 nor;
 			DirectX::XMFLOAT2 tex;
 		};
 		std::vector<Vertex> vertex;
 
-		for (int i = 0; i < vertecies.GetNormalVertecies().size(); i++)
+		for (int i = 0; i < vertecies.GetVertecies().size(); i++)
 		{
 			DirectX::XMFLOAT2 tex;
 			switch (i % 4)
@@ -37,20 +35,25 @@ public:
 				break;
 			}
 
-			vertex.push_back(Vertex{ vertecies.GetNormalVertecies()[i].position, vertecies.GetNormalVertecies()[i].normal, tex });
+			vertex.push_back(Vertex{ vertecies.GetVertecies()[i], tex });
 		}
 
-		cameraBuff = Atlas::PixelConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 3);
+		//AddBindable(Atlas::Texture::Create(R"(C:\Users\Dario\Downloads\blending_transparent_window.png)", false));
 
-		AddBindable(cameraBuff);
+		AddBindable(Atlas::ConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 3, "Cube_CameraBuff", (uint)Atlas::TargetShader::PixelShader));
 
-		Dirlight = Atlas::PixelConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 4, 1);
+		AddBindable(Atlas::ConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 4, "Cube_Dirlight", (uint)Atlas::TargetShader::PixelShader, 1));
 
-		AddBindable(Dirlight);
-
-		Pointlight = Atlas::PixelConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 5 * 4, 2);
-
-		AddBindable(Pointlight);
+		AddBindable(Atlas::ConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 5 * 4, "Cube_PointLight", (uint)Atlas::TargetShader::PixelShader, 2));
+		
+		Atlas::Technique tech("default");
+		{
+			Atlas::Step step("LambertianPass");
+			step.AddBindable(Atlas::Graphics::GetDefaultViewPort());
+			step.AddBindable(Atlas::Rasteriser::Create(true, true));
+			tech.AddStep(step);
+		}
+		AddTechnique(tech);
 
 		std::vector<DirectX::XMFLOAT4> data;
 
@@ -58,7 +61,7 @@ public:
 		data.push_back({ 1.0f, 0.5f, 0.31f, 0 });
 		data.push_back({ 0.5f, 0.5f, 0.5f, 32 });
 
-		AddBindable(Atlas::PixelConstantBuffer::Create(data.data(), sizeof(DirectX::XMFLOAT4) * data.size(), 3));
+		AddBindable(Atlas::ConstantBuffer::Create(data.data(), sizeof(DirectX::XMFLOAT4) * data.size(), "Cube_LightProp", (uint)Atlas::TargetShader::PixelShader, 3));
 
 		auto vs = Atlas::VertexShader::Create("CubeVS.cso");
 		auto blob = vs->GetBlob();
@@ -66,23 +69,22 @@ public:
 		AddBindable(Atlas::PixelShader::Create("CubePS.cso"));
 		std::vector<Atlas::InputElement> elemnts;
 		elemnts.push_back({ "POSITION", DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT });
-		elemnts.push_back({ "NORMAL", DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT });
 		elemnts.push_back({ "TEXCOORD", DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT });
 		AddBindable(Atlas::InputLayout::Create(std::move(elemnts), blob, "MeshLayout"));
 
-		AddBindable(Atlas::Texture::Create(R"(C:\Users\Dario\Downloads\container2.png)", false, 0));
-		AddBindable(Atlas::Sampler::Create(true, true, 14, 0));
+		AddBindable(Atlas::Texture::Create(R"(C:\Users\Dario\Downloads\crate0_bump.png)", false, 2, 0));
 
-		AddBindable(Atlas::Texture::Create(R"(C:\Users\Dario\Downloads\container2_specular.png)", false, 1));
-		AddBindable(Atlas::Sampler::Create(true, true, 14, 1));
+		AddBindable(Atlas::Texture::Create(R"(C:\Users\Dario\Downloads\crate0_normal.png)", false, 2, 2));
+
+		AddBindable(Atlas::Sampler::Create(true, true, 14));
 
 		AddBindable(Atlas::VertexBuffer::Create(vertex.data(), vertex.size() * sizeof(Vertex), sizeof(Vertex), "Cube"));
 		AddBindable(Atlas::IndexBuffer::Create(vertecies.GetIndecies().data(), vertecies.GetIndecies().size() * sizeof(unsigned short), "Cube"));
-		AddBindable(Atlas::TransformationConstantBuffer::Create(*this, DirectX::XMMatrixPerspectiveLH(1, 0.7f, 1, 100000)));
+		AddBindable(Atlas::TransformationConstantBuffer::Create(*this, DirectX::XMMatrixPerspectiveLH(1, (rand() % 100) / 100.0f, 1, (rand() % 10) * (rand() % 10) * 100)));
 
 		pos = {(float)(rand() % 10), (float)(rand() % 10), (float)(rand() % 10)};
 		auto model = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z));
-		AddBindable(Atlas::VertexConstantBuffer::Create(&model, sizeof(model), 1));
+		AddBindable(Atlas::ConstantBuffer::Create(&model, sizeof(model), "Cube_Model", (uint)Atlas::TargetShader::VertexShader, 1));
 
 		AddBindable(Atlas::Topology::Create());
 	}
@@ -97,7 +99,7 @@ public:
 		data.push_back({ front[0], front[1], front[2], 0 });
 		data.push_back({ cos(DirectX::XMConvertToRadians(5)), cos(DirectX::XMConvertToRadians(7)), 0, 0 });
 
-		cameraBuff->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
+		Atlas::ConstantBuffer::Get("Cube_CameraBuff")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
 
 		data.clear();
 
@@ -106,7 +108,7 @@ public:
 		data.push_back({ 0.5f, 0.5f, 0.5f, 0 });
 		data.push_back({ 1.0f, 1.0f, 1.0f, 0 });
 
-		Dirlight->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
+		Atlas::ConstantBuffer::Get("Cube_Dirlight")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
 		
 		data.clear();
 		for (int i = 0; i < 4; i++) 
@@ -117,16 +119,13 @@ public:
 			data.push_back({ 0.5f, 0.5f, 0.5f, 0 });
 			data.push_back({ 1.0f, 1.0f, 1.0f, 0 });
 		}
-		Pointlight->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
+		Atlas::ConstantBuffer::Get("Cube_PointLight")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
 
 		return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) * camera->GetTransform();
 	}
 
 private:
 	Atlas::Camera* camera;
-	std::shared_ptr<Atlas::PixelConstantBuffer> cameraBuff;
-	std::shared_ptr<Atlas::PixelConstantBuffer> Dirlight;
-	std::shared_ptr<Atlas::PixelConstantBuffer> Pointlight;
 	DirectX::XMFLOAT3* lightPos;
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3* dir;
@@ -150,6 +149,15 @@ public:
 		std::vector<Atlas::InputElement> elemnts;
 		elemnts.push_back({ "POSITION", DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT });
 		AddBindable(Atlas::InputLayout::Create(std::move(elemnts), blob, "LightLayout"));
+		
+		Atlas::Technique tech("default");
+		{
+			Atlas::Step step("LambertianPass");
+			step.AddBindable(Atlas::Graphics::GetDefaultViewPort());
+			step.AddBindable(Atlas::Rasteriser::Create(true, true));
+			tech.AddStep(step);
+		}
+		AddTechnique(tech);
 
 		AddBindable(Atlas::TransformationConstantBuffer::Create(*this, DirectX::XMMatrixPerspectiveLH(1, 0.7f, 1, 100000)));
 		AddBindable(Atlas::Topology::Create());
@@ -171,12 +179,20 @@ public:
 	Screen()
 	{
 		auto vertecies = Atlas::Plane::Make();
+		vertecies.Transform(DirectX::XMMatrixScaling(0.5, 0.5, 0.5) * DirectX::XMMatrixTranslation(-0.25, 0,0));
+
 		AddBindable(Atlas::VertexBuffer::Create(vertecies.GetVertecies().data(), vertecies.GetVertecies().size() * sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3), "Plane"));
 		AddBindable(Atlas::IndexBuffer::Create(vertecies.GetIndecies().data(), vertecies.GetIndecies().size() * sizeof(unsigned short), "Plane"));
 
-		AddBindable(Atlas::Sampler::Create(0, false, false, 0));
-		AddBindable(Atlas::Texture::Create(R"(C:\Users\Dario\Downloads\blending_transparent_window.png)", false));
-		AddBindable(Atlas::Blendable::Create(true, 0));
+		AddBindable(Atlas::Sampler::Create(false, false, 0, 0));
+
+		Atlas::Technique tech("default");
+		{
+			Atlas::Step step("LambertianPass");
+			step.AddBindable(Atlas::Graphics::GetDefaultViewPort());
+			tech.AddStep(step);
+		}
+		AddTechnique(tech);
 
 		auto vs = Atlas::VertexShader::Create("WindowVS.cso");
 		auto blob = vs->GetBlob();
@@ -203,6 +219,16 @@ public:
 		AddBindable(Atlas::TransformationConstantBuffer::Create(*this, DirectX::XMMatrixPerspectiveLH(1, 0.7f, 1, 100000)));
 		AddBindable(Atlas::Topology::Create());
 		*/
+	}
+
+	void Assign(std::shared_ptr<Atlas::RenderTarget> renderT)
+	{
+		AddBindable(renderT->GetAsTexture(0, (uint)Atlas::TargetShader::PixelShader));
+	}
+
+	void UnAssign()
+	{
+		m_Bindables.pop_back();
 	}
 
 	DirectX::XMMATRIX GetTransformXM() override
@@ -248,13 +274,9 @@ public:
 			vertex.push_back(Vertex{ vertecies.GetVertecies()[i], tex });
 		}
 
-		cameraBuff = Atlas::PixelConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 3);
+		AddBindable(Atlas::ConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 3, "BrickWall_CameraBuff", (uint)Atlas::TargetShader::PixelShader));
 
-		AddBindable(cameraBuff);
-
-		Pointlight = Atlas::PixelConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 5 * 4, 1);
-
-		AddBindable(Pointlight);
+		AddBindable(Atlas::ConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 5 * 4, "BrickWall_PointLight", (uint)Atlas::TargetShader::PixelShader, 1));
 
 		std::vector<DirectX::XMFLOAT4> data;
 
@@ -262,7 +284,7 @@ public:
 		data.push_back({ 1.0f, 0.5f, 0.31f, 0 });
 		data.push_back({ 0.5f, 0.5f, 0.5f, 32 });
 
-		AddBindable(Atlas::PixelConstantBuffer::Create(data.data(), sizeof(DirectX::XMFLOAT4) * data.size(), 2));
+		AddBindable(Atlas::ConstantBuffer::Create(data.data(), sizeof(DirectX::XMFLOAT4)* data.size(), "BrickWall_LightProp", (uint)Atlas::TargetShader::PixelShader, 2));
 
 		auto vs = Atlas::VertexShader::Create("BrickWallVS.cso");
 		auto blob = vs->GetBlob();
@@ -285,7 +307,7 @@ public:
 
 		pos = { (float)(rand() % 10), (float)(rand() % 10), (float)(rand() % 10) };
 		auto model = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z));
-		AddBindable(Atlas::VertexConstantBuffer::Create(&model, sizeof(model), 1));
+		AddBindable(Atlas::ConstantBuffer::Create(&model, sizeof(model), "BrickWall_Model", (uint)Atlas::TargetShader::VertexShader, 1));
 
 		AddBindable(Atlas::Topology::Create());
 	}
@@ -300,7 +322,7 @@ public:
 		data.push_back({ front[0], front[1], front[2], 0 });
 		data.push_back({ cos(DirectX::XMConvertToRadians(0.01f)), cos(DirectX::XMConvertToRadians(2)), 0, 0 });
 
-		cameraBuff->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
+		Atlas::ConstantBuffer::Get("BrickWall_CameraBuff")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
 
 		data.clear();
 		for (int i = 0; i < 4; i++)
@@ -311,15 +333,13 @@ public:
 			data.push_back({ 0.5f, 0.5f, 0.5f, 0 });
 			data.push_back({ 1.0f, 1.0f, 1.0f, 0 });
 		}
-		Pointlight->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
+		Atlas::ConstantBuffer::Get("BrickWall_PointLight")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
 
 		return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) * camera->GetTransform();
 	}
 
 private:
 	Atlas::Camera* camera;
-	std::shared_ptr<Atlas::PixelConstantBuffer> cameraBuff;
-	std::shared_ptr<Atlas::PixelConstantBuffer> Pointlight;
 	DirectX::XMFLOAT3* lightPos;
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3* dir;

@@ -2,7 +2,7 @@
 #include "Core/Log.h"
 #include "Graphics/DX11Exception.h"
 
-typedef unsigned int uint;
+typedef UINT uint;
 
 //If it is under debug mode
 //Allow asserts and Logging
@@ -50,11 +50,11 @@ typedef unsigned int uint;
 #ifdef AT_ENABLE_ASSERTS
 #define AT_ASSERT_WARG(x, string, ...) {if(!(x)) {AT_CRITICAL("Assertion Failed: " string, __VA_ARGS__); __debugbreak(); } }
 #define	AT_CORE_ASSERT_WARG(x, string, ...) {if(!(x)) {AT_CORE_CRITICAL("Assertion Failed: " string, __VA_ARGS__); __debugbreak(); } }
-#define AT_ASSERT(x,...) {if(!(x)) {AT_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-#define	AT_CORE_ASSERT(x,...) {if(!(x)) {AT_CORE_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#define AT_ASSERT(x, ...) {if(!(x)) {AT_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#define	AT_CORE_ASSERT(x, ...) {if(!(x)) {AT_CORE_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else
-#define AT_ASSERT_WARG(x,...) if(!(x)) throw std::exception();
-#define	AT_CORE_ASSERT_WARG(x,...) if(!(x)) throw std::exception();
-#define AT_ASSERT(x,...) if(!(x)) throw std::exception();
-#define	AT_CORE_ASSERT(x,...) if(!(x)) throw std::exception();
+#define AT_ASSERT_WARG(x, ...) if(!(x)) throw std::exception();
+#define	AT_CORE_ASSERT_WARG(x, ...) if(!(x)) throw std::exception();
+#define AT_ASSERT(x, ...) if(!(x)) throw std::exception();
+#define	AT_CORE_ASSERT(x, ...) if(!(x)) throw std::exception();
 #endif

@@ -4,6 +4,7 @@
 #include <ctime>
 #include <fstream>
 #include "../vendor/fmt/fmt.h"
+#include <mutex>
 
 namespace Atlas 
 {
@@ -17,6 +18,9 @@ namespace Atlas
 		template<typename ...Args>
 		void Add(std::string Warning, int WarningLevel, std::string Name, const std::string& fmt, const Args& ...args)
 		{
+			//Lock the mutex
+			m_Mutex.lock();
+
 			//This switches on the warning level to change the color
 			//Of the console
 			HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -45,6 +49,9 @@ namespace Atlas
 
 			//The color of the console is reset to the original value
 			SetConsoleTextAttribute(hStdOut, 15);
+
+			//Unlock the mutex
+			m_Mutex.unlock();
 		}
 
 	private:
@@ -52,6 +59,8 @@ namespace Atlas
 		std::string GetTime();
 		//The filepath is store in the string
 		std::string m_File = "";
+		//A mutex to avoid conflicts
+		std::mutex m_Mutex;
 	};
 
 	//This allows the log class to be called from the macros

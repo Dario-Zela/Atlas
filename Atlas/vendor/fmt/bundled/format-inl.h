@@ -341,20 +341,20 @@ class fp {
 
  public:
   significand_type f;
-  int e;
+  int64_t e;
 
   // All sizes are in bits.
   // Subtract 1 to account for an implicit most significant bit in the
   // normalized form.
-  static FMT_CONSTEXPR_DECL const int double_significand_size =
+  static FMT_CONSTEXPR_DECL const int64_t double_significand_size =
       std::numeric_limits<double>::digits - 1;
   static FMT_CONSTEXPR_DECL const uint64_t implicit_bit =
       1ULL << double_significand_size;
-  static FMT_CONSTEXPR_DECL const int significand_size =
+  static FMT_CONSTEXPR_DECL const int64_t significand_size =
       bits<significand_type>::value;
 
   fp() : f(0), e(0) {}
-  fp(uint64_t f_val, int e_val) : f(f_val), e(e_val) {}
+  fp(uint64_t f_val, int64_t e_val) : f(f_val), e(e_val) {}
 
   // Constructs fp from an IEEE754 double. It is a template to prevent compile
   // errors on platforms where double is not IEEE754.
@@ -369,10 +369,10 @@ class fp {
         bits<Double>::value - double_significand_size - 1;  // -1 for sign
     const uint64_t significand_mask = implicit_bit - 1;
     const uint64_t exponent_mask = (~0ULL >> 1) & ~significand_mask;
-    const int exponent_bias = (1 << exponent_size) - limits::max_exponent - 1;
+    const int64_t exponent_bias = (1 << exponent_size) - limits::max_exponent - 1;
     auto u = bit_cast<uint64_t>(d);
     f = u & significand_mask;
-    int biased_e =
+    int64_t biased_e =
         static_cast<int>((u & exponent_mask) >> double_significand_size);
     // Predecessor is closer if d is a normalized power of 2 (f == 0) other than
     // the smallest normalized number (biased_e > 1).
@@ -753,7 +753,7 @@ inline round_direction get_round_direction(uint64_t divisor, uint64_t remainder,
 }
 
 namespace digits {
-enum result {
+enum class result {
   more,  // Generate more digits.
   done,  // Done generating digits.
   error  // Digit generation cancelled due to an error.
@@ -793,7 +793,7 @@ FMT_ALWAYS_INLINE digits::result grisu_gen_digits(fp value, uint64_t error,
   // Divide by 10 to prevent overflow.
   auto result = handler.on_start(data::powers_of_10_64[exp - 1] << -one.e,
                                  value.f / 10, error * 10, exp);
-  if (result != digits::more) return result;
+  if (result != digits::result::more) return result;
   // Generate digits for the integral part. This can produce up to 10 digits.
   do {
     uint32_t digit = 0;
@@ -844,7 +844,7 @@ FMT_ALWAYS_INLINE digits::result grisu_gen_digits(fp value, uint64_t error,
     result = handler.on_digit(static_cast<char>('0' + digit),
                               data::powers_of_10_64[exp] << -one.e, remainder,
                               error, exp, true);
-    if (result != digits::more) return result;
+    if (result != digits::result::more) return result;
   } while (exp > 0);
   // Generate digits for the fractional part.
   for (;;) {
@@ -855,7 +855,7 @@ FMT_ALWAYS_INLINE digits::result grisu_gen_digits(fp value, uint64_t error,
     fractional &= one.f - 1;
     --exp;
     result = handler.on_digit(digit, one.f, fractional, error, exp, false);
-    if (result != digits::more) return result;
+    if (result != digits::result::more) return result;
   }
 }
 
@@ -870,36 +870,36 @@ struct fixed_handler {
   digits::result on_start(uint64_t divisor, uint64_t remainder, uint64_t error,
                           int& exp) {
     // Non-fixed formats require at least one digit and no precision adjustment.
-    if (!fixed) return digits::more;
+    if (!fixed) return digits::result::more;
     // Adjust fixed precision by exponent because it is relative to decimal
     // point.
     precision += exp + exp10;
     // Check if precision is satisfied just by leading zeros, e.g.
     // format("{:.2f}", 0.001) gives "0.00" without generating any digits.
-    if (precision > 0) return digits::more;
-    if (precision < 0) return digits::done;
+    if (precision > 0) return digits::result::more;
+    if (precision < 0) return digits::result::done;
     auto dir = get_round_direction(divisor, remainder, error);
-    if (dir == round_direction::unknown) return digits::error;
+    if (dir == round_direction::unknown) return digits::result::error;
     buf[size++] = dir == round_direction::up ? '1' : '0';
-    return digits::done;
+    return digits::result::done;
   }
 
   digits::result on_digit(char digit, uint64_t divisor, uint64_t remainder,
                           uint64_t error, int, bool integral) {
     FMT_ASSERT(remainder < divisor, "");
     buf[size++] = digit;
-    if (size < precision) return digits::more;
+    if (size < precision) return digits::result::more;
     if (!integral) {
       // Check if error * 2 < divisor with overflow prevention.
       // The check is not needed for the integral part because error = 1
       // and divisor > (1 << 32) there.
-      if (error >= divisor || error >= divisor - error) return digits::error;
+      if (error >= divisor || error >= divisor - error) return digits::result::error;
     } else {
       FMT_ASSERT(error == 1 && divisor > 2, "");
     }
     auto dir = get_round_direction(divisor, remainder, error);
     if (dir != round_direction::up)
-      return dir == round_direction::down ? digits::done : digits::error;
+      return dir == round_direction::down ? digits::result::done : digits::result::error;
     ++buf[size - 1];
     for (int i = size - 1; i > 0 && buf[i] > '9'; --i) {
       buf[i] = '0';
@@ -909,7 +909,7 @@ struct fixed_handler {
       buf[0] = '1';
       buf[size++] = '0';
     }
-    return digits::done;
+    return digits::result::done;
   }
 };
 
@@ -921,7 +921,7 @@ struct grisu_shortest_handler {
   uint64_t diff;
 
   digits::result on_start(uint64_t, uint64_t, uint64_t, int&) {
-    return digits::more;
+    return digits::result::more;
   }
 
   // Decrement the generated number approaching value from above.
@@ -939,7 +939,7 @@ struct grisu_shortest_handler {
   digits::result on_digit(char digit, uint64_t divisor, uint64_t remainder,
                           uint64_t error, int exp, bool integral) {
     buf[size++] = digit;
-    if (remainder >= error) return digits::more;
+    if (remainder >= error) return digits::result::more;
     uint64_t unit = integral ? 1 : data::powers_of_10_64[-exp];
     uint64_t up = (diff - 1) * unit;  // wp_Wup
     round(up, divisor, remainder, error);
@@ -947,11 +947,11 @@ struct grisu_shortest_handler {
     if (remainder < down && error - remainder >= divisor &&
         (remainder + divisor < down ||
          down - remainder > remainder + divisor - down)) {
-      return digits::error;
+      return digits::result::error;
     }
     return 2 * unit <= remainder && remainder <= error - 4 * unit
-               ? digits::done
-               : digits::error;
+               ? digits::result::done
+               : digits::result::error;
   }
 };
 
@@ -1083,7 +1083,7 @@ int format_float(T value, int precision, float_specs specs, buffer<char>& buf) {
     auto result =
         grisu_gen_digits(fp(boundaries.upper, fp_value.e),
                          boundaries.upper - boundaries.lower, exp, handler);
-    if (result == digits::error) {
+    if (result == digits::result::error) {
       exp += handler.size - cached_exp10 - 1;
       fallback_format(value, buf, exp);
       return exp;
@@ -1096,7 +1096,7 @@ int format_float(T value, int precision, float_specs specs, buffer<char>& buf) {
         min_exp - (normalized.e + fp::significand_size), cached_exp10);
     normalized = normalized * cached_pow;
     fixed_handler handler{buf.data(), 0, precision, -cached_exp10, fixed};
-    if (grisu_gen_digits(normalized, 1, exp, handler) == digits::error)
+    if (grisu_gen_digits(normalized, 1, exp, handler) == digits::result::error)
       return snprintf_float(value, precision, specs, buf);
     int num_digits = handler.size;
     if (!fixed) {

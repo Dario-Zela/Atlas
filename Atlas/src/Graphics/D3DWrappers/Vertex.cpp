@@ -7,32 +7,47 @@ namespace Atlas
 	//And increment the stride
 	void Vertex::AddAttribute(std::string name, uint type, int size)
 	{
+		AT_CORE_ASSERT(!m_Finalised, "The vertex has been finalised, attributes cannot be added")
 		m_VertexDescriptor.push_back({ name, type });
 		m_Stride += size;
 	}
 
 	void Vertex::AddAttribute(std::tuple<std::string, uint, int> vertexData)
 	{
+		AT_CORE_ASSERT(!m_Finalised, "The vertex has been finalised, attributes cannot be added")
 		auto [name, type, size] = vertexData;
 		m_VertexDescriptor.push_back({ name, type });
 		m_Stride += size;
 	}
 	
 	//This adds the data to the memory
-	//If too little was given, the application is interrupted
+	//If too little or too much was given, the application is interrupted
 	//And the user is informed of the issue
 	void Vertex::PushVertexData(void* data)
 	{
+		AT_CORE_ASSERT(m_Finalised, "The vertex has not been finalised, data cannot be added")
+
 		byte* unformattedData = (byte*)data;
+
+		//Check that the data is less then the maximum
+		try
+		{
+			unformattedData[m_Stride];
+			AT_CORE_ASSERT(false, "You gave too much data, as such it doesn't conform to the layout set and is invalid");
+		}
+		catch(std::exception&) { }
+
+		//Insert the data
 		for (int i = 0; i < m_Stride; i++)
 		{
 			try
 			{
 				m_Data.push_back(unformattedData[i]);
 			}
+			//If there is too little, throw an exception
 			catch (std::exception&)
 			{
-				AT_CORE_ASSERT_WARG(false,"You gave too little data, only {0}, of the {1} bytes could be extracted", i, m_Stride);
+				AT_CORE_ASSERT_WARG(false, "You gave too little data, only {0}, of the {1} bytes could be extracted", i, m_Stride);
 			}
 		}
 	}

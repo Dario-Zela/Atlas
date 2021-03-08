@@ -111,6 +111,7 @@
     <ClInclude Include="src\Graphics\Buffer.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\DeferredRenderContext.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\DepthStencilBuffer.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\DepthStencilState.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\Rasteriser.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\RenderTarget.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\Targets.h" />
@@ -247,6 +248,7 @@
     <ClCompile Include="src\Graphics\AssimpWrapper\Node.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\DeferredRenderContext.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\DepthStencilBuffer.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\DepthStencilState.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Rasteriser.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\RenderTarget.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Topology.cpp" />

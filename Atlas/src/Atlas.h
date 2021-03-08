@@ -21,3 +21,5 @@
 #include "Core/ThreadPool.h"
 #include "Graphics\D3DWrappers\Texture.h"
 #include "Graphics\D3DWrappers\Rasteriser.h"
+#include "Graphics\D3DWrappers\Targets.h"
+#include "Graphics\D3DWrappers\DepthStencilState.h"

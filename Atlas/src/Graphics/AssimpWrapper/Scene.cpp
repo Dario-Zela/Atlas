@@ -58,20 +58,22 @@ namespace Atlas
 
 	void Scene::ApplyTransform(std::string nodeName, DirectX::XMMATRIX& transform)
 	{
-		AT_CORE_ASSERT(m_Nodes.find(nodeName) != m_Nodes.end(), "The selected node doesn't exist")
-		m_Nodes[nodeName]->SetAppliedTranform(transform);
+		//Use recursive node traversal to apply the transform
+		m_RootNode->ApplyTransform(nodeName, transform);
 	}
 
 	void Scene::AddTechnique(Technique& technique)
 	{
+		//For each mesh, add the technique
 		for (auto& mesh : m_Meshes)
 		{
-			mesh->AddTechnique(technique);
+			mesh->AddTechniqueWrapper(technique);
 		}
 	}
 
 	void Scene::LinkTechniques(RenderGraph& renderGraph)
 	{
+		//For each mesh, link them to the render graph
 		for (auto& mesh : m_Meshes)
 		{
 			mesh->LinkTechniques(renderGraph);
@@ -95,8 +97,6 @@ namespace Atlas
 
 		//Make the node
 		std::unique_ptr<Node> returnNode = std::make_unique<Node>(node->mName.C_Str(), std::move(nodeMeshes), transform);
-
-		m_Nodes[node->mName.C_Str()] = returnNode.get();
 
 		//Recursively add it's children
 		for (uint i = 0; i < node->mNumChildren; i++)

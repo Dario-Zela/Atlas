@@ -7,30 +7,53 @@
 
 namespace Atlas
 {
+	//Define classes used later
+	class Job;
+
 	class Drawable
 	{
+		friend Job;
 	public:
 		Drawable() = default;
 		Drawable(const Drawable&) = delete;
 		virtual ~Drawable() = default;
-
-		void ImmidiateBind() const;
-		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) const;
+		
+		//Submits the drawable, through it's techniques
+		//to the linked render graph
 		void Submit();
+		//Draws the drawable without using any technique
+		//to the back buffer
+		void Draw();
 
-		void AddBindable(std::shared_ptr<Bindable> bindable);
-		void ClearBindables() { m_Bindables.clear(); m_IndexBuffer = nullptr; }
-
+		//Links the techiques of the drawble to a render graph
 		void LinkTechniques(RenderGraph& renderGraph);
 
-		uint GetIndexCount() const { return m_IndexBuffer->GetCount(); }
+		//The transform of the object form the origin
+		virtual DirectX::XMMATRIX GetTransformXM() = 0;
 
+	protected:
+		//Adds a technique to be used by the render graph
 		void AddTechnique(Technique& technique) { m_Techniques.push_back(technique); }
 
-		virtual DirectX::XMMATRIX GetTransformXM() = 0;
-	//private:
+		//Gets the index count of the drawable
+		uint GetIndexCount() const { return m_IndexBuffer->GetCount(); }
+
+		//Adds a resource to be used during the drawing
+		void AddBindable(std::shared_ptr<Bindable> bindable);
+		//Clears the buffer of bindables
+		void ClearBindables() { m_Bindables.clear(); m_IndexBuffer = nullptr; }
+		
+		//The storage of resources
 		std::vector<std::shared_ptr<Bindable>> m_Bindables;
+	private:
+		//Binds the drawble to the immidiate context
+		void ImmidiateBind() const;
+		//Binds the drawable to the deferred context
+		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) const;
+
+		//A reference to the index buffer
 		IndexBuffer* m_IndexBuffer = nullptr;
+		//The storage of techniques
 		std::vector<Technique> m_Techniques;
 	};
 }

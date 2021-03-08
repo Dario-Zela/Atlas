@@ -23,6 +23,28 @@ namespace Atlas
 		return m_AppliedTransform;
 	}
 
+	bool Node::ApplyTransform(std::string nodeName, DirectX::XMMATRIX& transform)
+	{
+		if (m_Name != nodeName)
+		{
+			if (m_Children.size() == 0)
+				return false;
+			else
+			{
+				for (auto& child : m_Children)
+					if (child->ApplyTransform(nodeName, transform))
+						return true;
+			}
+		}
+		else
+		{
+			SetAppliedTranform(transform);
+			return true;
+		}
+
+		AT_CORE_ASSERT(false, "The selected node doesn't exist")
+	}
+
 	void Node::Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings)
 	{
 		//Calculate the accumulated treansform

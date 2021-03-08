@@ -25,7 +25,7 @@ namespace Atlas
 			Event* e = m_EventBacklog.front();
 			m_EventBacklog.pop();
 
-			//As it is a stck it is run from back to front
+			//As it is a stack it is run from back to front
 			for (auto it = stack->rbegin(); it != stack->rend(); it++)
 			{
 				(*it)->OnEvent(*e);

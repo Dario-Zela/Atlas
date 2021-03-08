@@ -96,20 +96,9 @@ namespace Atlas
 		}
 		//The gui is then updated
 		m_GUI.Broadcast();
-	}
 
-	DirectX::XMMATRIX Camera::GetTransform()
-	{
-		//The rotations are applied to the vector that is forward from us
-		DirectX::XMVECTOR lookVector = DirectX::XMVector3Transform(DirectX::g_XMIdentityR2,
-			DirectX::XMMatrixRotationRollPitchYaw(m_Rotation[1], m_Rotation[0], 0.0f)
-		);
-
-		//The view matrix is created by setting two position, one being the current position
-		//And one being one look vector away from us. 
-		DirectX::XMVECTOR cameraPosition = DirectX::XMLoadFloat3(&DirectX::XMFLOAT3(m_Position));
-		DirectX::XMVECTOR cameraTarget = DirectX::XMVectorAdd(cameraPosition, lookVector);
-		return DirectX::XMMatrixLookAtLH(cameraPosition, cameraTarget, DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+		//The view matrix is updated
+		CalculateViewMatrix();
 	}
 
 	void Camera::Translate(DirectX::XMFLOAT3 translation)
@@ -122,5 +111,19 @@ namespace Atlas
 		m_Position[0] += rotatedTranslation.m128_f32[0];
 		m_Position[1] += rotatedTranslation.m128_f32[1];
 		m_Position[2] += rotatedTranslation.m128_f32[2];
+	}
+
+	void Camera::CalculateViewMatrix()
+	{
+		//The rotations are applied to the vector that is forward from us
+		DirectX::XMVECTOR lookVector = DirectX::XMVector3Transform(DirectX::g_XMIdentityR2,
+			DirectX::XMMatrixRotationRollPitchYaw(m_Rotation[1], m_Rotation[0], 0.0f)
+		);
+
+		//The view matrix is created by setting two position, one being the current position
+		//And one being one look vector away from us. 
+		DirectX::XMVECTOR cameraPosition = DirectX::XMLoadFloat3(&DirectX::XMFLOAT3(m_Position));
+		DirectX::XMVECTOR cameraTarget = DirectX::XMVectorAdd(cameraPosition, lookVector);
+		m_ViewMatrix = DirectX::XMMatrixLookAtLH(cameraPosition, cameraTarget, DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 	}
 }

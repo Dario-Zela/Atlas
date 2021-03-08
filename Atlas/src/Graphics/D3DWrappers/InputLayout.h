@@ -23,10 +23,6 @@ namespace Atlas
 	class InputLayout : public Bindable
 	{
 	public:
-		//Constructor for the input layout
-		//Needs a vector of input elements and the ID3Dblob from the vertex shader
-		InputLayout(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob);
-		
 		//The wrapper over the constructor to get a shared ptr
 		static std::shared_ptr<InputLayout> Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob, std::string tag);
 		
@@ -36,6 +32,10 @@ namespace Atlas
 		void ImmidiateBind() override;	//Binds the layout
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
+		//Constructor for the input layout
+		//Needs a vector of input elements and the ID3Dblob from the vertex shader
+		InputLayout(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob);
+		
 		wrl::ComPtr<ID3D11InputLayout> m_InputLayout;
 	};
 }

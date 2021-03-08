@@ -23,13 +23,16 @@ namespace Atlas
 		DirectX::XMFLOAT3 GetRotation() { return DirectX::XMFLOAT3{ m_Rotation[0], m_Rotation[1], m_Rotation[2] }; }
 		DirectX::XMVECTOR GetFront() { return DirectX::XMVector3Transform(DirectX::g_XMIdentityR2, DirectX::XMMatrixRotationRollPitchYaw(m_Rotation[1], m_Rotation[0], 0.0f));	}
 
+		void Flip() { m_Rotation[0] = -m_Rotation[0]; m_Rotation[1] = -m_Rotation[1]; m_Rotation[2] = -m_Rotation[2]; CalculateViewMatrix(); }
 
 		//Gets the transform
-		DirectX::XMMATRIX GetTransform();
+		DirectX::XMMATRIX GetTransform() { return m_ViewMatrix; };
 	private:
 		//A private function that translate the position of the camera
 		//With the direction it is looking at
 		void Translate(DirectX::XMFLOAT3 translation);
+
+		void CalculateViewMatrix();
 
 		GUI m_GUI;	//The gui that will contain all of the sliders for the camera
 		float* m_Position;	//The the position of the camera
@@ -37,5 +40,7 @@ namespace Atlas
 		float m_Speed;	//The speed of the camera
 		std::tuple<int, int> m_InitialPosition;	//The position of the camera
 		bool m_ResetInitialPosition;	//Whether or not the the initial position should be reset
+
+		DirectX::XMMATRIX m_ViewMatrix;		//The view matrix
 	};
 }

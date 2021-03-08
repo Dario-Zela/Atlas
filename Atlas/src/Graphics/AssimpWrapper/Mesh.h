@@ -95,6 +95,9 @@ namespace Atlas
 
 		//The transform of the tranform constant buffer
 		DirectX::XMMATRIX GetTransformXM() override { return m_Transform; }
+
+		//Wraps the add technique method to allow the outside to add the technique to the mesh
+		void AddTechniqueWrapper(Technique& technique) { AddTechnique(technique); }
 	private:
 		//A function that gets the texture path from a type, a slot and the settings
 		std::shared_ptr<Texture> GetTexture(aiTextureType textureType, int slot, ModelDrawSettings& settings);

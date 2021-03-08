@@ -4,14 +4,21 @@
 
 namespace Atlas
 {
+	//A job is a step and a drawable combined
+	//This is what is executed on a pass
 	class Job
 	{
 	public:
-		Job(const Drawable* drawable, Step* step);
+		//Constructor assigning the drawable and the step
+		Job(Drawable* drawable, Step* step);
+
+		//Draws the step and drawable in the deferred context
 		void Execute(wrl::ComPtr<ID3D11DeviceContext> context) const;
+		//Draws the step and drawable in the immediate context
 		void ExecuteImmidiate() const;
 
-		const Drawable* m_Drawable;
+		//The drawable and step linked to the job
+		Drawable* m_Drawable;
 		Step* m_Step;
 	};
 }

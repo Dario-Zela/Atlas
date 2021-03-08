@@ -145,16 +145,37 @@ namespace Atlas
         AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateShaderResourceView(texture.Get(), &shaderResourceDescriptor, &m_Texture));
     }
 
-    Texture::Texture(ID3D11Texture2D* texture, uint slot)
+    Texture::Texture(ID3D11ShaderResourceView* texture, uint slot, uint targets)
         : m_Slot(slot)
     {
-        //Create the desrcriptor for the shader resource view
-        D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceDescriptor = {};
-        shaderResourceDescriptor.Format = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
-        shaderResourceDescriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        for (int i = 0; i < MAX_TARGETS; i++)
+        {
+            if ((targets & (1 << i)) != 0)
+                switch (i)
+                {
+                case 0:
+                    m_Binds.push_back(&ID3D11DeviceContext::VSSetShaderResources);
+                    break;
+                case 1:
+                    m_Binds.push_back(&ID3D11DeviceContext::PSSetShaderResources);
+                    break;
+                case 2:
+                    m_Binds.push_back(&ID3D11DeviceContext::DSSetShaderResources);
+                    break;
+                case 3:
+                    m_Binds.push_back(&ID3D11DeviceContext::HSSetShaderResources);
+                    break;
+                case 4:
+                    m_Binds.push_back(&ID3D11DeviceContext::GSSetShaderResources);
+                    break;
+                case 5:
+                    m_Binds.push_back(&ID3D11DeviceContext::CSSetShaderResources);
+                    break;
+                }
+        }
 
-        //Crete the shader resource view
-        AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateShaderResourceView(texture, &shaderResourceDescriptor, &m_Texture));
+        m_Texture.Swap(texture);
+        m_Slot = slot;
     }
 
     std::shared_ptr<Texture> Texture::Create(std::string path, bool mipMapping, uint targets, uint slot)
@@ -171,8 +192,8 @@ namespace Atlas
         //else create a texture and add it to the library before returning it
         else
         {
-            auto vertexShader = std::make_shared<Texture>(path, mipMapping, targets, slot);
-            BindableLib::Add(UID, vertexShader);
+            auto texture = new Texture(path, mipMapping, targets, slot);
+            BindableLib::Add(UID, std::shared_ptr<Texture>(std::move(texture)));
             return std::static_pointer_cast<Texture>(BindableLib::Resolve(UID));
         }
     }
@@ -191,8 +212,8 @@ namespace Atlas
         //else create a texture and add it to the library before returning it
         else
         {
-            auto vertexShader = std::make_shared<Texture>(width, height, data, targets, slot);
-            BindableLib::Add(UID, vertexShader);
+            auto texture = new Texture(width, height, data, targets, slot);
+            BindableLib::Add(UID, std::shared_ptr<Texture>(std::move(texture)));
             return std::static_pointer_cast<Texture>(BindableLib::Resolve(UID));
         }
     }

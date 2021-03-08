@@ -64,9 +64,9 @@ namespace Atlas
 		//else return nullptr
 		else
 		{
-			auto blendable = std::make_shared<Blendable>(blending, renderTarget, sourceBlend,
+			auto newBlend = new Blendable(blending, renderTarget, sourceBlend,
 				destinationBlend, blendOp, sourceBlendAlpha, destinationBlendAlpha, blendOpAlpha, writeMask, blendFactor, mask);
-			BindableLib::Add(UID, blendable);
+			BindableLib::Add(UID, std::shared_ptr<Blendable>(std::move(newBlend)));
 			return std::static_pointer_cast<Blendable>(BindableLib::Resolve(UID));
 		}
 	}
@@ -77,8 +77,8 @@ namespace Atlas
 			+ '_' + std::to_string(sourceBlend) + '_' + std::to_string(destinationBlend)
 			+ '_' + std::to_string(blendOp) + '_' + std::to_string(sourceBlendAlpha)
 			+ '_' + std::to_string(destinationBlendAlpha) + '_' + std::to_string(blendOpAlpha)
-			+ '_' + std::to_string(blendFactor[0]) + '_' + std::to_string(blendFactor[1])
-			+ '_' + std::to_string(blendFactor[2]) + '_' + std::to_string(blendFactor[3])
+			+ (blendFactor == nullptr ? "_0_0_0_0" : '_' + std::to_string(blendFactor[0]) + '_' + std::to_string(blendFactor[1])
+			+ '_' + std::to_string(blendFactor[2]) + '_' + std::to_string(blendFactor[3]))
 			+ '_' + std::to_string(mask);
 	}
 

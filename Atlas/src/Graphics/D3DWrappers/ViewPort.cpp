@@ -31,8 +31,8 @@ namespace Atlas
 		//else create a viewport and add it to the library before returning it
 		else
 		{
-			auto viewPort = std::make_shared<ViewPort>(x, y, width, height, zMin, zMax);
-			BindableLib::Add(UID, viewPort);
+			auto viewPort = new ViewPort(x, y, width, height, zMin, zMax);
+			BindableLib::Add(UID, std::shared_ptr<ViewPort>(std::move(viewPort)));
 			return std::static_pointer_cast<ViewPort>(BindableLib::Resolve(UID));
 		}
 	}

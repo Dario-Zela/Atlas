@@ -222,9 +222,6 @@ namespace Atlas
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-
-        //Used to make sure the CPU isn't overloaded
-        Sleep(0);
     }
 
     std::string Window::TranslateErrorCode(HRESULT hr)

@@ -15,25 +15,29 @@ namespace Atlas
 		//For each layer storages, attempt to add or remove the layer
 		for (auto layer : m_LayersToPop)
 		{
-			AT_CORE_ATTEMPT(PopLayer(layer));
+			layer->OnDetach();
+			AT_CORE_ATTEMPT(InnerPopLayer(layer));
 		}
 		m_LayersToPop = std::vector<Layer*>();			//Then clear the vector
 
 		for (auto layer : m_LayersToPush)
 		{
-			AT_CORE_ATTEMPT(PushLayer(layer));
+			layer->OnAttach();
+			AT_CORE_ATTEMPT(InnerPushLayer(layer));
 		}
 		m_LayersToPush = std::vector<Layer*>();
 
 		for (auto layer : m_OverlaysToPop)
 		{
-			AT_CORE_ATTEMPT(PopOverlay(layer));
+			layer->OnDetach();
+			AT_CORE_ATTEMPT(InnerPopOverlay(layer));
 		}
 		m_OverlaysToPop = std::vector<Layer*>();
 
 		for (auto layer : m_OverlaysToPush)
 		{
-			AT_CORE_ATTEMPT(PushOverlay(layer));
+			layer->OnAttach();
+			AT_CORE_ATTEMPT(InnerPushOverlay(layer));
 		}
 		m_OverlaysToPush = std::vector<Layer*>();
 	}
@@ -44,7 +48,7 @@ namespace Atlas
 		#ifndef AT_DEBUG
 			HWND hWnd = GetConsoleWindow();
 			ShowWindow(hWnd, SW_HIDE);
-		#endif // AT_DEBUG
+		#endif 
 
 
 		AT_CORE_INFO("Initialising the window")
@@ -102,21 +106,22 @@ namespace Atlas
 				}
 
 				//In debug mode the title of the window is changed to the FPS
-				//#ifdef AT_DEBUG
+				#ifdef AT_DEBUG
 					SetWindowTitle("FPS: " + std::to_string(1 / timeStep));
-				//#endif
+				#endif
 
 				//Update the minimised flag
 				m_Minimised = m_Window.IsMinimised();
 
 				//If the window is not minimised, then update the layer
 				if (!m_Minimised)
-					for (Layer* layer : m_LayerStack)
+					//As it is a stack it is run from back to front
+					for (auto layer = m_LayerStack.rbegin(); layer != m_LayerStack.rend(); layer++)
 					{
-						if (m_Window.isRunning()) //Keep on updating it while the window is alive
-							layer->OnUpdate(timeStep);
-						else
-							goto ForcedExit;
+							if (m_Window.isRunning()) //Keep on updating it while the window is alive
+								(*layer)->OnUpdate(timeStep);
+							else
+								goto ForcedExit;
 					}
 
 				//It there have been any changes in the layers, reorganise them
@@ -145,7 +150,7 @@ namespace Atlas
 		}
 		catch (...)
 		{
-			AT_CORE_CRITICAL("\n[Exception Type]: Unknown Exeption\n[Description]: Details Unavailable");
+			AT_CORE_CRITICAL("\n[Exception Type]: Unknown Exeption\n[Description]: Details Unavailasble");
 			__debugbreak();
 		}
 	}

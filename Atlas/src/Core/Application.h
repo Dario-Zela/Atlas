@@ -21,13 +21,11 @@ namespace Atlas
 		inline void Quit() { m_Window.Release(); }
 
 		//Wrappers over the layer/overlay addition and removal
-		//Used in the CLI/C++ as it allows them to be added without
-		//Causing issues
-		inline void PopLayerWrapper(Layer* layer) { m_LayersToPop.push_back(layer); }
-		inline void PushLayerWrapper(Layer* layer) { m_LayersToPush.push_back(layer); }
+		inline void PopLayer(Layer* layer) { m_LayersToPop.push_back(layer); }
+		inline void PushLayer(Layer* layer) { m_LayersToPush.push_back(layer); }
 
-		inline void PopOverlayWrapper(Layer* layer) { m_OverlaysToPop.push_back(layer); }
-		inline void PushOverlayWrapper(Layer* layer) { m_OverlaysToPush.push_back(layer); }
+		inline void PopOverlay(Layer* layer) { m_OverlaysToPop.push_back(layer); }
+		inline void PushOverlay(Layer* layer) { m_OverlaysToPush.push_back(layer); }
 
 		//The rendering loop
 		void Run();
@@ -35,16 +33,20 @@ namespace Atlas
 		//Allows the client to change the title of the screen dinamically
 		void SetWindowTitle(std::string Title) { SetWindowTextA(m_Window.GetWindowHandle(), Title.c_str()); }
 
-		//The functions that allow the implementation
-		//Of the application to add the initial layers
-		void PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
-		void PushOverlay(Layer* overlay) { m_LayerStack.PushOverlay(overlay); }
-
-		void PopLayer(Layer* layer) { m_LayerStack.PopLayer(layer); }
-		void PopOverlay(Layer* overlay) { m_LayerStack.PopOverlay(overlay); }
-
 		//Adds events to the queue manually
 		void AddEventToQueue(Event* e) { m_Window.AddEvent(e); }
+
+		static Application* GetInstance() { return s_Instance; }
+
+	protected:
+
+		//The functions that allow the implementation
+		//Of the application to add the initial layers
+		void InnerPushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
+		void InnerPushOverlay(Layer* overlay) { m_LayerStack.PushOverlay(overlay); }
+
+		void InnerPopLayer(Layer* layer) { m_LayerStack.PopLayer(layer); }
+		void InnerPopOverlay(Layer* overlay) { m_LayerStack.PopOverlay(overlay); }
 
 	private:
 		//A buffer for layer and overlays that need to be

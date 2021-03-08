@@ -18,7 +18,7 @@ namespace Atlas
 	std::unordered_map<HWND, bool*> GUI::m_ButtonElements = std::unordered_map<HWND, bool*>();
 
 	//The window proc for the gui
-	LRESULT CALLBACK GUIProc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam)
+	LRESULT CALLBACK GUI::GUIProc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam)
 	{
 		switch (msg)
 		{

@@ -36,12 +36,12 @@ namespace Atlas
 		//The dispatch function takes a function and
 		//Calls it if the event it was initialised with
 		//An the the one of the function match
-		template<typename T, typename P, typename F>
+		template<typename T, typename F>
 		bool Dispatch(const F& func)
 		{
 			if (m_Event.GetEventType() == T::GetStaticType())
 			{
-				m_Event.mHandled = func(static_cast<P>(m_Event));
+				m_Event.mHandled = func(static_cast<T&>(m_Event));
 				return true;
 			}
 			return false;
