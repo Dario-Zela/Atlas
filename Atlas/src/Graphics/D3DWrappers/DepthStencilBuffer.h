@@ -15,7 +15,7 @@ namespace Atlas
 	class DepthStencilBuffer : public Buffer
 	{
 	public:
-		//Creates an depth buffer of a certian size
+		//Creates an depth buffer of a certain size
 		static std::shared_ptr<DepthStencilBuffer> Create(uint width, uint height) { return std::shared_ptr<DepthStencilBuffer>(std::move(new DepthStencilBuffer(width, height))); }
 		//Creates a depth buffer the size of the screen
 		static std::shared_ptr<DepthStencilBuffer> Create();
@@ -30,9 +30,9 @@ namespace Atlas
 		//Checks if the depth buffer is valid
 		bool IsValid() { return m_DepthStencilView; }
 
-		//Immidiatly bids the depths stencil view
+		//Immediately bids the depths stencil view
 		void ImmidiateBind();
-		//Immidiatly binds the depths stencil view with a render target
+		//Immediately binds the depths stencil view with a render target
 		void ImmidiateBind(RenderTarget* renderTarget);
 
 		//Gets the depths stencil view as a texture

@@ -9,7 +9,7 @@ namespace Atlas
     public:
         Window(EventManager* eventManager);
 
-        //Code to initiasise a window
+        //Code to initialise a window
         void Init(std::string name, uint width, uint height);
         
         //Code to destroy a window
@@ -39,8 +39,8 @@ namespace Atlas
         bool m_Minimised;
     private:
         //Reads errors during initialisation
-        //An exeption like the one for graphics could not be used as
-        //This occours before a try and except
+        //An exception like the one for graphics could not be used as
+        //This occurs before a try and except
         std::string TranslateErrorCode(HRESULT hr);
 
         //Reference to the Window Handle

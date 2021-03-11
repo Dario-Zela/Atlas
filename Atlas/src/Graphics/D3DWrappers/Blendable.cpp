@@ -23,7 +23,7 @@ namespace Atlas
 		D3D11_BLEND_DESC blendingDescriptor = {};
 		auto& tex = blendingDescriptor.RenderTarget[renderTarget]; //Specifies which render target is blended
 
-		//If the blending is enabled ativate it
+		//If the blending is enabled activate it
 		if (blending)
 		{
 			tex.BlendEnable = TRUE;
@@ -94,7 +94,7 @@ namespace Atlas
 		//else return nullptr
 		else
 		{
-			//Log the lack of bindable
+			//Log the lack of bindables
 			AT_WARN("There is no blendable that uses the tag {0}", tag)
 			return nullptr;
 		}

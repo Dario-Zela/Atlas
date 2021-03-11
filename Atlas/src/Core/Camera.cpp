@@ -46,7 +46,7 @@ namespace Atlas
 			//Then if the positions differ
 			if (Input::GetCursorPosition() != m_InitialPosition)
 			{
-				//Get the differences between the positions and add them to the rotaion
+				//Get the differences between the positions and add them to the rotation
 				std::tuple<int, int> currentPosition = Input::GetCursorPosition();
 
 				m_Rotation[0] += (std::get<0>(currentPosition) - std::get<0>(m_InitialPosition)) * 0.01f;
@@ -94,7 +94,7 @@ namespace Atlas
 				m_ResetInitialPosition = true;
 			}
 		}
-		//The gui is then updated
+		//The GUI is then updated
 		m_GUI.Broadcast();
 
 		//The view matrix is updated

@@ -21,7 +21,7 @@ namespace Atlas
 		//The instances of the events
 		virtual void OnEvent(Event& e) {}
 
-		//Gets the dubug name
+		//Gets the debug name
 		inline const std::string& GetName() const { return m_DebugName; }
 
 	private:

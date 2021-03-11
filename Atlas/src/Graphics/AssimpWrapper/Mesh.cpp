@@ -33,7 +33,7 @@ namespace Atlas
 		m_VertexPositions.reserve(mesh->mNumVertices);
 		bool attributes[] = { mesh->HasTextureCoords(0), mesh->HasNormals(), mesh->HasVertexColors(0), mesh->HasTangentsAndBitangents() };
 
-		//If they are present, reserve space for normals, colors, tangents and bitangents
+		//If they are present, reserve space for normals, colours, tangents and bi-tangents
 		if (attributes[0])
 			m_TextureCoordinates.reserve(mesh->mNumVertices);
 
@@ -69,7 +69,7 @@ namespace Atlas
 			}
 		}
 
-		//Save the material and filepath if it is present
+		//Save the material and file-path if it is present
 		if (mesh->mMaterialIndex >= 0)
 		{
 			m_Material = materials[mesh->mMaterialIndex];
@@ -79,7 +79,7 @@ namespace Atlas
 		//Save the name
 		m_Name = mesh->mName.C_Str();
 
-		//Add the indicies
+		//Add the indices
 		m_Indecies.reserve((size_t)mesh->mNumFaces * 3);
 
 		for (uint i = 0; i < mesh->mNumFaces; i++)
@@ -183,7 +183,7 @@ namespace Atlas
 			uint strideCBuff = 0;
 			std::vector<float> cbuffData;
 
-			//Iterate over every subdata propriety
+			//Iterate over every sub-data propriety
 			for (uint i = 5; i < MAX_MESH_FLAGS_SIZE; i++)
 			{
 				//If the propriety has been activated
@@ -197,7 +197,7 @@ namespace Atlas
 					{
 						aiColor3D data;
 						m_Material->Get(AI_MATKEY_COLOR_DIFFUSE, data);
-						if (data.IsBlack()) AT_WARN("The diffuse color of {0} is black, which is the default color, meaning that the value may be missing", m_Name)
+						if (data.IsBlack()) AT_WARN("The diffuse colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
 
 							cbuffData.push_back(data.r);
 						cbuffData.push_back(data.g);
@@ -210,7 +210,7 @@ namespace Atlas
 					{
 						aiColor3D data;
 						m_Material->Get(AI_MATKEY_COLOR_SPECULAR, data);
-						if (data.IsBlack()) AT_WARN("The specular color of {0} is black, which is the default color, meaning that the value may be missing", m_Name)
+						if (data.IsBlack()) AT_WARN("The specular colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
 
 							cbuffData.push_back(data.r);
 						cbuffData.push_back(data.g);
@@ -223,7 +223,7 @@ namespace Atlas
 					{
 						aiColor3D data;
 						m_Material->Get(AI_MATKEY_COLOR_AMBIENT, data);
-						if (data.IsBlack()) AT_WARN("The ambient color of {0} is black, which is the default color, meaning that the value may be missing", m_Name)
+						if (data.IsBlack()) AT_WARN("The ambient colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
 
 							cbuffData.push_back(data.r);
 						cbuffData.push_back(data.g);
@@ -236,7 +236,7 @@ namespace Atlas
 					{
 						aiColor3D data;
 						m_Material->Get(AI_MATKEY_COLOR_EMISSIVE, data);
-						if (data.IsBlack()) AT_WARN("The emmissive color of {0} is black, which is the default color, meaning that the value may be missing", m_Name)
+						if (data.IsBlack()) AT_WARN("The emmissive colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
 
 							cbuffData.push_back(data.r);
 						cbuffData.push_back(data.g);
@@ -249,7 +249,7 @@ namespace Atlas
 					{
 						aiColor3D data;
 						m_Material->Get(AI_MATKEY_COLOR_TRANSPARENT, data);
-						if (data.IsBlack()) AT_WARN("The transparency color of {0} is black, which is the default color, meaning that the value may be missing", m_Name)
+						if (data.IsBlack()) AT_WARN("The transparency colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
 
 							cbuffData.push_back(data.r);
 						cbuffData.push_back(data.g);
@@ -325,17 +325,17 @@ namespace Atlas
 				}
 			}
 
-			//If the stide is not 0 add a vertex constant buffer
+			//If the stride is not 0 add a vertex constant buffer
 			if (strideCBuff != 0) AddBindable(ConstantBuffer::Create(cbuffData.data(), strideCBuff, m_Name + "Proprieties", (uint)TargetShader::VertexShader));
 
 			//The index buffer is created
 			AddBindable(IndexBuffer::Create(m_Indecies.data(), (uint)m_Indecies.size() * sizeof(unsigned short), m_Name));
 
-			//Checks that the textures are added propperly
+			//Checks that the textures are added properly
 			AT_CORE_ASSERT(!(textureFlags > 0 && !proprieties[1]), "Tried to request textures without adding texture coordinates");
 			AT_CORE_ASSERT(!(textureFlags == 0 && proprieties[1]), "Tried to request textures without specifying what textures");
 
-			//Add ther respective textures
+			//Add the respective textures
 			if (proprieties[1] && textureFlags > 0)
 			{
 				//The slot is incremented to allow for more then one texture at a time
@@ -351,7 +351,7 @@ namespace Atlas
 				}
 			}
 
-			//Add the topopology
+			//Add the topology
 			AddBindable(Atlas::Topology::Create());
 
 			//If the view matrix is available, it is added to the transformation constant buffer

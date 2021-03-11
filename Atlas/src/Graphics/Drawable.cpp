@@ -8,7 +8,7 @@ namespace Atlas
 {
 	void Drawable::ImmidiateBind() const
 	{
-		//Immidiatly bind all of the bindables
+		//Immediately bind all of the bindables
 		for (auto& bindable : m_Bindables)
 			bindable->ImmidiateBind();
 	}
@@ -22,22 +22,22 @@ namespace Atlas
 
 	void Drawable::Submit()
 	{
-		//Submit all techniques with reference to teh drawble
+		//Submit all techniques with reference to the drawable
 		for (auto& techique : m_Techniques)
 			techique.Submit(*this);
 	}
 
 	void Drawable::Draw() 
 	{ 
-		//Immidiately bind all of the bindables
+		//Immediately bind all of the bindables
 		ImmidiateBind(); 
-		//The immidiatly draw to the back buffer
+		//The immediately draw to the back buffer
 		Graphics::ImmidiateDrawIndexed(m_IndexBuffer->GetCount()); 
 	}
 
 	void Drawable::AddBindable(std::shared_ptr<Bindable> bindable)
 	{
-		//If the bindable being added is an index buffer
+		//If the bindables being added is an index buffer
 		if (typeid(*bindable) == typeid(IndexBuffer))
 		{
 			//Make sure there is no index buffer already

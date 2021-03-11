@@ -7,7 +7,7 @@ namespace Atlas
 	class DeferredRenderContext
 	{
 	public:
-		//Constructs an empty deffered context
+		//Constructs an empty deferred context
 		DeferredRenderContext();
 		//Gets the context
 		wrl::ComPtr<ID3D11DeviceContext> GetContext() { return m_Context; }

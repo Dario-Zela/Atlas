@@ -7,7 +7,7 @@ namespace Atlas
 	class Source;
 
 	//This is an input into a pass from an other pass
-	//They can only transfer buffers, ie. the depth stencil buffer
+	//They can only transfer buffers, i.e.. the depth stencil buffer
 	//and the render target
 	//To get a bindable, get the 
 	class Sink

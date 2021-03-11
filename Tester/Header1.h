@@ -45,7 +45,7 @@ public:
 		AddBindable(Atlas::ConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 4, "Cube_Dirlight", (uint)Atlas::TargetShader::PixelShader, 1));
 
 		AddBindable(Atlas::ConstantBuffer::Create(sizeof(DirectX::XMFLOAT4) * 5 * 4, "Cube_PointLight", (uint)Atlas::TargetShader::PixelShader, 2));
-		
+
 		Atlas::Technique tech("default");
 		{
 			Atlas::Step step("LambertianPass");
@@ -82,7 +82,7 @@ public:
 		AddBindable(Atlas::IndexBuffer::Create(vertecies.GetIndecies().data(), vertecies.GetIndecies().size() * sizeof(unsigned short), "Cube"));
 		AddBindable(Atlas::TransformationConstantBuffer::Create(*this, DirectX::XMMatrixPerspectiveLH(1, (rand() % 100) / 100.0f, 1, (rand() % 10) * (rand() % 10) * 100)));
 
-		pos = {(float)(rand() % 10), (float)(rand() % 10), (float)(rand() % 10)};
+		pos = { (float)(rand() % 10), (float)(rand() % 10), (float)(rand() % 10) };
 		auto model = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z));
 		AddBindable(Atlas::ConstantBuffer::Create(&model, sizeof(model), "Cube_Model", (uint)Atlas::TargetShader::VertexShader, 1));
 
@@ -109,9 +109,9 @@ public:
 		data.push_back({ 1.0f, 1.0f, 1.0f, 0 });
 
 		Atlas::ConstantBuffer::Get("Cube_Dirlight")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
-		
+
 		data.clear();
-		for (int i = 0; i < 4; i++) 
+		for (int i = 0; i < 4; i++)
 		{
 			data.push_back({ lightPos[i].x, lightPos[i].y, lightPos[i].z, 0 });
 			data.push_back({ 1.0f,	0.09f,	0.032f ,0 });
@@ -149,7 +149,7 @@ public:
 		std::vector<Atlas::InputElement> elemnts;
 		elemnts.push_back({ "POSITION", DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT });
 		AddBindable(Atlas::InputLayout::Create(std::move(elemnts), blob, "LightLayout"));
-		
+
 		Atlas::Technique tech("default");
 		{
 			Atlas::Step step("LambertianPass");
@@ -179,7 +179,7 @@ public:
 	Screen()
 	{
 		auto vertecies = Atlas::Plane::Make();
-		vertecies.Transform(DirectX::XMMatrixScaling(0.5, 0.5, 0.5) * DirectX::XMMatrixTranslation(-0.25, 0,0));
+		vertecies.Transform(DirectX::XMMatrixScaling(0.5, 0.5, 0.5) * DirectX::XMMatrixTranslation(-0.25, 0, 0));
 
 		AddBindable(Atlas::VertexBuffer::Create(vertecies.GetVertecies().data(), vertecies.GetVertecies().size() * sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3), "Plane"));
 		AddBindable(Atlas::IndexBuffer::Create(vertecies.GetIndecies().data(), vertecies.GetIndecies().size() * sizeof(unsigned short), "Plane"));
@@ -244,7 +244,7 @@ public:
 		: camera(camera), lightPos(lightPos), dir(dir)
 	{
 		auto vertecies = Atlas::Cube::Make();
-		
+
 		struct Vertex
 		{
 			DirectX::XMFLOAT3 pos;
@@ -284,7 +284,7 @@ public:
 		data.push_back({ 1.0f, 0.5f, 0.31f, 0 });
 		data.push_back({ 0.5f, 0.5f, 0.5f, 32 });
 
-		AddBindable(Atlas::ConstantBuffer::Create(data.data(), sizeof(DirectX::XMFLOAT4)* data.size(), "BrickWall_LightProp", (uint)Atlas::TargetShader::PixelShader, 2));
+		AddBindable(Atlas::ConstantBuffer::Create(data.data(), sizeof(DirectX::XMFLOAT4) * data.size(), "BrickWall_LightProp", (uint)Atlas::TargetShader::PixelShader, 2));
 
 		auto vs = Atlas::VertexShader::Create("BrickWallVS.cso");
 		auto blob = vs->GetBlob();

@@ -7,7 +7,7 @@ namespace Atlas
 {
 	Scene::Scene(std::string path)
 	{
-		//Get the scene with triangles only, and calculating tangents and bitangents when necessary.
+		//Get the scene with triangles only, and calculating tangents and bi-tangents when necessary.
 		auto scene = m_Importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
 		AT_CORE_ASSERT(scene, m_Importer.GetErrorString());	//If the result is invalid, the error is outputted
 
@@ -36,7 +36,7 @@ namespace Atlas
 		//If the scene has embedded textures, warn the user that they cannot be accessed
 		if (scene->HasTextures())
 		{
-			AT_WARN("The model posseses embedded textures, which cannot be accessed by the library")
+			AT_WARN("The model possesses embedded textures, which cannot be accessed by the library")
 		}
 
 		//Then get the root node

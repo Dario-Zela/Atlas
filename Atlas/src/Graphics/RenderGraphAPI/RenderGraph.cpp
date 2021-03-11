@@ -26,7 +26,7 @@ namespace Atlas
 		//Check that the graph has been finalised
 		AT_CORE_ASSERT(m_Finalised, "The Render Graph has not been finalised");
 
-		//Create a command list and an array of false-initialised booleans
+		//Create a command list and an array of false-initialised boolean
 		wrl::ComPtr<ID3D11CommandList> commandList = nullptr;
 		
 		bool* passed = new bool[m_Passes.size()]();
@@ -38,7 +38,7 @@ namespace Atlas
 			pass->Execute(context);
 			//If it is not a pass of the first level, wait until it's your turn
 			if(index != 0) while (!passed[index - 1]);
-			//Adds the commands list to the the original one
+			//Adds the commands list to the original one
 			context->FinishCommandList(FALSE, &commandList);
 			//State that you are done
 			passed[index] = true;
@@ -86,10 +86,10 @@ namespace Atlas
 		}
 		catch (std::bad_cast&)
 		{
-			//If it isn't render queue pass, throw an exeption
+			//If it isn't render queue pass, throw an exception
 			AT_CORE_ASSERT_WARG(false, "The pass of name {0} is not a render queue pass", name)
 		}
-		//If it doesn't exist, throw an exeption
+		//If it doesn't exist, throw an exception
 		AT_CORE_ASSERT_WARG(false, "There was no pass of the name {0} in the render graph", name)
 	}
 
@@ -104,7 +104,7 @@ namespace Atlas
 		//Look for it
 		auto i = std::find_if(m_GlobalSinks.begin(), m_GlobalSinks.end(), finder);
 
-		//If it doesn't exist, throw an exeption
+		//If it doesn't exist, throw an exception
 		AT_CORE_ASSERT_WARG(!(i == m_GlobalSinks.end()), "There is no global sink with the name {0}", sinkName)
 
 		//Else, set it's target
@@ -144,7 +144,7 @@ namespace Atlas
 			}
 		);
 
-		//Create a threadpool a maximum of 5 large
+		//Create a thread-pool a maximum of 5 large
 		m_ThreadPool.CreatePool(5 > m_Passes.size() ? m_Passes.size() : 5);
 
 		//Set the flag to true
@@ -216,7 +216,7 @@ namespace Atlas
 						goto NextSink;
 					}
 				}
-				//If there is no source with that name, throw an exeption
+				//If there is no source with that name, throw an exception
 				AT_CORE_ASSERT_WARG(false, "There is no global source named {0} for the sink {1} in pass {2} to link to", sink->GetSourceName(), sink->GetRegisteredName(), pass.GetName())
 			}
 			else
@@ -240,7 +240,7 @@ namespace Atlas
 						goto NextSink;
 					}
 				}
-				//If there is no pass with that name, throw an exeption
+				//If there is no pass with that name, throw an exception
 				AT_CORE_ASSERT_WARG(false, "There is no pass named {0} for the sink {1} in pass {2} to link to", sourcePassName, sink->GetRegisteredName(), pass.GetName())
 			}
 
@@ -271,7 +271,7 @@ namespace Atlas
 				}
 			}
 
-			//If there is no pass with that name, throw an exeption
+			//If there is no pass with that name, throw an exception
 			AT_CORE_ASSERT_WARG(false, "There is no pass named {0} for the global sink {1} to link to", inputSourcePassName, sink->GetRegisteredName())
 
 			NextSink:;

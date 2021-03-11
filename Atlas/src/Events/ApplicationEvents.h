@@ -18,7 +18,7 @@ namespace Atlas
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "WindowResizeEvent: Width = " << m_Width << ", Heght = " << m_Height;
+			ss << "WindowResizeEvent: Width = " << m_Width << ", Height = " << m_Height;
 			return ss.str();
 		}
 

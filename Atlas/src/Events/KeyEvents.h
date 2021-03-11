@@ -8,7 +8,7 @@ namespace Atlas
 	class KeyEvent : public Event
 	{
 	public:
-		//Returns the keycode of the key
+		//Returns the key-code of the key
 		inline int GetKeyCode() const { return m_KeyCode; }
 
 	protected:
@@ -24,7 +24,7 @@ namespace Atlas
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
-		//It takes the keycode and if the key has been held
+		//It takes the key-code and if the key has been held
 		KeyPressedEvent(int keycode, bool held)
 			:KeyEvent(keycode), m_Held(held)
 		{
@@ -65,12 +65,12 @@ namespace Atlas
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
-	//A keytyped event
+	//A key-typed event
 	class KeyTypedEvent : public Event
 	{
 	public:
-		//It doesn't use the superclass as the keycode
-		//Rapresent the ASCII value of the character
+		//It doesn't use the superclass as the key-code
+		//Represent the ASCII value of the character
 		KeyTypedEvent(int keycode)
 			:m_Character(keycode)
 		{

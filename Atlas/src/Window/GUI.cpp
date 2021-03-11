@@ -17,7 +17,7 @@ namespace Atlas
 	std::unordered_map<HWND, std::tuple<void*, SliderData>> GUI::m_SliderElements = std::unordered_map<HWND, std::tuple<void*, SliderData>>();
 	std::unordered_map<HWND, bool*> GUI::m_ButtonElements = std::unordered_map<HWND, bool*>();
 
-	//The window proc for the gui
+	//The window proc for the GUI
 	LRESULT CALLBACK GUI::GUIProc(HWND hwnd, uint msg, WPARAM wparam, LPARAM lparam)
 	{
 		switch (msg)
@@ -92,7 +92,7 @@ namespace Atlas
 		}
 		case WM_COMMAND:
 		{
-			//If a button has been cliked
+			//If a button has been clicked
 			//Toggle it's value
 			if (HIWORD(wparam) == BN_CLICKED)
 			{
@@ -177,7 +177,7 @@ namespace Atlas
 		//Used to make sure the CPU isn't overloaded
 		Sleep(0);
 
-		//This is used to check if the data has chaned values
+		//This is used to check if the data has changed values
 		//And the slider has not
 		m_TimeAfterTest++;
 
@@ -237,8 +237,8 @@ namespace Atlas
 	//Only AddSliderFloat is commented
 	void GUI::AddSliderFloat(std::string name, float* val, float min, float max, float scale)
 	{
-		//Creates a trackbar control
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		//Creates a track-bar control
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 240, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -268,7 +268,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderFloat2(std::string name, float* val, float min, float max, float scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 115, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -293,7 +293,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 110 + 10, 40 + 40 * m_Widgets, 115, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -305,7 +305,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderFloat3(std::string name, float* val, float min, float max, float scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -329,7 +329,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 80 + 10, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -338,7 +338,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 1, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 80 * 2 + 10 * 2, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -350,7 +350,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderFloat4(std::string name, float* val, float min, float max, float scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -374,7 +374,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 50 + 20, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -383,7 +383,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 1, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 50 * 2 + 20 * 2, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -392,7 +392,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 2, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 50 * 3 + 20 * 3, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -403,7 +403,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderUint(std::string name, uint* val, uint min, uint max, uint scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 240, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -429,7 +429,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderUint2(std::string name, uint* val, uint min, uint max, uint scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 115, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -453,7 +453,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 110 + 10, 40 + 40 * m_Widgets, 115, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -465,7 +465,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderUint3(std::string name, uint* val, uint min, uint max, uint scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -489,7 +489,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 80 + 10, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -498,7 +498,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 1, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 80 * 2 + 10 * 2, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -510,7 +510,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderUint4(std::string name, uint* val, uint min, uint max, uint scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -534,7 +534,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 50 + 20, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -543,7 +543,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 1, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 50 * 2 + 20 * 2, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -552,7 +552,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 2, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 50 * 3 + 20 * 3, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -564,7 +564,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderInt(std::string name, int* val, int min, int max, int scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 240, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -590,7 +590,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderInt2(std::string name, int* val, int min, int max, int scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 115, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -614,7 +614,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 110 + 10, 40 + 40 * m_Widgets, 115, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -626,7 +626,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderInt3(std::string name, int* val, int min, int max, int scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -650,7 +650,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 80 + 10, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -659,7 +659,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 1, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 80 * 2 + 10 * 2, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -671,7 +671,7 @@ namespace Atlas
 	}
 	void GUI::AddSliderInt4(std::string name, int* val, int min, int max, int scale)
 	{
-		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -695,7 +695,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 50 + 20, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -704,7 +704,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 1, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 50 * 2 + 20 * 2, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -713,7 +713,7 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 2, data);
 
-		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Trackbar Control",
+		hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20 + 50 * 3 + 20 * 3, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
 
@@ -735,7 +735,7 @@ namespace Atlas
 		m_ButtonElements[hButton] = val;
 		Button_SetCheck(hButton, *val);
 
-		//The value of the button is at last set the the original value
+		//The value of the button is at last set the original value
 		SendMessage(hButton, BM_SETCHECK, (WPARAM)(int)*val, 0L);
 		m_Widgets++;
 	}

@@ -12,9 +12,9 @@ namespace Atlas
 		const char* what() const noexcept override;
 		//Type of exception
 		virtual const char* GetType() const noexcept;
-		//The line the exception occoured on
+		//The line the exception occurred on
 		int GetLine() const noexcept;
-		//The file the exception occoured on
+		//The file the exception occurred on
 		const std::string& GetFile() const noexcept;
 		//A combination of the getTile and getType
 		//Results, used in the inherited exceptions

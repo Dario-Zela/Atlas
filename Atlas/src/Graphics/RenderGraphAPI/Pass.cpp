@@ -47,7 +47,7 @@ namespace Atlas
 
 	void Pass::AddBindable(std::shared_ptr<Bindable> bindable)
 	{
-		//Add the bindable to the vector
+		//Add the bindables to the vector
 		m_Bindables.push_back(std::move(bindable));
 	}
 
@@ -117,7 +117,7 @@ namespace Atlas
 		//Make sure that there is either a render target or a depth buffer
 		AT_CORE_ASSERT_WARG(m_RenderTarget->IsValid() || m_DepthBuffer->IsValid(), "The pass {0} needs either a render target or a depth buffer", m_Name)
 		//Make sure the pass was inserted correctly inside the render graph
-		AT_CORE_ASSERT_WARG(m_Level > -1, "The pass {0} has not been accurately placed into the graph, this will only occour if there are no sinks or sources to link", m_Name)
+		AT_CORE_ASSERT_WARG(m_Level > -1, "The pass {0} has not been accurately placed into the graph, this will only occur if there are no sinks or sources to link", m_Name)
 	}
 
 	void Pass::RegisterSink(std::unique_ptr<Sink> sink)

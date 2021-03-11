@@ -21,7 +21,7 @@ namespace Atlas
 			//Lock the mutex
 			m_Mutex.lock();
 
-			//This switches on the warning level to change the color
+			//This switches on the warning level to change the colour
 			//Of the console
 			HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 			switch (WarningLevel)
@@ -38,7 +38,7 @@ namespace Atlas
 
 			std::cout << string << std::endl;
 
-			//If the filepath has been initialised
+			//If the file-path has been initialised
 			if (m_File != "")
 			{
 				//The file is open and the string is written
@@ -47,7 +47,7 @@ namespace Atlas
 				file.close(); //The file is then closed
 			}
 
-			//The color of the console is reset to the original value
+			//The colour of the console is reset to the original value
 			SetConsoleTextAttribute(hStdOut, 15);
 
 			//Unlock the mutex
@@ -57,7 +57,7 @@ namespace Atlas
 	private:
 		//Wraps a series of chrono function to get the time
 		std::string GetTime();
-		//The filepath is store in the string
+		//The file-path is store in the string
 		std::string m_File = "";
 		//A mutex to avoid conflicts
 		std::mutex m_Mutex;

@@ -22,9 +22,9 @@ public:
 		rt2->Bind(context);
 
 		BindAll(context);
-		
+
 		auto rt = Atlas::RenderTarget::Create(1500, 1000);
-		
+
 		camera->Flip();
 
 		rt->Clear();
@@ -35,7 +35,7 @@ public:
 		{
 			m_Jobs[i].Execute(context);
 		}
-		
+
 		Settle(rt);
 
 		rt2 = Atlas::DepthStencilState::Create(false);
@@ -72,7 +72,6 @@ public:
 			}
 		}
 	}
-
 };
 
 class ClearPass : public Atlas::Pass
@@ -89,7 +88,7 @@ public:
 
 	void Execute(wrl::ComPtr<ID3D11DeviceContext> context) override
 	{
-		m_RenderTarget->Clear(0,0,0,1);
+		m_RenderTarget->Clear(0, 0, 0, 1);
 		m_DepthBuffer->Clear();
 	}
 

@@ -52,13 +52,13 @@ namespace Atlas
 			return GetAsyncKeyState(keyCode) < 0;
 		}
 
-		//This returns the horizontal scrool
+		//This returns the horizontal scroll
 		static float GetHScrool()
 		{
 			return m_HScroll;
 		}
 
-		//This returns the vertical scrool
+		//This returns the vertical scroll
 		static float GetVScrool()
 		{
 			return m_VScroll;

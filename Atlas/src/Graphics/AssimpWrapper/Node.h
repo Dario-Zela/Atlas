@@ -7,14 +7,14 @@ namespace Atlas
 	class Mesh;
 
 	//A wrapper over an aiNode
-	//It rappressents a node in a scene graph
+	//It represents a node in a scene graph
 	class Node
 	{
 	public:
-		//Constructor, takes in the name of the node, the associated meshes and the tranform
+		//Constructor, takes in the name of the node, the associated meshes and the transform
 		Node(const std::string& name, std::vector<Mesh*> meshes, const DirectX::XMMATRIX& tranform);
 
-		//Setters and getters on the applied tranform
+		//Setters and getters on the applied transform
 		void SetAppliedTranform(const DirectX::XMMATRIX& tranform);
 		DirectX::XMFLOAT4X4& GetAppliedTranfrom();
 

@@ -106,28 +106,28 @@ namespace Atlas
 
 	void RenderTarget::Clear(float r, float g, float b, float a)
 	{
-		//The render target is filled with the color
+		//The render target is filled with the colour
 		float color[4] = { r, g, b, a };
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->ClearRenderTargetView(m_RenderTargetView.Get(), color));
 	}
 
 	void RenderTarget::ImmidiateBind()
 	{
-		//Immidiatly bind the render target with 
+		//Immediately bind the render target with 
 		//no depth stencil view
 		ImmidiateBind(nullptr);
 	}
 
 	void RenderTarget::ImmidiateBind(ID3D11DepthStencilView* depthStencilView)
 	{
-		//Immidiatly bind the render target with the depth stencil view
+		//Immediately bind the render target with the depth stencil view
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), depthStencilView));
 	}
 
 	std::shared_ptr<Texture> RenderTarget::GetAsTexture(uint slot, uint targets)
 	{
 		//Check that a shader resource was generated
-		AT_CORE_ASSERT(m_ShaderResourceView, "The shader resource view is empty, you are trying to get a bindable\nfrom a non binadable resource")
+		AT_CORE_ASSERT(m_ShaderResourceView, "The shader resource view is empty, you are trying to get a bindable\nfrom a non bindable resource")
 
 		//This should not be available from the BindableLib as it would duplicate data
 		//And still needs to be remade each frame as the texture data changes during execution

@@ -35,7 +35,7 @@ namespace Atlas
 
 	void BindableLib::Add(std::string UID, std::shared_ptr<Bindable> bindable)
 	{
-		//Add the bindable to the library
+		//Add the bindables to the library
 		(*m_Library)[UID] = std::move(bindable);
 	}
 

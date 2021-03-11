@@ -25,7 +25,7 @@ namespace Atlas
 		//to the back buffer
 		void Draw();
 
-		//Links the techiques of the drawble to a render graph
+		//Links the techniques of the drawable to a render graph
 		void LinkTechniques(RenderGraph& renderGraph);
 
 		//The transform of the object form the origin
@@ -46,7 +46,7 @@ namespace Atlas
 		//The storage of resources
 		std::vector<std::shared_ptr<Bindable>> m_Bindables;
 	private:
-		//Binds the drawble to the immidiate context
+		//Binds the drawable to the immediate context
 		void ImmidiateBind() const;
 		//Binds the drawable to the deferred context
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) const;

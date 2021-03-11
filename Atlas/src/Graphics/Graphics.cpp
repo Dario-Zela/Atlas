@@ -21,18 +21,18 @@ namespace Atlas
 		else
 			return;
 
-		//Define the descriptor for the swapchain
+		//Define the descriptor for the swap-chain
 		DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
 		swapChainDesc.BufferDesc.Width = 0;			//Takes the values of the window
 		swapChainDesc.BufferDesc.Height = 0;
-		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;		//A 32 bit RGBA color format
+		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;		//A 32 bit RGBA colour format
 		swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;				//No Limit on the refresh rate
 		swapChainDesc.BufferDesc.RefreshRate.Denominator = 0;
 		swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;		//No scaling specified
 		swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;		//No scan line order specified
 		swapChainDesc.SampleDesc.Count = 1;				//No anti-aliasing
 		swapChainDesc.SampleDesc.Quality = 0;
-		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		//It decleres the buffers as an output
+		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		//It declares the buffers as an output
 		swapChainDesc.BufferCount = 1;			//1 back buffer and the front buffer
 		swapChainDesc.OutputWindow = hwnd;			//Window handle
 		swapChainDesc.Flags = 0;				//No flags
@@ -67,10 +67,10 @@ namespace Atlas
 
 		m_RenderTarget = RenderTarget::Create(backBuffer.Get());
 
-		//Initialise the Bindable library
+		//Initialise the Bindables library
 		BindableLib::Init();
 
-		//Get the window dimentions
+		//Get the window dimensions
 		auto [width, height] = Input::GetWindowSize();
 
 		//Set the default window

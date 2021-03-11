@@ -39,9 +39,9 @@ namespace Atlas
 		static std::string GenerateUID(bool DepthEnable, D3D11_DEPTH_WRITE_MASK DepthWriteMask, D3D11_COMPARISON_FUNC DepthFunc,
 			bool StencilEnable, byte StencilReadMask, byte StencilWriteMask, DepthStencilDesc FrontFace, DepthStencilDesc BackFace);
 
-		//Binds the depth stencil state to the immidiate context
+		//Binds the depth stencil state to the immediate context
 		void ImmidiateBind();
-		//Binds the depth stencil state to the deffered context
+		//Binds the depth stencil state to the deferred context
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context);
 	private:
 		//The constructor of the depth stencil state

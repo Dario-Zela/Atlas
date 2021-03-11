@@ -19,7 +19,7 @@ namespace Atlas
 		void PropagateEvents(LayerStack* stack);
 
 	private:
-		//A queue that stores all the event that occour in one update
+		//A queue that stores all the event that occur in one update
 		std::queue<Event*> m_EventBacklog;
 	};
 
@@ -35,7 +35,7 @@ namespace Atlas
 
 		//The dispatch function takes a function and
 		//Calls it if the event it was initialised with
-		//An the the one of the function match
+		//An the one of the function match
 		template<typename T, typename F>
 		bool Dispatch(const F& func)
 		{

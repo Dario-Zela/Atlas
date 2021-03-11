@@ -17,7 +17,7 @@ namespace Atlas
 	//Adds a layer
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		//The layer's existance is checked
+		//The layer's existence is checked
 		AT_CORE_ASSERT(layer, "The layer doesn't exist")
 		//This is done to the position of the begging item + the layer index
 		m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
@@ -28,7 +28,7 @@ namespace Atlas
 	//Adds an overlay
 	void LayerStack::PushOverlay(Layer* overlay)
 	{
-		//The overlay's existance is checked
+		//The overlay's existence is checked
 		AT_CORE_ASSERT(overlay, "The layer doesn't exist")
 		//This is at the begging of the stack
 		//And as the index is not incremented, the layers will always

@@ -14,7 +14,7 @@ namespace Atlas
 
 	void Node::SetAppliedTranform(const DirectX::XMMATRIX& tranform)
 	{
-		//Sets the applied tranform
+		//Sets the applied transform
 		DirectX::XMStoreFloat4x4(&m_AppliedTransform, tranform);
 	}
 
@@ -47,7 +47,7 @@ namespace Atlas
 
 	void Node::Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings)
 	{
-		//Calculate the accumulated treansform
+		//Calculate the accumulated transform
 		DirectX::XMMATRIX transform = DirectX::XMLoadFloat4x4(&m_Transform) * DirectX::XMLoadFloat4x4(&m_AppliedTransform) * accumulatedTransform;
 
 		//Draw each mesh

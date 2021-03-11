@@ -77,7 +77,7 @@ namespace Atlas
 
 	void Application::Run()
 	{
-		//This checks if an exception has occoured
+		//This checks if an exception has occurred
 		try
 		{
 			//A timer that flushes the BindableLib to remove unused Bindables
@@ -88,7 +88,7 @@ namespace Atlas
 			{
 				m_Window.Broadcast();			//All events are broadcast at the beginning
 				
-				//With the chrono libriary, find the time taken to complete the loop
+				//With the chrono library, find the time taken to complete the loop
 				TimeStep timeStep;
 				{
 					auto now = std::chrono::system_clock::now();
@@ -127,7 +127,7 @@ namespace Atlas
 				//It there have been any changes in the layers, reorganise them
 				if (m_LayersToPush.size() + m_LayersToPop.size() + m_OverlaysToPop.size() + m_OverlaysToPush.size() > 0) ReorganiseLayers();
 
-				//Reset the value of the scrooling
+				//Reset the value of the scrolling
 				Input::SetScroll(0, 0);
 
 				//Then dispatch the events
@@ -145,12 +145,12 @@ namespace Atlas
 		}
 		catch (const std::exception& e)
 		{
-			AT_CORE_CRITICAL("\n[Exception Type]: {0}\n{1}", "Standard Exeption", e.what());
+			AT_CORE_CRITICAL("\n[Exception Type]: {0}\n{1}", "Standard Exception", e.what());
 			__debugbreak();
 		}
 		catch (...)
 		{
-			AT_CORE_CRITICAL("\n[Exception Type]: Unknown Exeption\n[Description]: Details Unavailasble");
+			AT_CORE_CRITICAL("\n[Exception Type]: Unknown Exception\n[Description]: Details Unavailable");
 			__debugbreak();
 		}
 	}

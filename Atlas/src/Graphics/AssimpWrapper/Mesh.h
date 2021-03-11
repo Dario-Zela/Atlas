@@ -50,17 +50,17 @@ namespace Atlas
 		COLORS = 1 << 3,
 		TANGENTS = 1 << 4,
 		BITANGENTS = 1 << 5,
-		COLOR_DIFFUSE = 1 << 6,					//Diffuse color of the material. This is typically scaled by the amount of incoming diffuse light (e.g. using gouraud shading)	
-		COLOR_SPECULAR = 1 << 7,				//Specular color of the material. This is typically scaled by the amount of incoming specular light (e.g. using phong shading)	
-		COLOR_AMBIENT = 1 << 8,					//Ambient color of the material. This is typically scaled by the amount of ambient light	
-		COLOR_EMISSIVE = 1 << 9,				//Emissive color of the material. This is the amount of light emitted by the object. In real time applications it will usually not affect surrounding objects, but raytracing applications may wish to treat emissive objects as light sources.	
-		COLOR_TRANSPARENT = 1 << 10,			//Defines the transparent color of the material, this is the color to be multiplied with the color of translucent light to construct the final 'destination color' for a particular position in the screen buffer.
+		COLOR_DIFFUSE = 1 << 6,					//Diffuse colour of the material. This is typically scaled by the amount of incoming diffuse light (e.g. using gouraud shading)	
+		COLOR_SPECULAR = 1 << 7,				//Specular colour of the material. This is typically scaled by the amount of incoming specular light (e.g. using phong shading)	
+		COLOR_AMBIENT = 1 << 8,					//Ambient colour of the material. This is typically scaled by the amount of ambient light	
+		COLOR_EMISSIVE = 1 << 9,				//Emmissive colour of the material. This is the amount of light emitted by the object. In real time applications it will usually not affect surrounding objects, but ray-tracing applications may wish to treat emmissive objects as light sources.	
+		COLOR_TRANSPARENT = 1 << 10,			//Defines the transparent colour of the material, this is the colour to be multiplied with the colour of translucent light to construct the final 'destination colour' for a particular position in the screen buffer.
 		WIREFRAME = 1 << 11,					//Specifies whether wireframe rendering must be turned on for the material. 0 for false, !0 for true.
-		TWOSIDED = 1 << 12,						//Specifies whether meshes using this material must be rendered without backface culling. 0 for false, !0 for true.
+		TWOSIDED = 1 << 12,						//Specifies whether meshes using this material must be rendered without back-face culling. 0 for false, !0 for true.
 		SHADING_MODEL = 1 << 13,				//One of the shadingMode enumerated values. Defines the library shading model to use for (real time) rendering to approximate the original look of the material as closely as possible.
 		OPACITY = 1 << 14,						//Defines the opacity of the material in a range between 0-1
 		SHININESS = 1 << 15,					//Defines the shininess of a phong-shaded material. This is actually the exponent of the phong specular equation
-		SHININESS_STRENGTH = 1 << 16,			//Scales the specular color of the material.
+		SHININESS_STRENGTH = 1 << 16,			//Scales the specular colour of the material.
 		REFRACTI = 1 << 17,						//Defines the Index Of Refraction for the material. That's not supported by most file formats.
 		MODEL = 1 << 18							//Gets the saves the model matrix in slot 1
 	};
@@ -90,10 +90,10 @@ namespace Atlas
 		//Constructor, takes in an aimesh, aimaterial array and the path to the mesh
 		Mesh(aiMesh* mesh, aiMaterial** materials, std::filesystem::path path);
 
-		//The draw function that takes the accumulated tranforms and the settings
+		//The draw function that takes the accumulated transforms and the settings
 		void Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings);
 
-		//The transform of the tranform constant buffer
+		//The transform of the transform constant buffer
 		DirectX::XMMATRIX GetTransformXM() override { return m_Transform; }
 
 		//Wraps the add technique method to allow the outside to add the technique to the mesh

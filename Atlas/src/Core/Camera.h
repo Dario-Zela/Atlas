@@ -34,12 +34,12 @@ namespace Atlas
 
 		void CalculateViewMatrix();
 
-		GUI m_GUI;	//The gui that will contain all of the sliders for the camera
-		float* m_Position;	//The the position of the camera
-		float* m_Rotation;	//The the rotation of the camera
+		GUI m_GUI;	//The GUI that will contain all of the sliders for the camera
+		float* m_Position;	//The position of the camera
+		float* m_Rotation;	//The rotation of the camera
 		float m_Speed;	//The speed of the camera
 		std::tuple<int, int> m_InitialPosition;	//The position of the camera
-		bool m_ResetInitialPosition;	//Whether or not the the initial position should be reset
+		bool m_ResetInitialPosition;	//Whether or not the initial position should be reset
 
 		DirectX::XMMATRIX m_ViewMatrix;		//The view matrix
 	};

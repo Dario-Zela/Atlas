@@ -29,7 +29,7 @@ namespace Atlas
 			size_t start;
 			size_t end = 0;
 
-			//This divition is done by a full stop
+			//This division is done by a full stop
 			while ((start = sourceName.find_first_not_of('.', end)) != std::string::npos)
 			{
 				end = sourceName.find('.', start);
@@ -50,7 +50,7 @@ namespace Atlas
 			bool valid = std::all_of(testName.begin(), testName.end(), [](char c) {return std::isalnum(c) || c == '_'; });
 
 			//If the pass is not global and the names are not valid or the first character of either name is a digit
-			//Throw an exeption
+			//Throw an exception
 			if (names[0] != "$" && (!valid || std::isdigit(names[0].front()) || std::isdigit(names[1].front())))
 				AT_CORE_ASSERT_WARG(false, "The source name was invalid for sink {0}", m_RegisteredName);
 		}
@@ -62,7 +62,7 @@ namespace Atlas
 
 	void Sink::ValidateLinks()
 	{
-		//If the sink is not linked, throw an exeption
+		//If the sink is not linked, throw an exception
 		if (!m_Linked)
 		{
 			AT_CORE_ASSERT_WARG(false, "The sink {0} was not linked to a source", m_RegisteredName)
@@ -74,10 +74,10 @@ namespace Atlas
 		//Get the buffer of the source
 		std::shared_ptr<Buffer>& targetSink = source.GetBuffer();
 
-		//If the buffer is null, throw an exeption
+		//If the buffer is null, throw an exception
 		AT_CORE_ASSERT_WARG(targetSink, "The sink for source {0} does not have data", m_RegisteredName)
 
-		//If the the targets do not match in type, throw an exeption
+		//If the targets do not match in type, throw an exception
 		AT_CORE_ASSERT(targetSink->GetTypeName() == m_Target->GetTypeName(), "The types of the targets are not equivalent")
 
 		//Copy the pointer to the data

@@ -5,8 +5,8 @@ namespace Atlas
 {
 	void ThreadPool::CreatePool(uint numberOfThreads)
 	{
-		//Make sure the threadpool has not been already created
-		AT_CORE_ASSERT(!m_Created, "You cannot recrate a thread pool");
+		//Make sure the thread pool has not been already created
+		AT_CORE_ASSERT(!m_Created, "You cannot recreate a thread pool");
 
 		//Update it's status
 		m_Created = true;
@@ -35,7 +35,7 @@ namespace Atlas
 		for (auto& thread : m_Threads)
 			thread.join();
 
-		//Make sure there are no outstanding exeptions
+		//Make sure there are no outstanding exceptions
 		HandleExeptions();
 
 		//Delete the contexts
@@ -47,13 +47,13 @@ namespace Atlas
 		//Wait until there is a thread that can be used
 		while (m_Mutex.IsFullyUsed());
 		
-		//Make sure there is no exeption
+		//Make sure there is no exception
 		HandleExeptions();
 
 		//Add the task to the queue
 		m_Jobs.emplace(work, executable, index);
 
-		//There is an error taht work gets added as empty
+		//There is an error that work gets added as empty
 		//Check if that has happened
 		if (!std::get<0>(m_Jobs.front()))
 		{
@@ -71,13 +71,13 @@ namespace Atlas
 	void ThreadPool::Sync()
 	{
 
-		//Wait while there are jobs, checking for exeptions
+		//Wait while there are jobs, checking for exceptions
 		while (!m_Jobs.empty()) HandleExeptions();
 
-		//Wait until all task are done, checking for exeptions
+		//Wait until all task are done, checking for exceptions
 		while (!m_Mutex.IsSynced()) HandleExeptions();
 
-		//Check for exeptions one last time
+		//Check for exceptions one last time
 		HandleExeptions();
 
 	}
@@ -100,7 +100,7 @@ namespace Atlas
 				
 				m_Condition.wait(lock);
 
-				//If the threadpool is not alive anymore
+				//If the thread-pool is not alive anymore
 				if (!m_Created)
 					//End the execution
 					return;
@@ -118,20 +118,20 @@ namespace Atlas
 			{
 				job(executable, m_Contexts[threadNum].GetContext(), index);
 			}
-			//If there are any exeption, add them to the list
+			//If there are any exception, add them to the list
 			catch (std::exception& e)
 			{
-				m_Exceptions.push_back(std::exception(( "The pass " + executable->GetName() + " gave the exeption: " + e.what()).c_str()));
+				m_Exceptions.push_back(std::exception(( "The pass " + executable->GetName() + " gave the exception: " + e.what()).c_str()));
 			}
 		}
 	}
 
 	void ThreadPool::HandleExeptions()
 	{
-		//If there are any exeptions, return
+		//If there are any exceptions, return
 		if (m_Exceptions.empty()) return;
 
-		//Else, throw the first exeption
+		//Else, throw the first exception
 		throw m_Exceptions[0];
 	}
 }

@@ -71,13 +71,13 @@ namespace Atlas
 
 	void DepthStencilBuffer::ImmidiateBind()
 	{
-		//Immidiatly bind the depth stencil view with no render target
+		//Immediately bind the depth stencil view with no render target
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetRenderTargets(1, nullptr, m_DepthStencilView.Get()));
 	}
 
 	void DepthStencilBuffer::ImmidiateBind(RenderTarget* renderTarget)
 	{
-		//Immidiatly ind the depth stencil view using the render target
+		//Immediately bind the depth stencil view using the render target
 		renderTarget->ImmidiateBind(m_DepthStencilView.Get());
 	}
 
@@ -90,13 +90,13 @@ namespace Atlas
 
 	void DepthStencilBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
 	{
-		//Bind the depth stencil view on a deffered context with no render target
+		//Bind the depth stencil view on a deferred context with no render target
 		AT_CHECK_GFX_INFO_VOID(context->OMSetRenderTargets(1, nullptr, m_DepthStencilView.Get()));
 	}
 
 	void DepthStencilBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context, RenderTarget* renderTarget)
 	{
-		//Bind the depth stencil view on a deffered context using the render target
+		//Bind the depth stencil view on a deferred context using the render target
 		renderTarget->Bind(context, m_DepthStencilView.Get());
 	}
 

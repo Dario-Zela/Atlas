@@ -47,7 +47,7 @@ namespace Atlas
 	std::string DepthStencilState::GenerateUID(bool DepthEnable, D3D11_DEPTH_WRITE_MASK DepthWriteMask, D3D11_COMPARISON_FUNC DepthFunc, 
 		bool StencilEnable, byte StencilReadMask, byte StencilWriteMask, DepthStencilDesc FrontFace, DepthStencilDesc BackFace)
 	{
-		//Get a unique strind describing the entire depth stencil state
+		//Get a unique string describing the entire depth stencil state
 		return std::string(typeid(DepthStencilState).name())
 			+ '_' + std::to_string(DepthEnable)
 			+ '_' + std::to_string(DepthWriteMask)

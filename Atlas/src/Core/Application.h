@@ -30,7 +30,7 @@ namespace Atlas
 		//The rendering loop
 		void Run();
 
-		//Allows the client to change the title of the screen dinamically
+		//Allows the client to change the title of the screen dynamically
 		void SetWindowTitle(std::string Title) { SetWindowTextA(m_Window.GetWindowHandle(), Title.c_str()); }
 
 		//Adds events to the queue manually

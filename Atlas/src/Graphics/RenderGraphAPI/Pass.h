@@ -12,7 +12,7 @@ namespace Atlas
 	class RenderGraph;
 
 	//A pass is a drawing step of a render graph
-	//It will get certian buffers from it's sinks, use the bindables
+	//It will get certain buffers from it's sinks, use the bindables
 	//Saved into it and the execute a draw call.
 	//It will at last present buffers in as sources.
 	//For it be used, it must be inherited into a custom class
@@ -51,9 +51,9 @@ namespace Atlas
 		//Returns a sink with the appropriate name
 		Sink& GetSink(std::string& registeredName);
 
-		//Binds all of the bindables to the deffered context
+		//Binds all of the bindables to the deferred context
 		void BindAll(wrl::ComPtr<ID3D11DeviceContext> context);
-		//Binds all of the bindables to the immidate context
+		//Binds all of the bindables to the immediate context
 		void BindAll();
 
 		//Adds a sink to the pass, must have a unique name

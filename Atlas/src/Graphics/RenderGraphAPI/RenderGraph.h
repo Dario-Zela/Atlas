@@ -20,12 +20,12 @@ namespace Atlas
 	class RenderGraph
 	{
 	public:
-		//Initialises the base varibles
+		//Initialises the base variables
 		RenderGraph();
 
-		//Executes the render graph using parellel processing
+		//Executes the render graph using parallel processing
 		void Execute();
-		//Executes the render graph sequentialy
+		//Executes the render graph sequentially
 		void ExecuteImmidiate();
 
 		//Resets the render graph
@@ -55,7 +55,7 @@ namespace Atlas
 		std::shared_ptr<DepthStencilBuffer> m_DefaultDepth;
 
 	private:
-		//Links the sinks of a pass and assingns it a level
+		//Links the sinks of a pass and assigns it a level
 		int LinkPassSinks(Pass& pass);
 		//Links the global sinks
 		void LinkGlobalSinks();

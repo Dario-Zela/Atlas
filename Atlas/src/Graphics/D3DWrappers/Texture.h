@@ -27,7 +27,7 @@ namespace Atlas
 		Texture(ID3D11ShaderResourceView* texture, uint slot, uint targets);
 
 		//Constructor for a texture
-		//Takes the path of the texture, whether or not it has mipmapping and it's slot
+		//Takes the path of the texture, whether or not it has mip mapping and it's slot
 		Texture(std::string path, bool mipMapping, uint targets, uint slot);
 
 		//This is a raw constructor, where you can put set the raw data

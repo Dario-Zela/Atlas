@@ -21,7 +21,7 @@ namespace Atlas
 
 	void Source::ValidateLinks()
 	{
-		//If the source is not linked, throw an exeption
+		//If the source is not linked, throw an exception
 		if (!m_Linked)
 		{
 			AT_CORE_ASSERT_WARG(false, "The source {0} was not linked to a sink", m_RegisteredName)
@@ -31,7 +31,7 @@ namespace Atlas
 	std::shared_ptr<Buffer>& Source::GetBuffer()
 	{
 		//The buffer will only be taken by the sink for linking
-		//And will always link or throw an exeption, so the source should assume this
+		//And will always link or throw an exception, so the source should assume this
 		
 		//Make sure the sources is not already linked
 		AT_CORE_ASSERT_WARG(!m_Linked, "You cannot link a source twice. The source was {0}", m_RegisteredName)

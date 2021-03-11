@@ -8,10 +8,10 @@ namespace Atlas
 	class GUI
 	{
 	public:
-		//Initialises the gui with a name
+		//Initialises the GUI with a name
 		void Init(std::string windowName = "GUI", uint width = 500, uint height = 400);
 		
-		//Broadcasts messages from the gui to the sliders
+		//Broadcasts messages from the GUI to the sliders
 		void Broadcast();
 
 		//Float sliders
@@ -35,7 +35,7 @@ namespace Atlas
 		//Checkbox
 		void AddCheckBox(std::string name, bool* val);
 
-		//Whether or not the gui window is alive
+		//Whether or not the GUI window is alive
 		bool m_Alive;
 
 	private:

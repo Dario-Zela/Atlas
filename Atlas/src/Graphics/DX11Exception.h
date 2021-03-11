@@ -3,7 +3,7 @@
 
 namespace Atlas
 {
-	//An implementation for normal DX11 Exeptions
+	//An implementation for normal DX11 Exceptions
 	class DX11Exception : public AtlasException
 	{
 	public:

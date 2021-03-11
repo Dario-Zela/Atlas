@@ -42,7 +42,7 @@ namespace Atlas
 		char* MsgBuf = nullptr;
 		DWORD MsgLen = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 			nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPSTR>(&MsgBuf), 0, nullptr);
-		//If the lenght is 0, the function failed
+		//If the length is 0, the function failed
 		if (MsgLen == 0)
 			return "Unidentified error";
 		//Else, the string is saved into a variable and the returned

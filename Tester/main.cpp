@@ -32,7 +32,7 @@ public:
 
 		gui.AddCheckBox("Flip", &m_Flip);
 
-		for(int i = 0; i < 10; i++)
+		for (int i = 0; i < 10; i++)
 			cube.push_back(std::make_unique<Cube>(camera, lightPos, dir));
 		for (int i = 0; i < 4; i++)
 			light.push_back(std::make_unique<Light>(&lightPos[i], camera));
@@ -125,7 +125,7 @@ private:
 	int x = 0;
 };
 
-//Bugged, need to make the backbuffer || depthBuffer be the same between these calls 
+//Bugged, need to make the backbuffer || depthBuffer be the same between these calls
 /*
 class Test2 : public Atlas::Layer
 {

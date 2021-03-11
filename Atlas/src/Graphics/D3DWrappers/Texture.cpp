@@ -62,10 +62,10 @@ namespace Atlas
         wrl::ComPtr<ID3D11Texture2D> texture;
         AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateTexture2D(&textureDescriptor, nullptr, &texture));
 
-        //Update the texture element data to allow for later mipmapping generation
+        //Update the texture element data to allow for later mip mapping generation
         AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->UpdateSubresource(texture.Get(), 0, nullptr, data, width * 4, 0));
 
-        //Create the desrcriptor for the shader resource view
+        //Create the descriptor for the shader resource view
         D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceDescriptor = {};
         shaderResourceDescriptor.Format = textureDescriptor.Format;
         shaderResourceDescriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -125,7 +125,7 @@ namespace Atlas
         textureDescriptor.CPUAccessFlags = 0;
         textureDescriptor.MiscFlags = 0;
 
-        //Create the subrecource data
+        //Create the sub-resource data
         D3D11_SUBRESOURCE_DATA subData = {};
         subData.pSysMem = data;
         subData.SysMemPitch = width * sizeof(uint);
@@ -134,7 +134,7 @@ namespace Atlas
         wrl::ComPtr<ID3D11Texture2D> texture;
         AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateTexture2D(&textureDescriptor, &subData, &texture));
 
-        //Create the desrcriptor for the shader resource view
+        //Create the descriptor for the shader resource view
         D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceDescriptor = {};
         shaderResourceDescriptor.Format = textureDescriptor.Format;
         shaderResourceDescriptor.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;

@@ -15,12 +15,12 @@ namespace Atlas
 	class IndexedTriangleList
 	{
 	public:
-		//Constructor, takes a vector of verticies and a vector of indicies
+		//Constructor, takes a vector of vertices and a vector of indices
 		IndexedTriangleList(std::vector<DirectX::XMFLOAT3> verteciesIn, std::vector<unsigned short> indeciesIn)
 			:m_Vertecies(verteciesIn), m_Indecies(std::move(indeciesIn))
 		{
-			AT_CORE_ASSERT(m_Vertecies.size() > 2, "Too few vertecies");
-			AT_CORE_ASSERT(m_Indecies.size() % 3 == 0, "The objects rappresented are not triangles");
+			AT_CORE_ASSERT(m_Vertecies.size() > 2, "Too few vertices");
+			AT_CORE_ASSERT(m_Indecies.size() % 3 == 0, "The objects represented are not triangles");
 
 			//Create the normal + position list
 			for (auto vertex : m_Vertecies)
@@ -29,7 +29,7 @@ namespace Atlas
 			SetNormalsIndependentFlat();
 		}
 
-		//Allows you to transfom all of the verticies by a matrix
+		//Allows you to transform all of the vertices by a matrix
 		void Transform(DirectX::XMMATRIX transform)
 		{
 			//Change positions
@@ -144,8 +144,8 @@ namespace Atlas
 	//Creates a plane
 	struct Plane
 	{
-		//This is a tesselated plane
-		//This allows for more vertecies
+		//This is a tessellated plane
+		//This allows for more vertices
 		static IndexedTriangleList MakeTessalated(uint divisionsX, uint divisionsY)
 		{
 			AT_CORE_ASSERT(divisionsX != 0, "Cannot make a plane with 0 tessellation");
@@ -195,7 +195,7 @@ namespace Atlas
 			return { std::move(vertecies), std::move(indecies) };
 		}
 
-		//The default has only 4 vertecies
+		//The default has only 4 vertices
 		static IndexedTriangleList Make()
 		{
 			return MakeTessalated(1, 1);
@@ -207,7 +207,7 @@ namespace Atlas
 	{
 		static IndexedTriangleList MakeTessalated(uint baseDivisions)
 		{
-			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertecies");
+			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertices");
 
 			const auto base = DirectX::XMVectorSet(1, 0, -1, 0);
 			const float longitudeAngle = DirectX::XM_2PI / baseDivisions;
@@ -221,7 +221,7 @@ namespace Atlas
 				DirectX::XMStoreFloat3(&vertecies.back(), vertex);
 			}
 
-			//The centre
+			//The center
 			vertecies.emplace_back();
 			vertecies.back() = { 0,0,-1 };
 			const unsigned short iCenter = (unsigned short)(vertecies.size() - 1);
@@ -231,7 +231,7 @@ namespace Atlas
 			vertecies.back() = { 0,0,1 };
 			const unsigned short iTop = (unsigned short)(vertecies.size() - 1);
 
-			//Base Indecies
+			//Base Indices
 			std::vector<unsigned short> indecies;
 			for (unsigned short iBase = 0; iBase < baseDivisions; iBase++)
 			{
@@ -240,7 +240,7 @@ namespace Atlas
 				indecies.push_back(iBase);
 			}
 
-			//Cone indecies
+			//Cone indices
 			for (unsigned short iBase = 0; iBase < baseDivisions; iBase++)
 			{
 				indecies.push_back(iBase);
@@ -251,10 +251,10 @@ namespace Atlas
 			return { std::move(vertecies), std::move(indecies) };
 		}
 
-		//This makes all faces indipendent from each other
+		//This makes all faces independent from each other
 		static IndexedTriangleList MakeTessalatedIndipendentFaces(uint baseDivisions)
 		{
-			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertecies");
+			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a cone with less then 3 base vertices");
 
 			const auto base = DirectX::XMVectorSet(1, 0, -1, 0);
 			const float longitudeAngle = DirectX::XM_2PI / baseDivisions;
@@ -290,14 +290,14 @@ namespace Atlas
 				DirectX::XMStoreFloat3(&vertecies.back(), vertex);
 			}
 
-			//Cone Indecies
+			//Cone Indices
 			std::vector<unsigned short> indecies;
 			for (unsigned short i = 0; i < baseDivisions * 3; i++)
 			{
 				indecies.push_back(i + iCone);
 			}
 
-			//Base indecies
+			//Base indices
 			for (unsigned short iBase = 0; iBase < baseDivisions; iBase++)
 			{
 				indecies.push_back(iBaseCentre);
@@ -308,7 +308,7 @@ namespace Atlas
 			return { std::move(vertecies), std::move(indecies) };
 		}
 
-		//The default is a 24 tesselations cone
+		//The default is a 24 tessellations cone
 		static IndexedTriangleList Make()
 		{
 			return MakeTessalated(24);
@@ -320,19 +320,19 @@ namespace Atlas
 	{
 		static IndexedTriangleList MakeTessalated(uint baseDivisions)
 		{
-			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a Cylinder/Prism with less then 3 base vertecies");
+			AT_CORE_ASSERT(baseDivisions >= 3, "Cannot make a Cylinder/Prism with less then 3 base vertices");
 
 			const auto base = DirectX::XMVectorSet(1, 0, -1, 0);
 			const auto offset= DirectX::XMVectorSet(0, 0, 2, 0);
 			const float longitudeAngle = DirectX::XM_2PI / baseDivisions;
 			std::vector<DirectX::XMFLOAT3> vertecies;
 
-			//Near Centre
+			//Near Center
 			vertecies.emplace_back();
 			vertecies.back() = { 0,0,-1 };
 			const auto iCentreNear = (unsigned short)(vertecies.size() - 1);
 
-			//Far Centre
+			//Far Center
 			vertecies.emplace_back();
 			vertecies.back() = { 0,0, 1 };
 			const auto iCentreFar = (unsigned short)(vertecies.size() - 1);
@@ -356,7 +356,7 @@ namespace Atlas
 				}
 			}
 
-			//Side Indecies
+			//Side Indices
 			std::vector<unsigned short> indecies;
 			for (unsigned short iBase = 0; iBase < baseDivisions; iBase++)
 			{
@@ -370,7 +370,7 @@ namespace Atlas
 				indecies.push_back(i + 1 +2);
 			}
 
-			//Base Indecies
+			//Base Indices
 			for (unsigned short iBase = 0; iBase < baseDivisions; iBase++)
 			{
 				const auto i = iBase * 2;
@@ -386,7 +386,7 @@ namespace Atlas
 			return { std::move(vertecies), std::move(indecies) };
 		}
 
-		//The default is a 24 tesselations prism
+		//The default is a 24 tessellations prism
 		static IndexedTriangleList Make()
 		{
 			return MakeTessalated(24);
@@ -484,7 +484,7 @@ namespace Atlas
 			return { std::move(vertecies), std::move(indecies) };
 		}
 
-		//The default is a 12 x 24 tesselations sphere
+		//The default is a 12 x 24 tessellations sphere
 		static IndexedTriangleList Make()
 		{
 			return MakeTessalated(12, 24);
@@ -503,7 +503,7 @@ namespace Atlas
 		}
 	}
 
-	//Gets a random shape with indipendent verticies
+	//Gets a random shape with independent vertices
 	static std::tuple<IndexedTriangleList, std::string> GetRandomIndipendent(std::mt19937& rng)
 	{
 		switch (rng() % 4)

@@ -13,7 +13,7 @@
 namespace Atlas
 {
 	//A wrapper over the aiScene
-	//It rappresents a scene graph
+	//It represents a scene graph
 	class Scene
 	{
 	public:
@@ -22,7 +22,7 @@ namespace Atlas
 
 		//Draws the scene with a draw settings and a transform
 		void Draw(ModelDrawSettings& settings, DirectX::XMMATRIX& transform);
-		//Draws the scene only wirg draw settings
+		//Draws the scene only with draw settings
 		void Draw(ModelDrawSettings& settings);
 
 		//A way to apply a transform to a specific node
@@ -34,7 +34,7 @@ namespace Atlas
 		//Links the entire scene to a render graph
 		void LinkTechniques(RenderGraph& renderGraph);
 
-		//Add nodes recurcively
+		//Add nodes recursively
 		std::unique_ptr<Node> ParseNode(aiNode* node);
 	private:
 		//The main camera of the scene

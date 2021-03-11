@@ -34,12 +34,12 @@ namespace Atlas
 
 		//Clears the render target black
 		void Clear();
-		//Clears the render target in a custom color
+		//Clears the render target in a custom colour
 		void Clear(float r, float g, float b, float a = 1.0f);
 
-		//Immidiatly bids the render target
+		//Immediately bids the render target
 		void ImmidiateBind();
-		//Immidiatly binds the render target with a depths stencil view
+		//Immediately binds the render target with a depths stencil view
 		void ImmidiateBind(ID3D11DepthStencilView* depthStencilView);
 
 		//Gets the render target as a texture

@@ -174,7 +174,7 @@ namespace Atlas
 		D3D11_BUFFER_DESC bufferDesc;
 		m_IndexBuffer->GetDesc(&bufferDesc);
 
-		//return the total size devided by the size of an index
+		//return the total size divided by the size of an index
 		return bufferDesc.ByteWidth / sizeof(unsigned short);
 	}
 
@@ -324,7 +324,7 @@ namespace Atlas
 		else
 		{
 			//Log the lack of buffer
-			AT_WARN("There is no constsnt buffer that uses the tag {0}", tag)
+			AT_WARN("There is no constant buffer that uses the tag {0}", tag)
 				return nullptr;
 		}
 	}

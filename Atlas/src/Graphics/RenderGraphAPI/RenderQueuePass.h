@@ -9,7 +9,7 @@ namespace Atlas
 	class RenderQueuePass : public Pass
 	{
 	public:
-		//Constructs a render queue with an approprate name
+		//Constructs a render queue with an appropriate name
 		RenderQueuePass(std::string name);
 		//Adds a job to the job queue
 		void Accept(Job job);
@@ -17,7 +17,7 @@ namespace Atlas
 		//Executes all jobs on a deferred render context
 		//Should be inherited for custom executions
 		void Execute(wrl::ComPtr<ID3D11DeviceContext> context) override;
-		//Executes all jobs on an immidiate render context
+		//Executes all jobs on an immediate render context
 		//Should be inherited for custom executions
 		void ExecuteImmidiate() override;
 		

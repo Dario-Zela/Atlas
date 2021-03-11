@@ -21,7 +21,7 @@ namespace Atlas
 		//		OUTPUT				FUNCTION NAME			INPUTS
 		typedef HRESULT(WINAPI* DXGIGetDebugInterface)(REFIID, void**);
 
-		//Load the dll that contains the DXGIGetDebugInterface
+		//Load the DLL that contains the DXGIGetDebugInterface
 		const auto modDxgiDebug = LoadLibraryEx(L"dxgidebug.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
 		if (modDxgiDebug)
 			AT_CHECK_GFX(GetLastError());

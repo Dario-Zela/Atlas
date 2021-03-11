@@ -21,7 +21,7 @@ namespace Atlas
 
 		//Add the vertex buffer
 		AddBindable(VertexBuffer::Create(positions.data(), positions.size() * sizeof(DirectX::XMFLOAT2), sizeof(DirectX::XMFLOAT2), "FullScreenPositions"));
-		//Make the indicies
+		//Make the indices
 		std::vector<unsigned short> indices = { 0,1,2,1,3,2 };
 		//Add the index buffer
 		AddBindable(IndexBuffer::Create(indices.data(), indices.size() * sizeof(unsigned short), "FullScreenPositionIndex"));

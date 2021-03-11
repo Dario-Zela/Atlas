@@ -178,7 +178,7 @@ namespace Atlas
         wc.lpszMenuName = L"";
         wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
 
-        //Register the window and check if it has been accompished successfully
+        //Register the window and check if it has been accomplished successfully
         AT_CORE_ASSERT_WARG(RegisterClassEx(&wc), "The class could not be registered\n[Description]: ", TranslateErrorCode(GetLastError()));
 
         RECT windowSize = RECT();
@@ -192,7 +192,7 @@ namespace Atlas
         //Create the window and save the handle to it
         m_Hwnd = CreateWindowExA(WS_EX_APPWINDOW, "MyWindowClass", name.c_str(), WS_TILEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, windowSize.right - windowSize.left, windowSize.bottom - windowSize.top, NULL, NULL, NULL, NULL);
 
-        //Check if it was succesful
+        //Check if it was successful
         AT_CORE_ASSERT_WARG(m_Hwnd, "The window could not be created\n[Description]: ", TranslateErrorCode(GetLastError()));
 
         //Show and draw the window
@@ -230,7 +230,7 @@ namespace Atlas
         char* MsgBuf = nullptr;
         DWORD MsgLen = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
             nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPSTR>(&MsgBuf), 0, nullptr);
-        //If the lenght is 0, the function failed
+        //If the length is 0, the function failed
         if (MsgLen == 0)
             return "Unidentified error";
         //Else, the string is saved into a variable and the returned

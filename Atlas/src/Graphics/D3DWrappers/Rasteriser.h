@@ -3,7 +3,7 @@
 
 namespace Atlas
 {
-	//A rasteriser defines certian attributes of how the GPU will handle the processing of shapes
+	//A rasteriser defines certain attributes of how the GPU will handle the processing of shapes
 	class Rasteriser : public Bindable
 	{
 	public:
@@ -15,7 +15,7 @@ namespace Atlas
 		static std::string GenerateUID(bool antialiedLine, bool multiSampling, D3D11_CULL_MODE cullMode, D3D11_FILL_MODE fillMode,
 			bool frontAnticlockwise, int depthBias, float DepthBiasClamp, float SlopeScaledDepthBias, bool enableDepthClip, bool enableScissorCulling);
 
-		//Bind the rasteriser to the immidiate context
+		//Bind the rasteriser to the immediate context
 		virtual void ImmidiateBind() override;
 		//Bind the rasteriser to the deferred context
 		virtual void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;

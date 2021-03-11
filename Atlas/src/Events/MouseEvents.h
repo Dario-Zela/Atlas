@@ -52,11 +52,11 @@ namespace Atlas
 		float m_XOffset, m_YOffset;
 	};
 
-	//A Mouse button superclass to reduce the function declerations of the implementations
+	//A Mouse button superclass to reduce the function declarations of the implementations
 	class MouseButtonEvent : public Event
 	{
 	public:
-		//Returns the the button value that has been pressed
+		//Returns the button value that has been pressed
 		inline int GetMouseButton() const { return m_ButtonPressed; }
 
 	protected:

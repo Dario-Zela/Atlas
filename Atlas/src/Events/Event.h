@@ -25,7 +25,7 @@ namespace Atlas
 		virtual EventType GetEventType() const = 0;
 		
 		//For standard events, these are debug only
-		//Custom classes will use them to differenctiate which type is what
+		//Custom classes will use them to differentiate which type is what
 		virtual std::string GetName() const = 0;
 		virtual std::string ToString() const { return GetName(); }
 
