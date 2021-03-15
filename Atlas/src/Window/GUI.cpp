@@ -4,6 +4,8 @@
 #include <commctrl.h>
 #include <windowsx.h>
 
+#define AT_CHECK_IF_LONG(x, pos) { try { x[pos]; } catch(std::exception& e) {AT_CORE_ASSERT_WARG(false, "The value does not have {0} values", pos + 1)} }
+
 namespace Atlas
 {
 	//A struct that defines a slider
@@ -110,8 +112,10 @@ namespace Atlas
 		return NULL;
 	}
 
-	void GUI::Init(std::string windowName, uint width, uint height)
+	void GUI::Init(const std::string& windowName, uint width, uint height)
 	{
+		AT_CORE_ASSERT(width * height > 0, "The size of the GUI window must be greater then 0x0")
+
 		//Create the window descriptor
 		WNDCLASSEX wc;
 		wc.cbClsExtra = NULL;
@@ -235,8 +239,11 @@ namespace Atlas
 
 	//All slider construction is identical
 	//Only AddSliderFloat is commented
-	void GUI::AddSliderFloat(std::string name, float* val, float min, float max, float scale)
+	void GUI::AddSliderFloat(const std::string& name, float* val, float min, float max, float scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		//Creates a track-bar control
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
@@ -266,8 +273,13 @@ namespace Atlas
 		m_Widgets++;
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 	}
-	void GUI::AddSliderFloat2(std::string name, float* val, float min, float max, float scale)
+	void GUI::AddSliderFloat2(const std::string& name, float* val, float min, float max, float scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CHECK_IF_LONG(val, 1)
+
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 115, 30, m_hWnd, NULL, NULL, NULL);
@@ -303,8 +315,13 @@ namespace Atlas
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 1, data);
 		m_Widgets++;
 	}
-	void GUI::AddSliderFloat3(std::string name, float* val, float min, float max, float scale)
+	void GUI::AddSliderFloat3(const std::string& name, float* val, float min, float max, float scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CHECK_IF_LONG(val, 1)
+		AT_CHECK_IF_LONG(val, 2)
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
@@ -348,8 +365,14 @@ namespace Atlas
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 2, data);
 		m_Widgets++;
 	}
-	void GUI::AddSliderFloat4(std::string name, float* val, float min, float max, float scale)
+	void GUI::AddSliderFloat4(const std::string& name, float* val, float min, float max, float scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CHECK_IF_LONG(val, 1)
+		AT_CHECK_IF_LONG(val, 2)
+		AT_CHECK_IF_LONG(val, 3)
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
@@ -401,8 +424,11 @@ namespace Atlas
 
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 3, data);
 	}
-	void GUI::AddSliderUint(std::string name, uint* val, uint min, uint max, uint scale)
+	void GUI::AddSliderUint(const std::string& name, uint* val, uint min, uint max, uint scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 240, 30, m_hWnd, NULL, NULL, NULL);
@@ -427,8 +453,12 @@ namespace Atlas
 		m_Widgets++;
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 	}
-	void GUI::AddSliderUint2(std::string name, uint* val, uint min, uint max, uint scale)
+	void GUI::AddSliderUint2(const std::string& name, uint* val, uint min, uint max, uint scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CHECK_IF_LONG(val, 1)
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 115, 30, m_hWnd, NULL, NULL, NULL);
@@ -463,8 +493,13 @@ namespace Atlas
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 1, data);
 		m_Widgets++;
 	}
-	void GUI::AddSliderUint3(std::string name, uint* val, uint min, uint max, uint scale)
+	void GUI::AddSliderUint3(const std::string& name, uint* val, uint min, uint max, uint scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CHECK_IF_LONG(val, 1)
+		AT_CHECK_IF_LONG(val, 2)
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
@@ -508,8 +543,14 @@ namespace Atlas
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 2, data);
 		m_Widgets++;
 	}
-	void GUI::AddSliderUint4(std::string name, uint* val, uint min, uint max, uint scale)
+	void GUI::AddSliderUint4(const std::string& name, uint* val, uint min, uint max, uint scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CHECK_IF_LONG(val, 1)
+		AT_CHECK_IF_LONG(val, 2)
+		AT_CHECK_IF_LONG(val, 3)
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
@@ -562,8 +603,11 @@ namespace Atlas
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 3, data);
 		m_Widgets++;
 	}
-	void GUI::AddSliderInt(std::string name, int* val, int min, int max, int scale)
+	void GUI::AddSliderInt(const std::string& name, int* val, int min, int max, int scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 240, 30, m_hWnd, NULL, NULL, NULL);
@@ -588,8 +632,12 @@ namespace Atlas
 		m_Widgets++;
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val, data);
 	}
-	void GUI::AddSliderInt2(std::string name, int* val, int min, int max, int scale)
+	void GUI::AddSliderInt2(const std::string& name, int* val, int min, int max, int scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CHECK_IF_LONG(val, 1)
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 115, 30, m_hWnd, NULL, NULL, NULL);
@@ -624,8 +672,13 @@ namespace Atlas
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 1, data);
 		m_Widgets++;
 	}
-	void GUI::AddSliderInt3(std::string name, int* val, int min, int max, int scale)
+	void GUI::AddSliderInt3(const std::string& name, int* val, int min, int max, int scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CHECK_IF_LONG(val, 1)
+		AT_CHECK_IF_LONG(val, 2)
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 80, 30, m_hWnd, NULL, NULL, NULL);
@@ -669,8 +722,14 @@ namespace Atlas
 		m_SliderElements[hTrack] = std::tuple<void*, SliderData>(val + 2, data);
 		m_Widgets++;
 	}
-	void GUI::AddSliderInt4(std::string name, int* val, int min, int max, int scale)
+	void GUI::AddSliderInt4(const std::string& name, int* val, int min, int max, int scale)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+		AT_CHECK_IF_LONG(val, 1)
+		AT_CHECK_IF_LONG(val, 2)
+		AT_CHECK_IF_LONG(val, 3)
+		AT_CORE_ASSERT(min < max, "The minimum is larger then the maximum")
+
 		HWND hTrack = CreateWindowExA(0, TRACKBAR_CLASSA, "Track-bar Control",
 			WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS,
 			(int)name.length() * 9 + 20, 40 + 40 * m_Widgets, 70, 30, m_hWnd, NULL, NULL, NULL);
@@ -724,8 +783,10 @@ namespace Atlas
 		m_Widgets++;
 	}
 
-	void GUI::AddCheckBox(std::string name, bool* val)
+	void GUI::AddCheckBox(const std::string& name, bool* val)
 	{
+		AT_CORE_ASSERT(val, "The value to be linked has not been initialised")
+
 		//A button is created
 		HWND hButton = CreateWindowExA(0, "BUTTON", name.c_str(),
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,

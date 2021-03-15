@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Buffers.h"
 #include "Graphics/BindableLib.h"
-#include "Graphics\D3DWrappers\Targets.h"
+#include "Graphics/D3DWrappers/Targets.h"
 
 #include "Graphics/DxgiInfoManager.h"
 
@@ -13,6 +13,11 @@ namespace Atlas
 	VertexBuffer::VertexBuffer(void* data, uint sizeData, uint sizeVertex)
 		: m_Stride(sizeVertex)
 	{
+		AT_CORE_ASSERT(data, "The data provided to the vertex buffer was null")
+		AT_CORE_ASSERT(sizeData * sizeVertex > 0, "The size of the data and the size of the vertex must be greater then 0")
+		AT_CORE_ASSERT(sizeData > sizeVertex, "The size of the vertex must be less then the size of the data")
+		AT_CORE_ASSERT(sizeData % sizeVertex == 0, "The size of the data must be a multiple of the size of the vertex")
+
 		//The descriptor for a static vertex buffer 
 		D3D11_BUFFER_DESC bufferDesc = {};
 		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -30,7 +35,7 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, &vertexData, &m_VertexBuffer))
 	}
 
-	std::shared_ptr<VertexBuffer> VertexBuffer::Create(void* data, uint sizeData, uint sizeVertex, std::string tag)
+	std::shared_ptr<VertexBuffer> VertexBuffer::Create(void* data, uint sizeData, uint sizeVertex, const std::string& tag)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(tag);
@@ -50,7 +55,7 @@ namespace Atlas
 		}
 	}
 
-	std::shared_ptr<VertexBuffer> VertexBuffer::Get(std::string tag)
+	std::shared_ptr<VertexBuffer> VertexBuffer::Get(const std::string& tag)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(tag);
@@ -65,17 +70,17 @@ namespace Atlas
 		else
 		{
 			//Log the lack of buffer
-			AT_WARN("There is no vertex buffer that uses the tag {0}", tag)
+			AT_CORE_WARN("There is no vertex buffer that uses the tag {0}", tag)
 			return nullptr;
 		}
 	}
 
-	std::string VertexBuffer::GenerateUID(std::string tag)
+	std::string VertexBuffer::GenerateUID(const std::string& tag)
 	{
 		return std::string(typeid(VertexBuffer).name()) + '_' + tag;
 	}
 
-	void VertexBuffer::ImmidiateBind()
+	void VertexBuffer::ImmediateBind()
 	{
 		//This binds the vertex buffer
 		uint zero = 0;
@@ -94,6 +99,9 @@ namespace Atlas
 
 	IndexBuffer::IndexBuffer(unsigned short* data, uint size)
 	{
+		AT_CORE_ASSERT(data, "The data provided to the index buffer was null")
+		AT_CORE_ASSERT(size > 0, "The size index buffer must be greater then 0")
+
 		//The descriptor for a static index buffer 
 		D3D11_BUFFER_DESC bufferDesc = {};
 		bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -111,7 +119,7 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, &indexData, &m_IndexBuffer))
 	}
 
-	std::shared_ptr<IndexBuffer> IndexBuffer::Create(unsigned short* data, uint size, std::string tag)
+	std::shared_ptr<IndexBuffer> IndexBuffer::Create(unsigned short* data, uint size, const std::string& tag)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(tag);
@@ -131,7 +139,7 @@ namespace Atlas
 		}
 	}
 
-	std::shared_ptr<IndexBuffer> IndexBuffer::Get(std::string tag)
+	std::shared_ptr<IndexBuffer> IndexBuffer::Get(const std::string& tag)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(tag);
@@ -146,17 +154,17 @@ namespace Atlas
 		else
 		{
 			//Log the lack of buffer
-			AT_WARN("There is no vertex buffer that uses the tag {0}", tag)
+			AT_CORE_WARN("There is no vertex buffer that uses the tag {0}", tag)
 				return nullptr;
 		}
 	}
 
-	std::string IndexBuffer::GenerateUID(std::string tag)
+	std::string IndexBuffer::GenerateUID(const std::string& tag)
 	{
 		return std::string(typeid(IndexBuffer).name()) + '_' + tag;
 	}
 
-	void IndexBuffer::ImmidiateBind()
+	void IndexBuffer::ImmediateBind()
 	{
 		//This binds the index buffer
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0))
@@ -184,6 +192,9 @@ namespace Atlas
 	ConstantBuffer::ConstantBuffer(void* data, uint sizeData, uint targets, uint slot)
 		: m_Slot(slot)
 	{
+		AT_CORE_ASSERT(data, "The data provided to the constant buffer was null")
+		AT_CORE_ASSERT(sizeData > 0, "The size of the data must be greater then 0")
+
 		for (int i = 0; i < MAX_TARGETS; i++)
 		{
 			if ((targets & (1 << i)) != 0)
@@ -230,6 +241,8 @@ namespace Atlas
 	ConstantBuffer::ConstantBuffer(uint sizeData, uint targets, uint slot)
 		: m_Slot(slot)
 	{
+		AT_CORE_ASSERT(sizeData > 0, "The size of the data must be greater then 0")
+
 		for (int i = 0; i < MAX_TARGETS; i++)
 		{
 			if ((targets & (1 << i)) != 0)
@@ -269,7 +282,7 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateBuffer(&bufferDesc, nullptr, &m_ConstantBuffer))
 	}
 
-	std::shared_ptr<ConstantBuffer> ConstantBuffer::Create(void* data, uint sizeData, std::string tag, uint targets, uint slot)
+	std::shared_ptr<ConstantBuffer> ConstantBuffer::Create(void* data, uint sizeData, const std::string& tag, uint targets, uint slot)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(tag);
@@ -289,7 +302,7 @@ namespace Atlas
 		}
 	}
 
-	std::shared_ptr<ConstantBuffer> ConstantBuffer::Create(uint sizeData, std::string tag, uint targets, uint slot)
+	std::shared_ptr<ConstantBuffer> ConstantBuffer::Create(uint sizeData, const std::string& tag, uint targets, uint slot)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(tag);
@@ -309,7 +322,7 @@ namespace Atlas
 		}
 	}
 
-	std::shared_ptr<ConstantBuffer> ConstantBuffer::Get(std::string tag)
+	std::shared_ptr<ConstantBuffer> ConstantBuffer::Get(const std::string& tag)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(tag);
@@ -324,18 +337,21 @@ namespace Atlas
 		else
 		{
 			//Log the lack of buffer
-			AT_WARN("There is no constant buffer that uses the tag {0}", tag)
+			AT_CORE_WARN("There is no constant buffer that uses the tag {0}", tag)
 				return nullptr;
 		}
 	}
 
-	std::string ConstantBuffer::GenerateUID(std::string tag)
+	std::string ConstantBuffer::GenerateUID(const std::string& tag)
 	{
 		return std::string(typeid(ConstantBuffer).name()) + '_' + tag;
 	}
 
-	void ConstantBuffer::ImmidiateUpdate(void* data, uint sizeData)
+	void ConstantBuffer::ImmediateUpdate(void* data, uint sizeData)
 	{
+		AT_CORE_ASSERT(data, "The data provided to the constant buffer was null")
+		AT_CORE_ASSERT(sizeData > 0, "The size of the data must be greater then 0")
+
 		//Lock the thread so that it cannot be
 		//Edited twice at the same time
 		//It will be unlocked only after a bind
@@ -358,6 +374,9 @@ namespace Atlas
 
 	void ConstantBuffer::Update(void* data, uint sizeData, wrl::ComPtr<ID3D11DeviceContext> context)
 	{
+		AT_CORE_ASSERT(data, "The data provided to the constant buffer was null")
+		AT_CORE_ASSERT(sizeData > 0, "The size of the data must be greater then 0")
+
 		//Lock the thread so that it cannot be
 		//Edited twice at the same time
 		m_Mutex.lock();
@@ -377,7 +396,7 @@ namespace Atlas
 		m_Mutex.unlock();
 	}
 
-	void ConstantBuffer::ImmidiateBind()
+	void ConstantBuffer::ImmediateBind()
 	{
 		//Binds the element to the shaders
 		for (auto& bind : m_Binds)

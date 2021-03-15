@@ -20,7 +20,7 @@ namespace Atlas
 	public:
 		//A technique will be composed of a debug name and a whether it 
 		//start active or not
-		Technique(std::string name, bool startActive = true);
+		Technique(const std::string& name, bool startActive = true);
 		//Sends the drawable data to each step so that they get put into the
 		//RenderQueue
 		void Submit(Drawable& drawable);

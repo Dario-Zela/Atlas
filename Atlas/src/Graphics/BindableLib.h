@@ -15,13 +15,13 @@ namespace Atlas
 		//Tries to get the resource
 		static std::shared_ptr<Bindable> Resolve(const std::string& UID);
 		//Adds the resource to the library
-		static void Add(std::string UID, std::shared_ptr<Bindable> bindable);
+		static void Add(const std::string& UID, std::shared_ptr<Bindable> bindable);
 		//Frees unused memory
 		static void Flush();
 	private:
 		//Debugger only function
-		static std::unordered_map<std::string, std::shared_ptr<Bindable>> Get() { return *m_Library; }
+		static std::unordered_map<std::string, std::shared_ptr<Bindable>> Get() { return *s_Library; }
 		//The library
-		static std::unordered_map<std::string, std::shared_ptr<Bindable>>* m_Library;
+		static std::unordered_map<std::string, std::shared_ptr<Bindable>>* s_Library;
 	};
 }

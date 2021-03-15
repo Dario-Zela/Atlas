@@ -4,7 +4,7 @@
 
 namespace Atlas
 {
-	TransformationConstantBuffer::TransformationConstantBuffer(Drawable& parent, DirectX::XMMATRIX projection, uint slot)
+	TransformationConstantBuffer::TransformationConstantBuffer(Drawable& parent, DirectX::XMMATRIX& projection, uint slot)
 		:m_Parent(parent), m_VertexBuffer(nullptr)
 	{
 		//Set the vertex constant buffer and the projection matrix
@@ -19,14 +19,14 @@ namespace Atlas
 		return std::move(std::shared_ptr<TransformationConstantBuffer>(std::move(new TransformationConstantBuffer(parent, projection, slot))));
 	}
 
-	void TransformationConstantBuffer::ImmidiateBind()
+	void TransformationConstantBuffer::ImmediateBind()
 	{
 		//Get's the parent's transformation and adds it to it's projection
 		auto mat = DirectX::XMMatrixTranspose(m_Parent.GetTransformXM() * m_Projection);
 		//Updates the constant buffer
-		m_VertexBuffer->ImmidiateUpdate((void*)&mat, sizeof(mat));
+		m_VertexBuffer->ImmediateUpdate((void*)&mat, sizeof(mat));
 		//Binds the buffer
-		m_VertexBuffer->ImmidiateBind();
+		m_VertexBuffer->ImmediateBind();
 	}
 
 	void TransformationConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)

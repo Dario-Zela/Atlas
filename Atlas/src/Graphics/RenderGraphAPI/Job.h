@@ -15,7 +15,7 @@ namespace Atlas
 		//Draws the step and drawable in the deferred context
 		void Execute(wrl::ComPtr<ID3D11DeviceContext> context) const;
 		//Draws the step and drawable in the immediate context
-		void ExecuteImmidiate() const;
+		void ExecuteImmediate() const;
 
 		//The drawable and step linked to the job
 		Drawable* m_Drawable;

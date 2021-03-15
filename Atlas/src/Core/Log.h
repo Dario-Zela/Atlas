@@ -11,12 +11,14 @@ namespace Atlas
 	class Log
 	{
 	public:
+		Log();
+
 		//If the data is to be added to a text file
 		//The Init function must be called to initialise it
-		void Init(std::string filePos);
+		void Init(const std::string& filePos);
 
 		template<typename ...Args>
-		void Add(std::string Warning, int WarningLevel, std::string Name, const std::string& fmt, const Args& ...args)
+		void Add(const std::string& Warning, int WarningLevel, const std::string& Name, const std::string& fmt, const Args& ...args)
 		{
 			//Lock the mutex
 			m_Mutex.lock();

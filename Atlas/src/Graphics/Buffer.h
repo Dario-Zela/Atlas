@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics\Bindable.h"
+#include "Graphics/Bindable.h"
 
 namespace Atlas
 {

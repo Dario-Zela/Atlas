@@ -14,13 +14,13 @@ namespace Atlas
 		friend RenderTarget;
 	public:
 		//The wrapper over the constructor to get a shared ptr
-		static std::shared_ptr<Texture> Create(std::string path, bool mipMapping, uint targets = 1 << 1, uint slot = 0);
+		static std::shared_ptr<Texture> Create(const std::string& path, bool mipMapping, uint targets = 1 << 1, uint slot = 0);
 		static std::shared_ptr<Texture> Create(uint width, uint height, void* data, uint targets = 1 << 1, uint slot = 0);
 
 		//Generates the unique identifier for the texture
-		static std::string GenerateUID(std::string path, uint slot, bool mipMapping);
+		static std::string GenerateUID(const std::string& path, uint slot, bool mipMapping);
 
-		void ImmidiateBind() override;	//Binds the texture
+		void ImmediateBind() override;	//Binds the texture
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		//This is a constructor on a raw texture
@@ -28,7 +28,7 @@ namespace Atlas
 
 		//Constructor for a texture
 		//Takes the path of the texture, whether or not it has mip mapping and it's slot
-		Texture(std::string path, bool mipMapping, uint targets, uint slot);
+		Texture(const std::string& path, bool mipMapping, uint targets, uint slot);
 
 		//This is a raw constructor, where you can put set the raw data
 		Texture(uint width, uint height, void* data, uint targets, uint slot);

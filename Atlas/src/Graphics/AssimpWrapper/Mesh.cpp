@@ -6,9 +6,15 @@
 #include "Graphics/D3DWrappers/Texture.h"
 #include "Graphics/D3DWrappers/TransformationConstantBuffer.h"
 #include "Graphics/D3DWrappers/Topology.h"
-#include "Graphics\D3DWrappers\Targets.h"
+#include "Graphics/D3DWrappers/Targets.h"
 
 #include <filesystem>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+#define AT_ISVALID(x) AT_CORE_ASSERT_WARG(x, "The scene was read incorrectly and does not have appropriate values")
+
 
 namespace Atlas
 {
@@ -73,7 +79,7 @@ namespace Atlas
 		if (mesh->mMaterialIndex >= 0)
 		{
 			m_Material = materials[mesh->mMaterialIndex];
-			m_Filepath = path.parent_path().string() + "\\";
+			m_Filepath = path.parent_path().string() + "//";
 		}
 
 		//Save the name
@@ -197,7 +203,7 @@ namespace Atlas
 					{
 						aiColor3D data;
 						m_Material->Get(AI_MATKEY_COLOR_DIFFUSE, data);
-						if (data.IsBlack()) AT_WARN("The diffuse colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
+						if (data.IsBlack()) AT_CORE_WARN("The diffuse colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
 
 							cbuffData.push_back(data.r);
 						cbuffData.push_back(data.g);
@@ -210,7 +216,7 @@ namespace Atlas
 					{
 						aiColor3D data;
 						m_Material->Get(AI_MATKEY_COLOR_SPECULAR, data);
-						if (data.IsBlack()) AT_WARN("The specular colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
+						if (data.IsBlack()) AT_CORE_WARN("The specular colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
 
 							cbuffData.push_back(data.r);
 						cbuffData.push_back(data.g);
@@ -223,7 +229,7 @@ namespace Atlas
 					{
 						aiColor3D data;
 						m_Material->Get(AI_MATKEY_COLOR_AMBIENT, data);
-						if (data.IsBlack()) AT_WARN("The ambient colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
+						if (data.IsBlack()) AT_CORE_WARN("The ambient colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
 
 							cbuffData.push_back(data.r);
 						cbuffData.push_back(data.g);
@@ -236,7 +242,7 @@ namespace Atlas
 					{
 						aiColor3D data;
 						m_Material->Get(AI_MATKEY_COLOR_EMISSIVE, data);
-						if (data.IsBlack()) AT_WARN("The emmissive colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
+						if (data.IsBlack()) AT_CORE_WARN("The emmissive colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
 
 							cbuffData.push_back(data.r);
 						cbuffData.push_back(data.g);
@@ -249,7 +255,7 @@ namespace Atlas
 					{
 						aiColor3D data;
 						m_Material->Get(AI_MATKEY_COLOR_TRANSPARENT, data);
-						if (data.IsBlack()) AT_WARN("The transparency colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
+						if (data.IsBlack()) AT_CORE_WARN("The transparency colour of {0} is black, which is the default colour, meaning that the value may be missing", m_Name)
 
 							cbuffData.push_back(data.r);
 						cbuffData.push_back(data.g);
@@ -389,7 +395,7 @@ namespace Atlas
 		//Else the user is warned and a white texture is used
 		else
 		{
-			AT_CRITICAL("The Mesh " + m_Name + " doesn't have the selected texture type:" + std::to_string((uint)textureType) + "So it has been replaced with a blank texture to avoid failure");
+			AT_CORE_CRITICAL("The Mesh " + m_Name + " doesn't have the selected texture type:" + std::to_string((uint)textureType) + "So it has been replaced with a blank texture to avoid failure");
 			uint data = 0xffffffff;
 			return std::move(Texture::Create(1, 1, &data, slot));
 		}

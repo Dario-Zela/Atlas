@@ -15,11 +15,11 @@ namespace Atlas
 		inline uint GetWidth() { return m_Width; }
 		inline uint GetHeight() { return m_Height; }
 
-		std::string ToString() const override
+		std::string& ToString() const override
 		{
 			std::stringstream ss;
 			ss << "WindowResizeEvent: Width = " << m_Width << ", Height = " << m_Height;
-			return ss.str();
+			return *&ss.str();
 		}
 
 		EVENT_CLASS_TYPE(WindowResize)
@@ -34,11 +34,11 @@ namespace Atlas
 	public:
 		WindowClosedEvent() = default;
 
-		std::string ToString() const override
+		std::string& ToString() const override
 		{
 			std::stringstream ss;
 			ss << "WindowClosedEvent";
-			return ss.str();
+			return *&ss.str();
 		}
 
 		EVENT_CLASS_TYPE(WindowClosed)

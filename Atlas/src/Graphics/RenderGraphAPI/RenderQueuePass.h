@@ -10,7 +10,7 @@ namespace Atlas
 	{
 	public:
 		//Constructs a render queue with an appropriate name
-		RenderQueuePass(std::string name);
+		RenderQueuePass(const std::string& name);
 		//Adds a job to the job queue
 		void Accept(Job job);
 
@@ -19,7 +19,7 @@ namespace Atlas
 		void Execute(wrl::ComPtr<ID3D11DeviceContext> context) override;
 		//Executes all jobs on an immediate render context
 		//Should be inherited for custom executions
-		void ExecuteImmidiate() override;
+		void ExecuteImmediate() override;
 		
 		//Clears the job queue
 		void Reset() override { m_Jobs.clear(); }

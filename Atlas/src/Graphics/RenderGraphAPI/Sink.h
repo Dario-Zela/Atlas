@@ -16,10 +16,10 @@ namespace Atlas
 		//Creates a sink. Needs a name to identify it and a reference to the target buffer.
 		//The name must not have a digit as the fist value and contain no special characters 
 		//except for _
-		static std::unique_ptr<Sink> Create(std::string registeredName, std::shared_ptr<Buffer> target);
+		static std::unique_ptr<Sink> Create(const std::string& registeredName, std::shared_ptr<Buffer> target);
 
 		//Sets the target source
-		void SetTarget(std::string sourceName);
+		void SetTarget(const std::string& sourceName);
 		//Makes sure it is linked
 		void ValidateLinks();
 
@@ -35,7 +35,7 @@ namespace Atlas
 	private:
 		//Creates a sink, it requires a name that sources will link to and
 		//the target buffer that will be linked to the source's
-		Sink(std::string registeredName, std::shared_ptr<Buffer> target);
+		Sink(const std::string& registeredName, std::shared_ptr<Buffer> target);
 
 		//Is the sink linked
 		bool m_Linked;

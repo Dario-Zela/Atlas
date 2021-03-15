@@ -6,8 +6,8 @@
 
 namespace Atlas
 {
-	FullScreenPass::FullScreenPass(std::string name)
-		:Pass(std::move(name))
+	FullScreenPass::FullScreenPass(const std::string& name)
+		:Pass(name)
 	{
 		//Make a 2D plane
 		//I did not use the plane from the SimpleMeshConstructors
@@ -37,13 +37,13 @@ namespace Atlas
 		Graphics::DrawIndexed(6, context);
 	}
 
-	void FullScreenPass::ExecuteImmidiate()
+	void FullScreenPass::ExecuteImmediate()
 	{
 		//Bind all of the bindables and the 
 		//Render target and depth buffer
 		BindAll();
 
 		//Execute a draw call 
-		Graphics::ImmidiateDrawIndexed(6);
+		Graphics::ImmediateDrawIndexed(6);
 	}
 }

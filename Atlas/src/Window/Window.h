@@ -1,16 +1,18 @@
 #pragma once
 #include <Windows.h>
-#include "Events/EventManager.h"
 
 namespace Atlas
 {
+    class EventManager;
+    class Event;
+
     class Window
     {
     public:
         Window(EventManager* eventManager);
 
         //Code to initialise a window
-        void Init(std::string name, uint width, uint height);
+        void Init(const std::string& name, uint width, uint height);
         
         //Code to destroy a window
         void Release();
@@ -19,7 +21,7 @@ namespace Atlas
         void Broadcast();
 
         //Adds and event to the event queue
-        void AddEvent(Event* e) { m_EventManager->AddEventToQueue(e); }
+        void AddEvent(Event* e);
 
         //Checks if the window is minimised
         bool IsMinimised() { return m_Minimised; }

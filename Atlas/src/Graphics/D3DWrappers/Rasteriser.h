@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics\Bindable.h"
+#include "Graphics/Bindable.h"
 
 namespace Atlas
 {
@@ -16,7 +16,7 @@ namespace Atlas
 			bool frontAnticlockwise, int depthBias, float DepthBiasClamp, float SlopeScaledDepthBias, bool enableDepthClip, bool enableScissorCulling);
 
 		//Bind the rasteriser to the immediate context
-		virtual void ImmidiateBind() override;
+		virtual void ImmediateBind() override;
 		//Bind the rasteriser to the deferred context
 		virtual void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:

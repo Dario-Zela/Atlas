@@ -4,7 +4,7 @@
 
 namespace Atlas
 {
-	Sink::Sink(std::string registeredName, std::shared_ptr<Buffer> target)
+	Sink::Sink(const std::string& registeredName, std::shared_ptr<Buffer> target)
 		: m_Linked(false), m_RegisteredName(registeredName), m_Target(std::move(target))
 	{
 		//Check that there is a name
@@ -18,7 +18,7 @@ namespace Atlas
 			AT_CORE_ASSERT_WARG(false, "The sink name {0} is invalid", m_RegisteredName);
 	}
 
-	void Sink::SetTarget(std::string sourceName)
+	void Sink::SetTarget(const std::string& sourceName)
 	{
 		//Make sure the name of the source is not empty of a full stop.
 		AT_CORE_ASSERT_WARG(!(sourceName == "." || sourceName.empty()), "The source name was empty for sink {0}", m_RegisteredName);
@@ -86,8 +86,8 @@ namespace Atlas
 		m_Linked = true;
 	}
 
-	std::unique_ptr<Sink> Sink::Create(std::string registeredName, std::shared_ptr<Buffer> target)
+	std::unique_ptr<Sink> Sink::Create(const std::string& registeredName, std::shared_ptr<Buffer> target)
 	{
-		return std::unique_ptr<Sink>(new Sink(std::move(registeredName), std::move(target)));
+		return std::unique_ptr<Sink>(new Sink(registeredName, std::move(target)));
 	}
 }

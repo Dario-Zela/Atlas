@@ -19,14 +19,20 @@ namespace Atlas
 
 		//Updates the camera values
 		void Update(TimeStep timeStep);
-		DirectX::XMFLOAT3 GetPosition() { return DirectX::XMFLOAT3{ m_Position[0], m_Position[1], m_Position[2] }; }
-		DirectX::XMFLOAT3 GetRotation() { return DirectX::XMFLOAT3{ m_Rotation[0], m_Rotation[1], m_Rotation[2] }; }
-		DirectX::XMVECTOR GetFront() { return DirectX::XMVector3Transform(DirectX::g_XMIdentityR2, DirectX::XMMatrixRotationRollPitchYaw(m_Rotation[1], m_Rotation[0], 0.0f));	}
 
-		void Flip() { m_Rotation[0] = -m_Rotation[0]; m_Rotation[1] = -m_Rotation[1]; m_Rotation[2] = -m_Rotation[2]; CalculateViewMatrix(); }
+		//Gets the position of the camera
+		DirectX::XMFLOAT3 GetPosition();
+		//Gets the rotation of the camera
+		DirectX::XMFLOAT3 GetRotation();
+		//Gets a vector parallel to the direction 
+		//the camera is pointing
+		DirectX::XMVECTOR GetFront();
+
+		//Flips the camera
+		void Flip();
 
 		//Gets the transform
-		DirectX::XMMATRIX GetTransform() { return m_ViewMatrix; };
+		DirectX::XMMATRIX GetTransform();
 	private:
 		//A private function that translate the position of the camera
 		//With the direction it is looking at

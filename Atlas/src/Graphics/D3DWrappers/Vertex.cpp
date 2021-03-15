@@ -5,7 +5,7 @@ namespace Atlas
 {
 	//These adds the attributes to the descriptor
 	//And increment the stride
-	void Vertex::AddAttribute(std::string name, uint type, int size)
+	void Vertex::AddAttribute(const std::string& name, uint type, int size)
 	{
 		AT_CORE_ASSERT(!m_Finalised, "The vertex has been finalised, attributes cannot be added")
 		m_VertexDescriptor.push_back({ name, type });
@@ -27,15 +27,9 @@ namespace Atlas
 	{
 		AT_CORE_ASSERT(m_Finalised, "The vertex has not been finalised, data cannot be added")
 
-		byte* unformattedData = (byte*)data;
+		AT_CORE_ASSERT(data, "The data was empty")
 
-		//Check that the data is less then the maximum
-		try
-		{
-			unformattedData[m_Stride];
-			AT_CORE_ASSERT(false, "You gave too much data, as such it doesn't conform to the layout set and is invalid");
-		}
-		catch(std::exception&) { }
+		byte* unformattedData = (byte*)data;
 
 		//Insert the data
 		for (int i = 0; i < m_Stride; i++)
@@ -59,7 +53,7 @@ namespace Atlas
 	}
 
 	//Returns the vertex buffer
-	std::shared_ptr<VertexBuffer> Vertex::GetVertexBuffer(std::string tag)
+	std::shared_ptr<VertexBuffer> Vertex::GetVertexBuffer(const std::string& tag)
 	{
 		return std::move(VertexBuffer::Create(m_Data.data(), m_Data.size(), m_Stride, tag));
 	}

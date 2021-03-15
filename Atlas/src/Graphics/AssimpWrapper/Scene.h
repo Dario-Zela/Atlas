@@ -1,24 +1,29 @@
 #pragma once
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include <DirectXMath.h>
-
-#include "Graphics/AssimpWrapper/Mesh.h"
-#include "Graphics/AssimpWrapper/Node.h"
-
 #include "Graphics/RenderGraphAPI/Technique.h"
+
+#include "Graphics/AssimpWrapper/CommonClasses.h"
+
+namespace Assimp
+{
+	class Importer;
+}
+
+struct aiNode;
 
 namespace Atlas
 {
+
+	class Node;
+	class Mesh;
+
 	//A wrapper over the aiScene
 	//It represents a scene graph
 	class Scene
 	{
 	public:
 		//Constructor, requires the path to the model
-		Scene(std::string path);
+		Scene(const std::string& path);
 
 		//Draws the scene with a draw settings and a transform
 		void Draw(ModelDrawSettings& settings, DirectX::XMMATRIX& transform);
@@ -27,7 +32,7 @@ namespace Atlas
 
 		//A way to apply a transform to a specific node
 		//By using it's name
-		void ApplyTransform(std::string nodeName, DirectX::XMMATRIX& transform);
+		void ApplyTransform(const std::string& nodeName, DirectX::XMMATRIX& transform);
 
 		//Adds a technique to the entire scene
 		void AddTechnique(Technique& technique);
@@ -44,6 +49,6 @@ namespace Atlas
 		//A owner vector for the meshes
 		std::vector<std::unique_ptr<Mesh>> m_Meshes;
 		//A reference to the importer
-		Assimp::Importer m_Importer;
+		Assimp::Importer* m_Importer;
 	};
 }

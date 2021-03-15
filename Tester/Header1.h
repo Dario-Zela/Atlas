@@ -99,7 +99,7 @@ public:
 		data.push_back({ front[0], front[1], front[2], 0 });
 		data.push_back({ cos(DirectX::XMConvertToRadians(5)), cos(DirectX::XMConvertToRadians(7)), 0, 0 });
 
-		Atlas::ConstantBuffer::Get("Cube_CameraBuff")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
+		Atlas::ConstantBuffer::Get("Cube_CameraBuff")->ImmediateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
 
 		data.clear();
 
@@ -108,7 +108,7 @@ public:
 		data.push_back({ 0.5f, 0.5f, 0.5f, 0 });
 		data.push_back({ 1.0f, 1.0f, 1.0f, 0 });
 
-		Atlas::ConstantBuffer::Get("Cube_Dirlight")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
+		Atlas::ConstantBuffer::Get("Cube_Dirlight")->ImmediateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
 
 		data.clear();
 		for (int i = 0; i < 4; i++)
@@ -119,7 +119,7 @@ public:
 			data.push_back({ 0.5f, 0.5f, 0.5f, 0 });
 			data.push_back({ 1.0f, 1.0f, 1.0f, 0 });
 		}
-		Atlas::ConstantBuffer::Get("Cube_PointLight")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
+		Atlas::ConstantBuffer::Get("Cube_PointLight")->ImmediateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
 
 		return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) * camera->GetTransform();
 	}
@@ -322,7 +322,7 @@ public:
 		data.push_back({ front[0], front[1], front[2], 0 });
 		data.push_back({ cos(DirectX::XMConvertToRadians(0.01f)), cos(DirectX::XMConvertToRadians(2)), 0, 0 });
 
-		Atlas::ConstantBuffer::Get("BrickWall_CameraBuff")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
+		Atlas::ConstantBuffer::Get("BrickWall_CameraBuff")->ImmediateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
 
 		data.clear();
 		for (int i = 0; i < 4; i++)
@@ -333,7 +333,7 @@ public:
 			data.push_back({ 0.5f, 0.5f, 0.5f, 0 });
 			data.push_back({ 1.0f, 1.0f, 1.0f, 0 });
 		}
-		Atlas::ConstantBuffer::Get("BrickWall_PointLight")->ImmidiateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
+		Atlas::ConstantBuffer::Get("BrickWall_PointLight")->ImmediateUpdate(data.data(), sizeof(DirectX::XMFLOAT4) * data.size());
 
 		return DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) * camera->GetTransform();
 	}

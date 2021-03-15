@@ -3,8 +3,8 @@
 
 namespace Atlas
 {
-	RenderQueuePass::RenderQueuePass(std::string name)
-		: Pass(std::move(name))
+	RenderQueuePass::RenderQueuePass(const std::string& name)
+		: Pass(name)
 	{
 	}
 
@@ -27,7 +27,7 @@ namespace Atlas
 		}
 	}
 
-	void RenderQueuePass::ExecuteImmidiate()
+	void RenderQueuePass::ExecuteImmediate()
 	{
 		//Bind all of the bindables and the 
 		//Render target and depth buffer
@@ -36,7 +36,7 @@ namespace Atlas
 		//Execute every job
 		for (const auto& job : m_Jobs)
 		{
-			job.ExecuteImmidiate();
+			job.ExecuteImmediate();
 		}
 	}
 }

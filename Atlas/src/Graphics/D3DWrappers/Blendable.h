@@ -21,7 +21,7 @@ namespace Atlas
 
 		static std::shared_ptr<Blendable> Get(std::string tag);
 
-		void ImmidiateBind() override;	//Binds the blend function to the pipeline
+		void ImmediateBind() override;	//Binds the blend function to the pipeline
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		//Constructor takes whether or not there should be blending

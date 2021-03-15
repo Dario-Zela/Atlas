@@ -8,6 +8,13 @@ namespace Atlas
 {
 	ViewPort::ViewPort(float x, float y, float width, float height, float zMin, float zMax)
 	{
+		AT_CORE_ASSERT(x >= 0, "The x value is less then 0, which is not valid")
+		AT_CORE_ASSERT(y >= 0, "The y value is less then 0, which is not valid")
+		AT_CORE_ASSERT(width >= 0, "The width value is less then 0, which is not valid")
+		AT_CORE_ASSERT(height >= 0, "The height value is less then 0, which is not valid")
+		AT_CORE_ASSERT(zMin >= 0, "The zMin value is less then 0, which is not valid")
+		AT_CORE_ASSERT(zMin < zMax, "The zMin value is grater then zMax, which is not valid")
+
 		m_ViewPort = {};
 		m_ViewPort.TopLeftX = x;
 		m_ViewPort.TopLeftY = y;
@@ -44,7 +51,7 @@ namespace Atlas
 			+ '_' + std::to_string(height) + '_' + std::to_string(zMin) + '_' + std::to_string(zMax);
 	}
 	
-	void ViewPort::ImmidiateBind()
+	void ViewPort::ImmediateBind()
 	{
 		//Binds the viewport
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->RSSetViewports(1, &m_ViewPort));

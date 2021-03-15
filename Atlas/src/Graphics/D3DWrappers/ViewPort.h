@@ -13,7 +13,7 @@ namespace Atlas
 		//Generates the unique identifier for the input layout
 		static std::string GenerateUID(uint x, uint y, uint width, uint height, uint zMin, uint zMax);
 
-		void ImmidiateBind() override;		//Binds the layout
+		void ImmediateBind() override;		//Binds the layout
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		//Constructor, requires the dimensions of the viewport

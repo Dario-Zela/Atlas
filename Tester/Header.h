@@ -92,7 +92,7 @@ public:
 		m_DepthBuffer->Clear();
 	}
 
-	void ExecuteImmidiate() override
+	void ExecuteImmediate() override
 	{
 		m_RenderTarget->Clear(0, 0, 0, 1);
 		m_DepthBuffer->Clear();

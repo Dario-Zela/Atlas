@@ -3,11 +3,11 @@
 #include <stb_image.h>
 #include "Graphics/DxgiInfoManager.h"
 #include "Graphics/BindableLib.h"
-#include "Graphics\D3DWrappers\Targets.h"
+#include "Graphics/D3DWrappers/Targets.h"
 
 namespace Atlas 
 {
-    Texture::Texture(std::string path, bool mipMapping, uint targets, uint slot)
+    Texture::Texture(const std::string& path, bool mipMapping, uint targets, uint slot)
         : m_Slot(slot)
     {
         for (int i = 0; i < MAX_TARGETS; i++)
@@ -85,6 +85,10 @@ namespace Atlas
     Texture::Texture(uint width, uint height, void* data, uint targets, uint slot)
         : m_Slot(slot)
     {
+        AT_CORE_ASSERT(width * height > 0, "The texture cannot have a width or height of 0")
+
+        AT_CORE_ASSERT(data, "A texture cannot be generated from a nullptr as data")
+
         for (int i = 0; i < MAX_TARGETS; i++)
         {
             if ((targets & (1 << i)) != 0)
@@ -148,6 +152,8 @@ namespace Atlas
     Texture::Texture(ID3D11ShaderResourceView* texture, uint slot, uint targets)
         : m_Slot(slot)
     {
+        AT_CORE_ASSERT(texture, "An inner error has occurred when getting the buffer as a texture, please try again")
+
         for (int i = 0; i < MAX_TARGETS; i++)
         {
             if ((targets & (1 << i)) != 0)
@@ -178,7 +184,7 @@ namespace Atlas
         m_Slot = slot;
     }
 
-    std::shared_ptr<Texture> Texture::Create(std::string path, bool mipMapping, uint targets, uint slot)
+    std::shared_ptr<Texture> Texture::Create(const std::string& path, bool mipMapping, uint targets, uint slot)
     {
         //Get the UID and get the pointer to the data
         std::string UID = GenerateUID(path + "_" + std::to_string(mipMapping), slot, mipMapping);
@@ -218,12 +224,12 @@ namespace Atlas
         }
     }
 
-    std::string Texture::GenerateUID(std::string path, uint slot, bool mipMapping)
+    std::string Texture::GenerateUID(const std::string& path, uint slot, bool mipMapping)
     {
         return std::string(typeid(Texture).name()) + '_' + path + '_' + std::to_string(slot) + '_' + std::to_string(mipMapping);
     }
 
-    void Texture::ImmidiateBind()
+    void Texture::ImmediateBind()
     {
         //Binds the element to the shaders
         for (auto& bind : m_Binds)

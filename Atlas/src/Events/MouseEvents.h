@@ -15,11 +15,11 @@ namespace Atlas
 		inline uint GetMouseX() const { return m_MouseX; }
 		inline uint GetMouseY() const { return m_MouseY; }
 
-		std::string ToString() const override
+		std::string& ToString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseMovedEvent: X = " << m_MouseX << ", Y = " << m_MouseY;
-			return ss.str();
+			return *&ss.str();
 		}
 
 		EVENT_CLASS_TYPE(MouseMoved)
@@ -39,11 +39,11 @@ namespace Atlas
 		inline float GetMouseXOffset() const { return m_XOffset; }
 		inline float GetMouseYOffset() const { return m_YOffset; }
 
-		std::string ToString() const override
+		std::string& ToString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseScrolledEvent: XOffset = " << m_XOffset << ", YOffset = " << m_YOffset;
-			return ss.str();
+			return *&ss.str();
 		}
 
 		EVENT_CLASS_TYPE(MouseScrolled)
@@ -76,11 +76,11 @@ namespace Atlas
 		{
 		}
 
-		std::string ToString() const override
+		std::string& ToString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseButtonPressedEvent: " << m_ButtonPressed << ", is Double click: " << (m_DoubleClick ? "True" : "False");
-			return ss.str();
+			return *&ss.str();
 		}
 
 		//The additional functions are the modifiers and double click getters
@@ -101,11 +101,11 @@ namespace Atlas
 		MouseButtonReleasedEvent(int button)
 			:MouseButtonEvent(button) { }
 
-		std::string ToString() const override
+		std::string& ToString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseButtonReleasedEvent: " << m_ButtonPressed;
-			return ss.str();
+			return *&ss.str();
 		}
 
 		EVENT_CLASS_TYPE(MouseButtonReleased)

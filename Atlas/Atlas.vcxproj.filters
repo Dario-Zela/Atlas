@@ -153,6 +153,9 @@
     <ClCompile Include="src\Graphics\D3DWrappers\DepthStencilState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics\D3DWrappers\SimpleMeshCreator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\pch.h">
@@ -326,9 +329,14 @@
     <ClInclude Include="src\Graphics\D3DWrappers\DepthStencilState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="src\Shaders\TestPixel.hlsl" />
-    <FxCompile Include="src\Shaders\TestVertex.hlsl" />
+    <ClInclude Include="src\Core\Client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\AssimpWrapper\CommonClasses.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\D3DWrappers\D3D11CommonHeaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

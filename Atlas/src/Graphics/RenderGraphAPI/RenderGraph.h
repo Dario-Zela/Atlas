@@ -1,6 +1,4 @@
 #pragma once
-#include "Graphics/D3DWrappers/DeferredRenderContext.h"
-#include "Core/ThreadPool.h"
 
 namespace Atlas
 {
@@ -12,6 +10,9 @@ namespace Atlas
 
 	class RenderTarget;
 	class DepthStencilBuffer;
+
+	class ThreadPool;
+	class DeferredRenderContext;
 
 	//The render graph is the structure that will allow for more
 	//Efficient drawings of complex scenes. This will also allow you to
@@ -26,17 +27,17 @@ namespace Atlas
 		//Executes the render graph using parallel processing
 		void Execute();
 		//Executes the render graph sequentially
-		void ExecuteImmidiate();
+		void ExecuteImmediate();
 
 		//Resets the render graph
 		void Reset();
 		
 		//Gets the render queue with the appropriate name
-		RenderQueuePass& GetRenderQueue(std::string name);
+		RenderQueuePass& GetRenderQueue(const std::string& name);
 
 	protected:
 		//Sets a target to a global sink
-		void SetGlobalSinkTarget(std::string sinkName, std::string target);
+		void SetGlobalSinkTarget(const std::string& sinkName, const std::string& target);
 		//Adds a global sink. These must be linked to by the last passes
 		void AddGlobalSink(std::unique_ptr<Sink> sink);
 		//Adds a global source. These must be linked to the first passes
@@ -66,11 +67,10 @@ namespace Atlas
 		std::vector<std::unique_ptr<Sink>> m_GlobalSinks;
 		//The global sources of the render graph
 		std::vector<std::unique_ptr<Source>> m_GlobalSources;
-		//The deferred render context of the render graph
-		//This is for parallel processing use
-		DeferredRenderContext m_Context;
 		//The pull of threads to be used
-		ThreadPool m_ThreadPool;
+		//A shared pointer is being used to wrap the pointer and
+		//as a unique pointer is not usable
+		std::shared_ptr<ThreadPool> m_ThreadPool;
 
 		//If the render graph is finalised
 		bool m_Finalised;

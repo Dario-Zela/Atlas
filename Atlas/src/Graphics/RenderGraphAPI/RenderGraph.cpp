@@ -8,13 +8,19 @@
 #include "Graphics/RenderGraphAPI/Sink.h"
 #include "Graphics/RenderGraphAPI/Source.h"
 
-#define TRY(x, string) try{x;}catch(std::exception& e){AT_CORE_CRITICAL(string);}
+#include "Graphics/D3DWrappers/DeferredRenderContext.h"
+#include "Core/ThreadPool.h"
+
+#include "Graphics/D3DWrappers/DepthStencilBuffer.h"
+#include "Graphics/D3DWrappers/RenderTarget.h"
 
 namespace Atlas
 {
 	RenderGraph::RenderGraph()
 		: m_BackBuffer(Graphics::GetRenderTarget()), m_DefaultDepth(DepthStencilBuffer::Create())
 	{
+		m_ThreadPool = std::make_shared<ThreadPool>();
+
 		//Adds a source for the render target and depth stencil, as well as a sink for the render target
 		AddGlobalSource(Source::Create("backBuffer", m_BackBuffer));
 		AddGlobalSource(Source::Create("defaultDepth", m_DefaultDepth));
@@ -47,30 +53,29 @@ namespace Atlas
 		//Add the passes to the thread pool
 		for (int i = 0; i < m_Passes.size(); i++)
 		{
-			m_ThreadPool.AddWork(passExecute, m_Passes[i].get(), i);
+			m_ThreadPool->AddWork(passExecute, m_Passes[i].get(), i);
 		}
 
 		//Wait for all of them to be done
-		m_ThreadPool.Sync();
+		m_ThreadPool->Sync();
 		
 		//Then execute all the commands
 		Graphics::GetContext()->ExecuteCommandList(commandList.Get(), FALSE);
 
 		//Free the memory
 		delete[] passed;
-
 	}
 
-	void RenderGraph::ExecuteImmidiate()
+	void RenderGraph::ExecuteImmediate()
 	{
 		//For each pass, execute it
 		for (auto& pass : m_Passes)
 		{
-			pass->ExecuteImmidiate();
+			pass->ExecuteImmediate();
 		}
 	}
 
-	RenderQueuePass& RenderGraph::GetRenderQueue(std::string name)
+	RenderQueuePass& RenderGraph::GetRenderQueue(const std::string& name)
 	{
 		try
 		{
@@ -93,7 +98,7 @@ namespace Atlas
 		AT_CORE_ASSERT_WARG(false, "There was no pass of the name {0} in the render graph", name)
 	}
 
-	void RenderGraph::SetGlobalSinkTarget(std::string sinkName, std::string target)
+	void RenderGraph::SetGlobalSinkTarget(const std::string& sinkName, const std::string& target)
 	{
 		//Make a lambda function to find the sink
 		auto finder = [&sinkName](const std::unique_ptr<Sink>& sink)
@@ -113,12 +118,28 @@ namespace Atlas
 
 	void RenderGraph::AddGlobalSink(std::unique_ptr<Sink> sink)
 	{
+		AT_CORE_ASSERT(sink, "The sink is empty")
+
+		//Make sure that the sink is not duplicate
+		for (auto& ownedSink : m_GlobalSinks)
+		{
+			AT_CORE_ASSERT_WARG(!(ownedSink->GetRegisteredName() == sink->GetRegisteredName()), "The sink {0} already exists in the render graph", sink->GetRegisteredName())
+		}
+
 		//Add the sink
 		m_GlobalSinks.push_back(std::move(sink));
 	}
 
 	void RenderGraph::AddGlobalSource(std::unique_ptr<Source> source)
 	{
+		AT_CORE_ASSERT(source, "The source is empty")
+
+		//Make sure that the source is not duplicate
+		for (auto& ownedSource : m_GlobalSources)
+		{
+			AT_CORE_ASSERT_WARG(!(ownedSource->GetRegisteredName() == source->GetRegisteredName()), "The source {0} already exists in the render graph", source->GetRegisteredName())
+		}
+
 		//Add the source
 		m_GlobalSources.push_back(std::move(source));
 	}
@@ -145,7 +166,7 @@ namespace Atlas
 		);
 
 		//Create a thread-pool a maximum of 5 large
-		m_ThreadPool.CreatePool(5 > m_Passes.size() ? m_Passes.size() : 5);
+		m_ThreadPool->CreatePool(5 > m_Passes.size() ? m_Passes.size() : 5);
 
 		//Set the flag to true
 		m_Finalised = true;
@@ -153,6 +174,8 @@ namespace Atlas
 
 	void RenderGraph::AddPass(std::unique_ptr<Pass> pass)
 	{
+		AT_CORE_ASSERT(pass, "The pass is empty")
+
 		//Check that the render graph has not been finalised
 		AT_CORE_ASSERT(!m_Finalised, "The Render Graph has been finalised")
 

@@ -1,7 +1,5 @@
 #pragma once
-#include <d3d11.h>
-#include <wrl.h>
-namespace wrl = Microsoft::WRL;
+#include "Graphics/D3DWrappers/D3D11CommonHeaders.h"
 #include "Graphics/Buffer.h"
 
 namespace Atlas
@@ -31,9 +29,9 @@ namespace Atlas
 		bool IsValid() { return m_DepthStencilView; }
 
 		//Immediately bids the depths stencil view
-		void ImmidiateBind();
+		void ImmediateBind();
 		//Immediately binds the depths stencil view with a render target
-		void ImmidiateBind(RenderTarget* renderTarget);
+		void ImmediateBind(RenderTarget* renderTarget);
 
 		//Gets the depths stencil view as a texture
 		//Can only be used if it is not bound as a depths stencil view

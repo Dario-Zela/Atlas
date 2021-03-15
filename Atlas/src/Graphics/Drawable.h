@@ -33,7 +33,7 @@ namespace Atlas
 
 	protected:
 		//Adds a technique to be used by the render graph
-		void AddTechnique(Technique& technique) { m_Techniques.push_back(technique); }
+		void AddTechnique(Technique& technique) { m_Linked = false; m_Techniques.push_back(technique); }
 
 		//Gets the index count of the drawable
 		uint GetIndexCount() const { return m_IndexBuffer->GetCount(); }
@@ -47,7 +47,7 @@ namespace Atlas
 		std::vector<std::shared_ptr<Bindable>> m_Bindables;
 	private:
 		//Binds the drawable to the immediate context
-		void ImmidiateBind() const;
+		void ImmediateBind() const;
 		//Binds the drawable to the deferred context
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) const;
 
@@ -55,5 +55,7 @@ namespace Atlas
 		IndexBuffer* m_IndexBuffer = nullptr;
 		//The storage of techniques
 		std::vector<Technique> m_Techniques;
+		//Is the drawable linked
+		bool m_Linked = false;
 	};
 }

@@ -5,8 +5,8 @@
 namespace Atlas
 {
 	//Sets the values
-	Technique::Technique(std::string name, bool startActive)
-		: m_Name(std::move(name)), m_Active(startActive) { }
+	Technique::Technique(const std::string& name, bool startActive)
+		: m_Name(name), m_Active(startActive) { }
 
 	void Technique::Submit(Drawable& drawable)
 	{

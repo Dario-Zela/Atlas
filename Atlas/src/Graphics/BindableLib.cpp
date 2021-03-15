@@ -3,26 +3,32 @@
 
 namespace Atlas
 {
-	std::unordered_map<std::string, std::shared_ptr<Bindable>>* BindableLib::m_Library = nullptr;
+	std::unordered_map<std::string, std::shared_ptr<Bindable>>* BindableLib::s_Library = nullptr;
 
 	void BindableLib::Init()
 	{
+		AT_CORE_ASSERT(!s_Library, "The library already been initialised")
+
 		//Allocates the memory
-		m_Library = new std::unordered_map<std::string, std::shared_ptr<Bindable>>();
+		s_Library = new std::unordered_map<std::string, std::shared_ptr<Bindable>>();
 	}
 
 	void BindableLib::Release()
 	{
+		AT_CORE_ASSERT(s_Library, "The library not been initialised or it has already been released")
+
 		//Frees the memory
-		delete m_Library;
+		delete s_Library;
 	}
 
 	std::shared_ptr<Bindable> BindableLib::Resolve(const std::string& UID)
 	{
+		AT_CORE_ASSERT(s_Library, "The library not been initialised or it has already been released")
+
 		//Find where the UID is
-		auto i = m_Library->find(UID);
+		auto i = s_Library->find(UID);
 		//If it is not there return nothing
-		if (i == m_Library->end())
+		if (i == s_Library->end())
 		{
 			return nullptr;
 		}
@@ -33,22 +39,26 @@ namespace Atlas
 		}
 	}
 
-	void BindableLib::Add(std::string UID, std::shared_ptr<Bindable> bindable)
+	void BindableLib::Add(const std::string& UID, std::shared_ptr<Bindable> bindable)
 	{
+		AT_CORE_ASSERT(s_Library, "The library not been initialised or it has already been released")
+
 		//Add the bindables to the library
-		(*m_Library)[UID] = std::move(bindable);
+		(*s_Library)[UID] = std::move(bindable);
 	}
 
 	void BindableLib::Flush()
 	{
+		AT_CORE_ASSERT(s_Library, "The library not been initialised or it has already been released")
+
 		//Check if any of the items in the library
-		for (auto pairs : *m_Library)
+		for (auto pairs : *s_Library)
 		{
 			//Only exist in the library
 			if (pairs.second.use_count() == 1)
 			{
 				//If so, delete them
-				m_Library->erase(pairs.first);
+				s_Library->erase(pairs.first);
 			}
 		}
 	}

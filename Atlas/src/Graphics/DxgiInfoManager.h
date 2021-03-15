@@ -22,7 +22,7 @@ namespace Atlas
 	private:
 
 		static DxgiInfoManager* s_Instance;
-		static unsigned long long m_Next;
-		static Microsoft::WRL::ComPtr<IDXGIInfoQueue> m_DxgiInfoQueue;
+		static unsigned long long s_Next;
+		static Microsoft::WRL::ComPtr<IDXGIInfoQueue> s_DxgiInfoQueue;
 	};
 }

@@ -13,13 +13,13 @@ namespace Atlas
 	public:
 		//Makes the pass, vertex buffer and index buffer
 		//Requires a name
-		FullScreenPass(std::string name);
+		FullScreenPass(const std::string& name);
 		
 		//Executes a draw call on a deferred render context
 		//Should be inherited for custom executions
 		void Execute(wrl::ComPtr<ID3D11DeviceContext> context) override;
 		//Executes a draw call on an immediate render context
 		//Should be inherited for custom executions
-		void ExecuteImmidiate() override;
+		void ExecuteImmediate() override;
 	};
 }

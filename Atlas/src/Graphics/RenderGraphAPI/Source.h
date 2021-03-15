@@ -16,7 +16,7 @@ namespace Atlas
 		//Creates a source. Needs a name to identify it and a reference to the data buffer.
 		//The name must not have a digit as the fist value and contain no special characters 
 		//except for _
-		static std::unique_ptr<Source> Create(std::string registeredName, std::shared_ptr<Buffer> data);
+		static std::unique_ptr<Source> Create(const std::string& registeredName, std::shared_ptr<Buffer> data);
 
 		//Makes sure that the buffer is linked
 		void ValidateLinks();
@@ -27,7 +27,7 @@ namespace Atlas
 	private:
 		//Creates a source, it requires a name that sources will link to and
 		//the data buffer that will be linked to the source's
-		Source(std::string registeredName, std::shared_ptr<Buffer> data);
+		Source(const std::string& registeredName, std::shared_ptr<Buffer> data);
 
 		//Gets the buffer and links the source
 		std::shared_ptr<Buffer>& GetBuffer();

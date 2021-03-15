@@ -9,7 +9,7 @@ namespace Atlas
 	{
 	public:
 		//Constructor, takes the semantic name of the element along with its type
-		InputElement(std::string semanticName, uint type)
+		InputElement(const std::string& semanticName, uint type)
 			: m_SemanticName(semanticName), m_Type(type) {}
 
 		std::string& GetSemanticName() { return m_SemanticName; }
@@ -24,12 +24,12 @@ namespace Atlas
 	{
 	public:
 		//The wrapper over the constructor to get a shared ptr
-		static std::shared_ptr<InputLayout> Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob, std::string tag);
+		static std::shared_ptr<InputLayout> Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob, const std::string& tag);
 		
 		//Generates the unique identifier for the input layout
-		static std::string GenerateUID(std::string layoutNames, std::string tag);
+		static std::string GenerateUID(const std::string& layoutNames, const std::string& tag);
 
-		void ImmidiateBind() override;	//Binds the layout
+		void ImmediateBind() override;	//Binds the layout
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		//Constructor for the input layout

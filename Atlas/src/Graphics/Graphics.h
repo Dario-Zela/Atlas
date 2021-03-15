@@ -1,14 +1,11 @@
 #pragma once
-#pragma comment(lib, "d3d11.lib")
-#include <d3d11.h>
-#include <wrl.h>
-namespace wrl = Microsoft::WRL;
-
-#include "Graphics/D3DWrappers/RenderTarget.h"
-#include "Graphics/D3DWrappers/ViewPort.h"
+#include "Graphics/D3DWrappers/D3D11CommonHeaders.h"
 
 namespace Atlas
 {
+	class RenderTarget;
+	class ViewPort;
+
 	class Graphics
 	{
 	public:
@@ -20,19 +17,19 @@ namespace Atlas
 		void Init(HWND hwnd);
 		static void EndFrame(uint syncRate = 1);
 		
-		static void ImmidiateDraw(uint vertexCount);
-		static void ImmidiateDrawIndexed(uint indexCount);
+		static void ImmediateDraw(uint vertexCount);
+		static void ImmediateDrawIndexed(uint indexCount);
 
 		static void Draw(uint vertexCount, wrl::ComPtr<ID3D11DeviceContext> context);
 		static void DrawIndexed(uint indexCount, wrl::ComPtr<ID3D11DeviceContext> context);
 
-		static std::shared_ptr<ViewPort> GetDefaultViewPort() { return s_Instance->m_FullScreenPort; }
+		static std::shared_ptr<ViewPort> GetDefaultViewPort();
 
 		static bool IsInitialised();
 
-		static wrl::ComPtr<ID3D11Device> GetDevice() { return s_Instance->m_Device; }
-		static wrl::ComPtr<ID3D11DeviceContext> GetContext() { return s_Instance->m_Context; }
-		static std::shared_ptr<RenderTarget> GetRenderTarget() { return s_Instance->m_RenderTarget; }
+		static wrl::ComPtr<ID3D11Device> GetDevice();
+		static wrl::ComPtr<ID3D11DeviceContext> GetContext();
+		static std::shared_ptr<RenderTarget> GetRenderTarget();
 	private:
 		static Graphics* s_Instance;
 

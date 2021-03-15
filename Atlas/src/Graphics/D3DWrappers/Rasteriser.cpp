@@ -2,7 +2,7 @@
 #include "Rasteriser.h"
 #include "Graphics/Graphics.h"
 #include "Graphics/DxgiInfoManager.h"
-#include "Graphics\BindableLib.h"
+#include "Graphics/BindableLib.h"
 
 namespace Atlas
 {
@@ -60,7 +60,7 @@ namespace Atlas
 			+ '_' + std::to_string(antialiedLine);
 	}
 
-	void Rasteriser::ImmidiateBind()
+	void Rasteriser::ImmediateBind()
 	{
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->RSSetState(m_Rasteriser.Get()));
 	}

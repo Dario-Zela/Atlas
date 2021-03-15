@@ -5,7 +5,7 @@
 
 namespace Atlas
 {
-	Source::Source(std::string registeredName, std::shared_ptr<Buffer> data)
+	Source::Source(const std::string& registeredName, std::shared_ptr<Buffer> data)
 		: m_Linked(false), m_RegisteredName(registeredName), m_Data(std::move(data))
 	{
 		//Check that there is a name
@@ -42,9 +42,9 @@ namespace Atlas
 		return m_Data;
 	}
 
-	std::unique_ptr<Source> Source::Create(std::string registeredName, std::shared_ptr<Buffer> data)
+	std::unique_ptr<Source> Source::Create(const std::string& registeredName, std::shared_ptr<Buffer> data)
 	{
-		return std::unique_ptr<Source>(new Source(std::move(registeredName), std::move(data)));
+		return std::unique_ptr<Source>(new Source(registeredName, std::move(data)));
 	}
 }
 

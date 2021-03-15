@@ -16,20 +16,20 @@ namespace Atlas
 	{
 	public:
 		//The name of the pass that is going to be linked to the step
-		Step(std::string passName);
+		Step(const std::string& passName);
 		
 		//Submits a job to the pass with drawable that the step will act on
 		void Submit(Drawable& drawable);
 		//Gets a reference to the pass the step will act on
 		void Link(RenderGraph& renderGraph);
 		//Adds the bindables that will act on the drawable
-		void AddBindable(std::shared_ptr<Bindable> bindable) { m_Bindables.push_back(bindable); }
+		void AddBindable(std::shared_ptr<Bindable> bindable);
 		
 		//Binds the bindables to the pipelines
 		//To a deferred context
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context);
 		//To the immediate context
-		void ImmidiateBind();
+		void ImmediateBind();
 	private:
 		//The buffer of bindables
 		std::vector<std::shared_ptr<Bindable>> m_Bindables;

@@ -5,7 +5,7 @@
 
 namespace Atlas
 {
-    Sampler::Sampler(int slot, bool mipMapping, bool Anisotropy, uint maxAnisotropy)
+    Sampler::Sampler(uint slot, bool mipMapping, bool Anisotropy, uint maxAnisotropy)
         : m_Slot(slot)
     {
         //The descriptor for the sampler 
@@ -39,7 +39,7 @@ namespace Atlas
         AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateSamplerState(&samplerDescriptor, &m_Sampler));
     }
 
-    std::shared_ptr<Sampler> Sampler::Create(bool mipMapping, bool Anisotropy, uint maxAnisotropy, int slot)
+    std::shared_ptr<Sampler> Sampler::Create(bool mipMapping, bool Anisotropy, uint maxAnisotropy, uint slot)
     {
         //Get the UID and get the pointer to the data
         std::string UID = GenerateUID(slot, mipMapping, Anisotropy, maxAnisotropy);
@@ -59,13 +59,12 @@ namespace Atlas
         }
     }
 
-    std::string Sampler::GenerateUID(int slot, bool mipMapping, bool Anisotropy, uint maxAnisotropy)
+    std::string Sampler::GenerateUID(uint slot, bool mipMapping, bool Anisotropy, uint maxAnisotropy)
     {
-        auto v = std::string(typeid(Sampler).name()) + "_" + std::to_string(mipMapping) + "_" + std::to_string(Anisotropy) + "_" + std::to_string(maxAnisotropy) + "_" + std::to_string(slot);
-        return v;
+        return std::string(typeid(Sampler).name()) + "_" + std::to_string(mipMapping) + "_" + std::to_string(Anisotropy) + "_" + std::to_string(maxAnisotropy) + "_" + std::to_string(slot);
     }
 
-    void Sampler::ImmidiateBind()
+    void Sampler::ImmediateBind()
     {
         //Binds the sampler
         AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetSamplers(m_Slot, 1, m_Sampler.GetAddressOf()));

@@ -21,11 +21,11 @@ namespace Atlas
 		friend RenderGraph;
 	public:
 		//Initialises key variables and stores a debug name
-		Pass(std::string name);
+		Pass(const std::string& name);
 		//Executes the draw pass on a deferred context, must be overwritten
 		virtual void Execute(wrl::ComPtr<ID3D11DeviceContext> context) = 0;
 		//Executes the draw pass on the immediate context, must be overwritten
-		virtual void ExecuteImmidiate() = 0;
+		virtual void ExecuteImmediate() = 0;
 		//Returns the debug name
 		std::string& GetName() { return m_Name; }
 
@@ -41,15 +41,15 @@ namespace Atlas
 		int GetLevel() { return m_Level; }
 
 		//Links a sink to a source
-		void SetSinkLink(std::string registeredName, std::string target);
+		void SetSinkLink(const std::string& registeredName, const std::string& target);
 
 	protected:
 		//Gets all of the sinks in a pass
 		std::vector<std::unique_ptr<Sink>>& GetSinks() { return m_Sinks; }
 		//Gets the source with the appropriate name
-		Source& GetSource(std::string& registeredName);
+		Source& GetSource(const std::string& registeredName);
 		//Returns a sink with the appropriate name
-		Sink& GetSink(std::string& registeredName);
+		Sink& GetSink(const std::string& registeredName);
 
 		//Binds all of the bindables to the deferred context
 		void BindAll(wrl::ComPtr<ID3D11DeviceContext> context);

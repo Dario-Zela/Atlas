@@ -1,62 +1,59 @@
 #pragma once
 #include <chrono>
 
-#include "Window/Window.h"
-#include "Layer/LayerHolder.h"
 #include "Layer/Layer.h"
 #include "Graphics/Graphics.h"
 
-#include "Graphics/DxgiInfoManager.h"
-
 namespace Atlas
 {
+	class EventManager;
+	class Window;
+	class DxgiInfoManager;
+	class LayerStack;
+
+	//A class that holds layers and manages the creation of the window,
+	//graphics context and logging information.
 	class Application
 	{
 	public:
 		//Initialises the application
-		Application(std::string title, uint width, uint height);
+		Application(const std::string& title, uint width, uint height);
 		~Application() = default;
 
 		//Allows the user to close the application internally
-		inline void Quit() { m_Window.Release(); }
+		void Quit();
 
-		//Wrappers over the layer/overlay addition and removal
-		inline void PopLayer(Layer* layer) { m_LayersToPop.push_back(layer); }
-		inline void PushLayer(Layer* layer) { m_LayersToPush.push_back(layer); }
+		//Removes a layer
+		void PopLayer(std::shared_ptr<Layer> layer);
+		//Adds a layer
+		void PushLayer(std::shared_ptr<Layer> layer);
 
-		inline void PopOverlay(Layer* layer) { m_OverlaysToPop.push_back(layer); }
-		inline void PushOverlay(Layer* layer) { m_OverlaysToPush.push_back(layer); }
+		//Removes an overlay
+		void PopOverlay(std::shared_ptr<Layer> layer);
+		//Adds an overlay
+		void PushOverlay(std::shared_ptr<Layer> layer);
 
-		//The rendering loop
+		//Starts rendering loop
 		void Run();
 
 		//Allows the client to change the title of the screen dynamically
-		void SetWindowTitle(std::string Title) { SetWindowTextA(m_Window.GetWindowHandle(), Title.c_str()); }
+		void SetWindowTitle(const std::string& Title);
 
 		//Adds events to the queue manually
-		void AddEventToQueue(Event* e) { m_Window.AddEvent(e); }
+		void AddEventToQueue(Event* e);
 
-		static Application* GetInstance() { return s_Instance; }
-
-	protected:
-
-		//The functions that allow the implementation
-		//Of the application to add the initial layers
-		void InnerPushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
-		void InnerPushOverlay(Layer* overlay) { m_LayerStack.PushOverlay(overlay); }
-
-		void InnerPopLayer(Layer* layer) { m_LayerStack.PopLayer(layer); }
-		void InnerPopOverlay(Layer* overlay) { m_LayerStack.PopOverlay(overlay); }
+		//Gets the static instance of the window
+		static Application* GetInstance();
 
 	private:
 		//A buffer for layer and overlays that need to be
 		//Added and removed. This is done so that there aren't
 		//Ghost layers being used when one is deleted
-		std::vector<Layer*> m_LayersToPop;
-		std::vector<Layer*> m_LayersToPush;
+		std::vector<std::shared_ptr<Layer>> m_LayersToPop;
+		std::vector<std::shared_ptr<Layer>> m_LayersToPush;
 
-		std::vector<Layer*> m_OverlaysToPop;
-		std::vector<Layer*> m_OverlaysToPush;
+		std::vector<std::shared_ptr<Layer>> m_OverlaysToPop;
+		std::vector<std::shared_ptr<Layer>> m_OverlaysToPush;
 		
 		//The function removes and adds the layers
 		//In the vectors
@@ -66,14 +63,14 @@ namespace Atlas
 		bool m_Minimised;
 		
 		//The event manager
-		EventManager m_EventManager;
+		std::shared_ptr<EventManager> m_EventManager;
 
 		//Reference to the window and itself
-		Window m_Window;
+		std::shared_ptr<Window> m_Window;
 		static Application* s_Instance;
 
 		//The stack of all the layers
-		LayerStack m_LayerStack;
+		std::shared_ptr<LayerStack> m_LayerStack;
 
 		//The time of the previous layer
 		std::chrono::time_point<std::chrono::system_clock> m_LastFrameTime;
@@ -82,6 +79,6 @@ namespace Atlas
 		Graphics m_Gfx;
 
 		//The Graphics debug object
-		DxgiInfoManager m_InfoManager;
+		std::shared_ptr<DxgiInfoManager> m_InfoManager;
 	};
 }

@@ -1,15 +1,22 @@
 #include "pch.h"
 #include "Scene.h"
 #include <filesystem>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include "Graphics/RenderGraphAPI/RenderGraph.h"
+
+#include "Graphics/AssimpWrapper/Node.h"
+#include "Graphics/AssimpWrapper/Mesh.h"
 
 namespace Atlas
 {
-	Scene::Scene(std::string path)
+	Scene::Scene(const std::string& path)
 	{
 		//Get the scene with triangles only, and calculating tangents and bi-tangents when necessary.
-		auto scene = m_Importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
-		AT_CORE_ASSERT(scene, m_Importer.GetErrorString());	//If the result is invalid, the error is outputted
+		auto scene = m_Importer->ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
+		AT_CORE_ASSERT(scene, m_Importer->GetErrorString());	//If the result is invalid, the error is outputted
 
 		//Reserve the space for the meshes
 		m_Meshes.reserve(scene->mNumMeshes);
@@ -17,7 +24,7 @@ namespace Atlas
 		//Then create them
 		for (uint i = 0; i < scene->mNumMeshes; i++)
 		{
-			m_Meshes.push_back(std::move(std::make_unique<Mesh>(scene->mMeshes[i], scene->mMaterials, path)));
+			AT_CORE_ATTEMPT(m_Meshes.push_back(std::move(std::make_unique<Mesh>(scene->mMeshes[i], scene->mMaterials, path))));
 		}
 
 		//If there is a camera store it
@@ -36,7 +43,7 @@ namespace Atlas
 		//If the scene has embedded textures, warn the user that they cannot be accessed
 		if (scene->HasTextures())
 		{
-			AT_WARN("The model possesses embedded textures, which cannot be accessed by the library")
+			AT_CORE_WARN("The model possesses embedded textures, which cannot be accessed by the library")
 		}
 
 		//Then get the root node
@@ -45,7 +52,10 @@ namespace Atlas
 
 	void Scene::Draw(ModelDrawSettings& settings, DirectX::XMMATRIX& transform)
 	{
+		AT_CORE_ASSERT(!DirectX::XMMatrixIsNaN(transform), "The transform is null")
+
 		auto trans = m_Camera * transform;
+
 		//Draw the root node
 		m_RootNode->Draw(trans, settings);
 	}
@@ -56,7 +66,7 @@ namespace Atlas
 		m_RootNode->Draw(m_Camera, settings);
 	}
 
-	void Scene::ApplyTransform(std::string nodeName, DirectX::XMMATRIX& transform)
+	void Scene::ApplyTransform(const std::string& nodeName, DirectX::XMMATRIX& transform)
 	{
 		//Use recursive node traversal to apply the transform
 		m_RootNode->ApplyTransform(nodeName, transform);
@@ -82,6 +92,8 @@ namespace Atlas
 
 	std::unique_ptr<Node> Scene::ParseNode(aiNode* node)
 	{
+		AT_CORE_ASSERT(node, "An error seems to have occurred while reading the library, \nThe nodes are not being recognise, try again or with a different scene")
+
 		//Get the transform
 		DirectX::XMMATRIX transform = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(
 			reinterpret_cast<DirectX::XMFLOAT4X4*>(&node->mTransformation)));

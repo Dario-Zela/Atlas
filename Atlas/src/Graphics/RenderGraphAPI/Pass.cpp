@@ -7,15 +7,15 @@
 
 namespace Atlas
 {
-	Pass::Pass(std::string name)
-		:m_Name(std::move(name)), m_Level(-1)
+	Pass::Pass(const std::string& name)
+		:m_Name(name), m_Level(-1)
 	{
 		//Creates an placeholder render target and stencil buffer
 		m_RenderTarget = RenderTarget::CreateEmpty();
 		m_DepthBuffer = DepthStencilBuffer::CreateEmpty();
 	}
 
-	Source& Pass::GetSource(std::string& registeredName)
+	Source& Pass::GetSource(const std::string& registeredName)
 	{
 		//Go through all of the sources
 		for (auto& source : m_Sources)
@@ -30,7 +30,7 @@ namespace Atlas
 		AT_CORE_ASSERT_WARG(false, "The requested source {0} does not appear in pass {1}", registeredName, m_Name)
 	}
 
-	Sink& Pass::GetSink(std::string& registeredName)
+	Sink& Pass::GetSink(const std::string& registeredName)
 	{
 		//Go through all of the sinks
 		for (auto& sink : m_Sinks)
@@ -47,6 +47,8 @@ namespace Atlas
 
 	void Pass::AddBindable(std::shared_ptr<Bindable> bindable)
 	{
+		AT_CORE_ASSERT(bindable, "The bindable is empty")
+
 		//Add the bindables to the vector
 		m_Bindables.push_back(std::move(bindable));
 	}
@@ -78,22 +80,22 @@ namespace Atlas
 		if (m_RenderTarget)
 		{
 			//Bind it with the render target
-			m_RenderTarget->ImmidiateBind(m_DepthBuffer->GetDepthStencilBuffer().Get());
+			m_RenderTarget->ImmediateBind(m_DepthBuffer->GetDepthStencilBuffer().Get());
 		}
 		else
 		{
 			//Else, bind the depth buffer
-			m_DepthBuffer->ImmidiateBind();
+			m_DepthBuffer->ImmediateBind();
 		}
 
 		//Then bind all of the bindables
 		for (auto& bindable : m_Bindables)
 		{
-			bindable->ImmidiateBind();
+			bindable->ImmediateBind();
 		}
 	}
 
-	void Pass::SetSinkLink(std::string registeredName, std::string target)
+	void Pass::SetSinkLink(const std::string& registeredName, const std::string& target)
 	{
 		//Get the sink
 		auto& sink = GetSink(registeredName);
@@ -122,6 +124,8 @@ namespace Atlas
 
 	void Pass::RegisterSink(std::unique_ptr<Sink> sink)
 	{
+		AT_CORE_ASSERT(sink, "The sink is empty")
+
 		//Make sure that the sink is not duplicate
 		for (auto& ownedSink : m_Sinks)
 		{
@@ -134,6 +138,8 @@ namespace Atlas
 
 	void Pass::RegisterSource(std::unique_ptr<Source> source)
 	{
+		AT_CORE_ASSERT(source, "The source is empty")
+
 		//Make sure that the source is not duplicate
 		for (auto& ownedSource : m_Sources)
 		{

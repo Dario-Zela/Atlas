@@ -9,6 +9,8 @@ namespace Atlas
 	{
 		uint size = (uint)layout.size();
 
+		AT_CORE_ASSERT(size, "The size of the layout must be greater then 0")
+
 		//Create a set of element descriptors from the vector of elements
 		D3D11_INPUT_ELEMENT_DESC* elementDesc = new D3D11_INPUT_ELEMENT_DESC[size];
 		for (uint i = 0; i < size; i++)
@@ -23,7 +25,7 @@ namespace Atlas
 		delete[] elementDesc;
 	}
 
-	std::shared_ptr<InputLayout> InputLayout::Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob, std::string tag)
+	std::shared_ptr<InputLayout> InputLayout::Create(std::vector<InputElement> layout, wrl::ComPtr<ID3DBlob> vertexBufferBlob, const std::string& tag)
 	{
 		std::string layoutNames = "";
 		for (InputElement element : layout)
@@ -49,12 +51,12 @@ namespace Atlas
 		}
 	}
 
-	std::string InputLayout::GenerateUID(std::string layoutNames, std::string tag)
+	std::string InputLayout::GenerateUID(const std::string& layoutNames, const std::string& tag)
 	{
 		return std::string(typeid(InputLayout).name()) + '_'  + tag + '_' + layoutNames;
 	}
 
-	void InputLayout::ImmidiateBind()
+	void InputLayout::ImmediateBind()
 	{
 		//Binds the layout
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetInputLayout(m_InputLayout.Get()));

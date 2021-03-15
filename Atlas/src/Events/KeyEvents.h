@@ -33,11 +33,11 @@ namespace Atlas
 		//Returns if the key was held
 		inline bool IsHeld() { return m_Held; }
 
-		std::string ToString() const override
+		std::string& ToString() const override
 		{
 			std::stringstream ss;
 			ss << "KeyPressedEvent: " << m_KeyCode << ", is Held: " << (m_Held ? "True" : "False");
-			return ss.str();
+			return  *&ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
@@ -55,11 +55,11 @@ namespace Atlas
 		{
 		}
 
-		std::string ToString() const override
+		std::string& ToString() const override
 		{
 			std::stringstream ss;
 			ss << "KeyReleasedEvent: " << m_KeyCode;
-			return ss.str();
+			return  *&ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyReleased)
@@ -78,11 +78,11 @@ namespace Atlas
 
 		inline char GetKeyCode() const { return m_Character; }
 
-		std::string ToString() const
+		std::string& ToString() const
 		{
 			std::stringstream ss;
 			ss << "KeyTypedEvent: " << m_Character;
-			return ss.str();
+			return  *&ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyTyped)

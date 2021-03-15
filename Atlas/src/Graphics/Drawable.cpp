@@ -6,11 +6,11 @@
 
 namespace Atlas 
 {
-	void Drawable::ImmidiateBind() const
+	void Drawable::ImmediateBind() const
 	{
 		//Immediately bind all of the bindables
 		for (auto& bindable : m_Bindables)
-			bindable->ImmidiateBind();
+			bindable->ImmediateBind();
 	}
 
 	void Drawable::Bind(wrl::ComPtr<ID3D11DeviceContext> context) const
@@ -22,6 +22,8 @@ namespace Atlas
 
 	void Drawable::Submit()
 	{
+		AT_CORE_ASSERT(m_Linked, "The drawable/scene has not been linked to a render graph")
+
 		//Submit all techniques with reference to the drawable
 		for (auto& techique : m_Techniques)
 			techique.Submit(*this);
@@ -30,13 +32,15 @@ namespace Atlas
 	void Drawable::Draw() 
 	{ 
 		//Immediately bind all of the bindables
-		ImmidiateBind(); 
+		ImmediateBind(); 
 		//The immediately draw to the back buffer
-		Graphics::ImmidiateDrawIndexed(m_IndexBuffer->GetCount()); 
+		Graphics::ImmediateDrawIndexed(m_IndexBuffer->GetCount()); 
 	}
 
 	void Drawable::AddBindable(std::shared_ptr<Bindable> bindable)
 	{
+		AT_CORE_ASSERT(bindable, "The bindable was empty")
+
 		//If the bindables being added is an index buffer
 		if (typeid(*bindable) == typeid(IndexBuffer))
 		{
@@ -57,6 +61,8 @@ namespace Atlas
 
 	void Drawable::LinkTechniques(RenderGraph& renderGraph)
 	{
+		m_Linked = true;
+
 		//Link all techniques to the render graph
 		for (auto& techique : m_Techniques)
 			techique.Link(renderGraph);

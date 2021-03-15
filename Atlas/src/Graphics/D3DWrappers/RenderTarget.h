@@ -1,8 +1,5 @@
 #pragma once
-#include <d3d11.h>
-#include <wrl.h>
-namespace wrl = Microsoft::WRL;
-
+#include "Graphics/D3DWrappers/D3D11CommonHeaders.h"
 #include "Graphics/Buffer.h"
 #include "Graphics/D3DWrappers/DepthStencilBuffer.h"
 
@@ -38,9 +35,9 @@ namespace Atlas
 		void Clear(float r, float g, float b, float a = 1.0f);
 
 		//Immediately bids the render target
-		void ImmidiateBind();
+		void ImmediateBind();
 		//Immediately binds the render target with a depths stencil view
-		void ImmidiateBind(ID3D11DepthStencilView* depthStencilView);
+		void ImmediateBind(ID3D11DepthStencilView* depthStencilView);
 
 		//Gets the render target as a texture
 		//Can only be used if it is not bound as a render target

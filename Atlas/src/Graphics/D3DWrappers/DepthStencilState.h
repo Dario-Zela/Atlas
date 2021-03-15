@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics\Graphics.h"
+#include "Graphics/Graphics.h"
 
 namespace Atlas
 {
@@ -40,7 +40,7 @@ namespace Atlas
 			bool StencilEnable, byte StencilReadMask, byte StencilWriteMask, DepthStencilDesc FrontFace, DepthStencilDesc BackFace);
 
 		//Binds the depth stencil state to the immediate context
-		void ImmidiateBind();
+		void ImmediateBind();
 		//Binds the depth stencil state to the deferred context
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context);
 	private:

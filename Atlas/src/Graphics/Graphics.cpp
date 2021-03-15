@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "Graphics.h"
-#include "Graphics/DX11Exception.h"
 #include "Core/Input.h"
 #include "Graphics/BindableLib.h"
 #include "Graphics/DxgiInfoManager.h"
+
+#include "Graphics/D3DWrappers/RenderTarget.h"
+#include "Graphics/D3DWrappers/ViewPort.h"
 
 namespace Atlas
 {
@@ -16,10 +18,9 @@ namespace Atlas
 
 	void Graphics::Init(HWND hwnd)
 	{
-		if (!s_Instance)
-			s_Instance = this;
-		else
-			return;
+		AT_CORE_ASSERT(!s_Instance, "A graphics context has already been constructed")
+
+		s_Instance = this;
 
 		//Define the descriptor for the swap-chain
 		DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
@@ -85,12 +86,12 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(result == DXGI_ERROR_DEVICE_REMOVED ? s_Instance->m_Device->GetDeviceRemovedReason() : result);
 	}
 
-	void Graphics::ImmidiateDraw(uint vertexCount)
+	void Graphics::ImmediateDraw(uint vertexCount)
 	{
 		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->Draw(vertexCount, 0));
 	}
 
-	void Graphics::ImmidiateDrawIndexed(uint indexCount)
+	void Graphics::ImmediateDrawIndexed(uint indexCount)
 	{
 		AT_CHECK_GFX_INFO_VOID(s_Instance->m_Context->DrawIndexed(indexCount, 0, 0));
 	}
@@ -105,8 +106,33 @@ namespace Atlas
 		AT_CHECK_GFX_INFO_VOID(context->DrawIndexed(indexCount, 0, 0));
 	}
 
+	std::shared_ptr<ViewPort> Graphics::GetDefaultViewPort() 
+	{ 
+		AT_CORE_ASSERT(s_Instance, "The graphics context has been released or \nit is being used before it has been constructed")
+		return s_Instance->m_FullScreenPort; 
+	}
+
 	bool Graphics::IsInitialised()
 	{
 		return s_Instance;
 	}
+
+	wrl::ComPtr<ID3D11Device> Graphics::GetDevice() 
+	{ 
+		AT_CORE_ASSERT(s_Instance, "The graphics context has been released or \nit is being used before it has been constructed")
+		return s_Instance->m_Device;
+	}
+
+	wrl::ComPtr<ID3D11DeviceContext> Graphics::GetContext() 
+	{
+		AT_CORE_ASSERT(s_Instance, "The graphics context has been released or \nit is being used before it has been constructed") 
+		return s_Instance->m_Context; 
+	}
+
+	std::shared_ptr<RenderTarget> Graphics::GetRenderTarget() 
+	{
+		AT_CORE_ASSERT(s_Instance, "The graphics context has been released or \nit is being used before it has been constructed")
+		return s_Instance->m_RenderTarget;
+	}
+
 }

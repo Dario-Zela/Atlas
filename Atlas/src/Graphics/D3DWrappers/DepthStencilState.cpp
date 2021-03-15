@@ -59,7 +59,7 @@ namespace Atlas
 			+ '_' + BackFace.ToString();
 	}
 
-	void DepthStencilState::ImmidiateBind()
+	void DepthStencilState::ImmediateBind()
 	{
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetDepthStencilState(m_DepthStencilState.Get(), 0xff));
 	}

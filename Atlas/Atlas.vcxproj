@@ -57,7 +57,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;AT_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ATLASLIB;AT_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -105,10 +105,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Camera.h" />
+    <ClInclude Include="src\Core\Client.h" />
     <ClInclude Include="src\Core\ThreadPool.h" />
+    <ClInclude Include="src\Graphics\AssimpWrapper\CommonClasses.h" />
     <ClInclude Include="src\Graphics\AssimpWrapper\Mesh.h" />
     <ClInclude Include="src\Graphics\AssimpWrapper\Node.h" />
     <ClInclude Include="src\Graphics\Buffer.h" />
+    <ClInclude Include="src\Graphics\D3DWrappers\D3D11CommonHeaders.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\DeferredRenderContext.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\DepthStencilBuffer.h" />
     <ClInclude Include="src\Graphics\D3DWrappers\DepthStencilState.h" />
@@ -172,6 +175,7 @@
     <ClCompile Include="src\Graphics\D3DWrappers\DepthStencilState.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Rasteriser.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\RenderTarget.cpp" />
+    <ClCompile Include="src\Graphics\D3DWrappers\SimpleMeshCreator.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Topology.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\Vertex.cpp" />
     <ClCompile Include="src\Graphics\RenderGraphAPI\FullScreenPass.cpp" />
@@ -211,22 +215,6 @@
     <ClCompile Include="src\Graphics\DX11Exception.cpp" />
     <ClCompile Include="src\Graphics\D3DWrappers\ViewPort.cpp" />
     <ClCompile Include="vendor\stb\stb_image.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="src\Shaders\TestPixel.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)..\Tester\%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)..\Tester\%(Filename).cso</ObjectFileOutput>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.4</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="src\Shaders\TestVertex.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)..\Tester\%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)..\Tester\%(Filename).cso</ObjectFileOutput>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.4</ShaderModel>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\assimp\bin\code\assimp.vcxproj">

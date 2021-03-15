@@ -19,6 +19,8 @@ namespace Atlas
 	//Propagates the events through the layer stack
 	void EventManager::PropagateEvents(LayerStack* stack)
 	{
+		AT_CORE_ASSERT(stack, "Events are being propagated on a non initialised application \nor on a deleted one")
+
 		while (!m_EventBacklog.empty())
 		{
 			//Get the event and remove it from the queue
@@ -28,7 +30,9 @@ namespace Atlas
 			//As it is a stack it is run from back to front
 			for (auto it = stack->rbegin(); it != stack->rend(); it++)
 			{
-				(*it)->OnEvent(*e);
+				AT_CORE_ASSERT(e, "An event that has to be propagated has been deleted")
+
+				AT_CORE_ATTEMPT((*it)->OnEvent(*e))
 				if (e->IsHandled())			//If the event is handled, 
 					break;					//It stops propagating
 			}

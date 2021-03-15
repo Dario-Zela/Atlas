@@ -27,7 +27,7 @@ namespace Atlas
 		//For standard events, these are debug only
 		//Custom classes will use them to differentiate which type is what
 		virtual std::string GetName() const = 0;
-		virtual std::string ToString() const { return GetName(); }
+		virtual std::string& ToString() const = 0;
 
 		//Returns if the event has been handled
 		inline bool IsHandled() const { return mHandled; }

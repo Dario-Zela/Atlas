@@ -23,7 +23,7 @@ namespace Atlas
 		return m_AppliedTransform;
 	}
 
-	bool Node::ApplyTransform(std::string nodeName, DirectX::XMMATRIX& transform)
+	bool Node::ApplyTransform(const std::string& nodeName, DirectX::XMMATRIX& transform)
 	{
 		if (m_Name != nodeName)
 		{

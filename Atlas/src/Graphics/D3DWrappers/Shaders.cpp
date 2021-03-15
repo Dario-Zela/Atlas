@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Shaders.h"
-
+#include "Graphics/BindableLib.h"
 #include "Graphics/DxgiInfoManager.h"
 
 namespace Atlas
@@ -8,7 +8,7 @@ namespace Atlas
 	//Vertex Shader
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	VertexShader::VertexShader(std::string path)
+	VertexShader::VertexShader(const std::string& path)
 	{
 		//This converts the easier to call string format into a const wchar_t array
 		//As it is what is used in the D3DReadFileToBlob function
@@ -22,7 +22,7 @@ namespace Atlas
 			AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateVertexShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_VertexShader))
 	}
 
-	std::shared_ptr<VertexShader> VertexShader::Create(std::string path)
+	std::shared_ptr<VertexShader> VertexShader::Create(const std::string& path)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(path);
@@ -42,12 +42,12 @@ namespace Atlas
 		}
 	}
 
-	std::string VertexShader::GenerateUID(std::string path)
+	std::string VertexShader::GenerateUID(const std::string& path)
 	{
 		return std::string(typeid(VertexShader).name()) + '_' + path;
 	}
 
-	void VertexShader::ImmidiateBind()
+	void VertexShader::ImmediateBind()
 	{
 		//Binds the vertex shader
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->VSSetShader(m_VertexShader.Get(), nullptr, 0))
@@ -67,7 +67,7 @@ namespace Atlas
 	//Pixel Shader
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	PixelShader::PixelShader(std::string path)
+	PixelShader::PixelShader(const std::string& path)
 	{
 		//This converts the easier to call string format into a const wchar_t array
 		//As it is what is used in the D3DReadFileToBlob function
@@ -81,7 +81,7 @@ namespace Atlas
 		AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreatePixelShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_PixelShader))
 	}
 
-	std::shared_ptr<PixelShader> PixelShader::Create(std::string path)
+	std::shared_ptr<PixelShader> PixelShader::Create(const std::string& path)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(path);
@@ -101,12 +101,12 @@ namespace Atlas
 		}
 	}
 
-	std::string PixelShader::GenerateUID(std::string path)
+	std::string PixelShader::GenerateUID(const std::string& path)
 	{
 		return std::string(typeid(PixelShader).name()) + '_' + path;
 	}
 
-	void PixelShader::ImmidiateBind()
+	void PixelShader::ImmediateBind()
 	{
 		//Binds the pixel shader
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->PSSetShader(m_PixelShader.Get(), nullptr, 0))
@@ -121,7 +121,7 @@ namespace Atlas
 	//Domain Shader
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	DomainShader::DomainShader(std::string path)
+	DomainShader::DomainShader(const std::string& path)
 	{
 		//This converts the easier to call string format into a const wchar_t array
 		//As it is what is used in the D3DReadFileToBlob function
@@ -135,7 +135,7 @@ namespace Atlas
 			AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateDomainShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_DomainShader))
 	}
 
-	std::shared_ptr<DomainShader> DomainShader::Create(std::string path)
+	std::shared_ptr<DomainShader> DomainShader::Create(const std::string& path)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(path);
@@ -155,12 +155,12 @@ namespace Atlas
 		}
 	}
 
-	std::string DomainShader::GenerateUID(std::string path)
+	std::string DomainShader::GenerateUID(const std::string& path)
 	{
 		return std::string(typeid(DomainShader).name()) + '_' + path;
 	}
 
-	void DomainShader::ImmidiateBind()
+	void DomainShader::ImmediateBind()
 	{
 		//Binds the pixel shader
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->DSSetShader(m_DomainShader.Get(), nullptr, 0))
@@ -175,7 +175,7 @@ namespace Atlas
 	//Hull Shader
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	HullShader::HullShader(std::string path)
+	HullShader::HullShader(const std::string& path)
 	{
 		//This converts the easier to call string format into a const wchar_t array
 //As it is what is used in the D3DReadFileToBlob function
@@ -189,7 +189,7 @@ namespace Atlas
 			AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateHullShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_HullShader))
 	}
 
-	std::shared_ptr<HullShader> HullShader::Create(std::string path)
+	std::shared_ptr<HullShader> HullShader::Create(const std::string& path)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(path);
@@ -209,12 +209,12 @@ namespace Atlas
 		}
 	}
 
-	std::string HullShader::GenerateUID(std::string path)
+	std::string HullShader::GenerateUID(const std::string& path)
 	{
 		return std::string();
 	}
 
-	void HullShader::ImmidiateBind()
+	void HullShader::ImmediateBind()
 	{
 		//Binds the pixel shader
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->HSSetShader(m_HullShader.Get(), nullptr, 0))
@@ -229,7 +229,7 @@ namespace Atlas
 	//Geometry Shader
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	GeometryShader::GeometryShader(std::string path)
+	GeometryShader::GeometryShader(const std::string& path)
 	{
 		//This converts the easier to call string format into a const wchar_t array
 //As it is what is used in the D3DReadFileToBlob function
@@ -243,7 +243,7 @@ namespace Atlas
 			AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateGeometryShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_GeometryShader))
 	}
 
-	std::shared_ptr<GeometryShader> GeometryShader::Create(std::string path)
+	std::shared_ptr<GeometryShader> GeometryShader::Create(const std::string& path)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(path);
@@ -263,12 +263,12 @@ namespace Atlas
 		}
 	}
 
-	std::string GeometryShader::GenerateUID(std::string path)
+	std::string GeometryShader::GenerateUID(const std::string& path)
 	{
 		return std::string();
 	}
 
-	void GeometryShader::ImmidiateBind()
+	void GeometryShader::ImmediateBind()
 	{
 		//Binds the pixel shader
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->GSSetShader(m_GeometryShader.Get(), nullptr, 0))
@@ -283,10 +283,10 @@ namespace Atlas
 	//Compute Shader
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	ComputeShader::ComputeShader(std::string path)
+	ComputeShader::ComputeShader(const std::string& path)
 	{
 		//This converts the easier to call string format into a const wchar_t array
-//As it is what is used in the D3DReadFileToBlob function
+		//As it is what is used in the D3DReadFileToBlob function
 
 		std::wstring widePath = L"";
 		for (char c : path)
@@ -297,7 +297,7 @@ namespace Atlas
 			AT_CHECK_GFX_INFO(Graphics::GetDevice()->CreateComputeShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_ComputeShader))
 	}
 
-	std::shared_ptr<ComputeShader> ComputeShader::Create(std::string path)
+	std::shared_ptr<ComputeShader> ComputeShader::Create(const std::string& path)
 	{
 		//Get the UID and get the pointer to the data
 		std::string UID = GenerateUID(path);
@@ -317,12 +317,12 @@ namespace Atlas
 		}
 	}
 
-	std::string ComputeShader::GenerateUID(std::string path)
+	std::string ComputeShader::GenerateUID(const std::string& path)
 	{
 		return std::string();
 	}
 
-	void ComputeShader::ImmidiateBind()
+	void ComputeShader::ImmediateBind()
 	{
 		//Binds the pixel shader
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->CSSetShader(m_ComputeShader.Get(), nullptr, 0))

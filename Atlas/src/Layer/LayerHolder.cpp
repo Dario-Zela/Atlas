@@ -6,16 +6,15 @@ namespace Atlas
 	LayerStack::~LayerStack()
 	{
 		//Deletes all layers that are remaining in the stack
-		for (Layer* layer : m_Layers)
+		for (std::shared_ptr<Layer> layer : m_Layers)
 		{
 			//It also calls the detach functions
 			layer->OnDetach();
-			delete layer;
 		}
 	}
 
 	//Adds a layer
-	void LayerStack::PushLayer(Layer* layer)
+	void LayerStack::PushLayer(std::shared_ptr<Layer> layer)
 	{
 		//The layer's existence is checked
 		AT_CORE_ASSERT(layer, "The layer doesn't exist")
@@ -26,7 +25,7 @@ namespace Atlas
 	}
 
 	//Adds an overlay
-	void LayerStack::PushOverlay(Layer* overlay)
+	void LayerStack::PushOverlay(std::shared_ptr<Layer> overlay)
 	{
 		//The overlay's existence is checked
 		AT_CORE_ASSERT(overlay, "The layer doesn't exist")
@@ -38,7 +37,7 @@ namespace Atlas
 	}
 
 	//Removes a layer
-	void LayerStack::PopLayer(Layer* layer)
+	void LayerStack::PopLayer(std::shared_ptr<Layer> layer)
 	{
 		//This attempts to find if the layer is in the stack
 		//We only need to check from the beginning to the index
@@ -55,7 +54,7 @@ namespace Atlas
 	}
 
 	//Removes an overlay
-	void LayerStack::PopOverlay(Layer* overlay)
+	void LayerStack::PopOverlay(std::shared_ptr<Layer> overlay)
 	{
 		//This attempts to find if the overlay is in the stack
 		//We only need to check from index to the end

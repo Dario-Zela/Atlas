@@ -5,6 +5,8 @@
 #include "Events/KeyEvents.h"
 #include "Events/MouseEvents.h"
 
+#include "Events/EventManager.h"
+
 namespace Atlas
 {
     Window* Window::s_Instance = nullptr;
@@ -153,15 +155,16 @@ namespace Atlas
     }
 
     Window::Window(EventManager* eventManager)
-        : m_Minimised(false), m_EventManager(eventManager) {}
+        : m_Minimised(false), m_EventManager(eventManager) {AT_CORE_ASSERT(eventManager ,"An unexpected inner error has occured and the event manager is empty")}
 
 
-    void Window::Init(std::string name, uint width, uint height)
+    void Window::Init(const std::string& name, uint width, uint height)
     {
-        if (!s_Instance)
-            s_Instance = this;
-        else
-            return;
+        AT_CORE_ASSERT(!s_Instance, "A window has already been constructed")
+
+        s_Instance = this;
+
+        AT_CORE_ASSERT(width * height > 0, "The size of the window must be greater then 0x0")
 
         //Set the style of the window
         WNDCLASSEX wc;
@@ -222,6 +225,15 @@ namespace Atlas
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+    }
+
+    //Adds and event to the event queue
+
+    void Window::AddEvent(Event* e) 
+    {
+        AT_CORE_ASSERT(e, "The event that is being added is not initialised")
+
+        m_EventManager->AddEventToQueue(e); 
     }
 
     std::string Window::TranslateErrorCode(HRESULT hr)

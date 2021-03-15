@@ -10,17 +10,17 @@ namespace Atlas
 	{
 	public:
 		//The wrapper over the constructor to get a shared ptr
-		static std::shared_ptr<VertexBuffer> Create(void* data, uint sizeData, uint sizeVertex, std::string tag);
+		static std::shared_ptr<VertexBuffer> Create(void* data, uint sizeData, uint sizeVertex, const std::string& tag);
 
 		//Gets a vertex buffer if it has been previously constructed
 		//Returns nullptr otherwise
-		static std::shared_ptr<VertexBuffer> Get(std::string tag);
+		static std::shared_ptr<VertexBuffer> Get(const std::string& tag);
 
 		//Generates the unique identifier for the buffer
-		static std::string GenerateUID(std::string tag);
+		static std::string GenerateUID(const std::string& tag);
 		
 		//Binds the buffer
-		void ImmidiateBind() override;		
+		void ImmediateBind() override;		
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 	private:
 		//Constructor, takes in the pointer to the data, the size of the data and the size of a vertex
@@ -35,15 +35,15 @@ namespace Atlas
 	{
 	public:
 		//The wrapper over the constructor to get a shared ptr
-		static std::shared_ptr<IndexBuffer> Create(unsigned short* data, uint size, std::string tag);
+		static std::shared_ptr<IndexBuffer> Create(unsigned short* data, uint size, const std::string& tag);
 
 		//Gets a vertex buffer if it has been previously constructed
 		//Returns nullptr otherwise
-		static std::shared_ptr<IndexBuffer> Get(std::string tag);
+		static std::shared_ptr<IndexBuffer> Get(const std::string& tag);
 
 		//Generates the unique identifier for the buffer
-		static std::string GenerateUID(std::string tag);
-		void ImmidiateBind() override;		//Binds the buffer
+		static std::string GenerateUID(const std::string& tag);
+		void ImmediateBind() override;		//Binds the buffer
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 
 		uint GetCount() const;		//Gets the number of elements
@@ -65,20 +65,20 @@ namespace Atlas
 	{
 		friend TransformationConstantBuffer;
 	public:
-		static std::shared_ptr<ConstantBuffer> Create(void* data, uint sizeData, std::string tag, uint targets = 0, uint slot = 0);
-		static std::shared_ptr<ConstantBuffer> Create(uint sizeData, std::string tag, uint targets = 0, uint slot = 0);
+		static std::shared_ptr<ConstantBuffer> Create(void* data, uint sizeData, const std::string& tag, uint targets = 0, uint slot = 0);
+		static std::shared_ptr<ConstantBuffer> Create(uint sizeData, const std::string& tag, uint targets = 0, uint slot = 0);
 
 		//Gets a vertex buffer if it has been previously constructed
 		//Returns nullptr otherwise
-		static std::shared_ptr<ConstantBuffer> Get(std::string tag);
+		static std::shared_ptr<ConstantBuffer> Get(const std::string& tag);
 
 		//Generates the unique identifier for the buffer
-		static std::string GenerateUID(std::string tag);
+		static std::string GenerateUID(const std::string& tag);
 
-		void ImmidiateUpdate(void* data, uint sizeData);		//Updates the constant buffer
+		void ImmediateUpdate(void* data, uint sizeData);		//Updates the constant buffer
 		void Update(void* data, uint sizeData, wrl::ComPtr<ID3D11DeviceContext> context);		//Updates the constant buffer
 
-		void ImmidiateBind() override;		//Binds the buffer
+		void ImmediateBind() override;		//Binds the buffer
 		void Bind(wrl::ComPtr<ID3D11DeviceContext> context) override;
 
 	protected:

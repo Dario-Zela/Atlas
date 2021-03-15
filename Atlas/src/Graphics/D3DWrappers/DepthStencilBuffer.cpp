@@ -3,7 +3,7 @@
 #include "Graphics/Graphics.h"
 #include "Graphics/DxgiInfoManager.h"
 #include "Graphics/D3DWrappers/RenderTarget.h"
-#include "Graphics\D3DWrappers/Texture.h"
+#include "Graphics/D3DWrappers/Texture.h"
 #include "Core/Input.h"
 
 namespace Atlas
@@ -11,6 +11,8 @@ namespace Atlas
 	DepthStencilBuffer::DepthStencilBuffer(uint width, uint height)
 		:m_Width(width), m_Height(height)
 	{
+		AT_CORE_ASSERT(width * height, "The width and height of the depth buffer must be greater then 0")
+
 		//Create the descriptor for the texture 
 		//encapsulating the depth stencil view
 		D3D11_TEXTURE2D_DESC descTex;
@@ -69,16 +71,16 @@ namespace Atlas
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1, 0));
 	}
 
-	void DepthStencilBuffer::ImmidiateBind()
+	void DepthStencilBuffer::ImmediateBind()
 	{
 		//Immediately bind the depth stencil view with no render target
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetRenderTargets(1, nullptr, m_DepthStencilView.Get()));
 	}
 
-	void DepthStencilBuffer::ImmidiateBind(RenderTarget* renderTarget)
+	void DepthStencilBuffer::ImmediateBind(RenderTarget* renderTarget)
 	{
 		//Immediately bind the depth stencil view using the render target
-		renderTarget->ImmidiateBind(m_DepthStencilView.Get());
+		renderTarget->ImmediateBind(m_DepthStencilView.Get());
 	}
 
 	std::shared_ptr<Texture> DepthStencilBuffer::GetAsTexture(uint slot, uint targets)

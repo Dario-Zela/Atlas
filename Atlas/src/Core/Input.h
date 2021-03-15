@@ -1,14 +1,19 @@
 #pragma once
-#include "pch.h"
 #include "Window/Window.h"
 
 namespace Atlas
 {
+	class EventManager;
+	class Application;
+
 	//Input Poller struct
 	//A set of static functions to get information
 	//About the application without having to wait for an event
 	struct Input
 	{
+		friend EventManager;
+		friend Application;
+
 		//This gets the size of the window
 		//If it fails it will return -1,-1
 		static std::tuple<int,int> GetWindowSize()
@@ -46,11 +51,7 @@ namespace Atlas
 		}
 
 		//This checks if a key is pressed
-		static bool IsKeyPressed(int keyCode)
-		{
-			Window* window = Window::s_Instance;
-			return GetAsyncKeyState(keyCode) < 0;
-		}
+		static bool IsKeyPressed(int keyCode);
 
 		//This returns the horizontal scroll
 		static float GetHScrool()
@@ -64,6 +65,7 @@ namespace Atlas
 			return m_VScroll;
 		}
 
+	private:
 		//A function that sets the scroll values
 		static void SetScroll(float hScroll, float vScroll)
 		{
@@ -71,7 +73,6 @@ namespace Atlas
 			m_VScroll = vScroll;
 		}
 
-	private:
 		static float m_HScroll;
 		static float m_VScroll;
 	};

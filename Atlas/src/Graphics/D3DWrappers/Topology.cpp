@@ -5,13 +5,13 @@
 
 namespace Atlas
 {
-	Topology::Topology(uint topology)
-		: m_Topology((D3D11_PRIMITIVE_TOPOLOGY)topology) { }
+	Topology::Topology(D3D11_PRIMITIVE_TOPOLOGY topology)
+		: m_Topology(topology) { }
 
-	std::shared_ptr<Topology> Topology::Create(uint topology)
+	std::shared_ptr<Topology> Topology::Create(D3D11_PRIMITIVE_TOPOLOGY topology)
 	{
 		//Get the UID and get the pointer to the data
-		std::string UID = GenerateUID((D3D11_PRIMITIVE_TOPOLOGY)topology);
+		std::string UID = GenerateUID(topology);
 		auto test = BindableLib::Resolve(UID);
 
 		//If it isn't nullptr, cast it and return it
@@ -33,7 +33,7 @@ namespace Atlas
 		return typeid(Topology).name() + '_' + std::to_string(topology);
 	}
 
-	void Topology::ImmidiateBind()
+	void Topology::ImmediateBind()
 	{
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->IASetPrimitiveTopology(m_Topology));
 	}

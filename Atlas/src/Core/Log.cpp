@@ -3,7 +3,12 @@
 
 namespace Atlas
 {
-	void Log::Init(std::string filePos)
+	Log::Log()
+	{
+		AT_CORE_ASSERT(!Logger, "You cannot create a logger")
+	}
+
+	void Log::Init(const std::string& filePos)
 	{
 		//The file position is saved
 		m_File = filePos;
@@ -15,7 +20,7 @@ namespace Atlas
 				throw std::exception();
 			time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 			tm time = *std::localtime(&now);
-			stream << "\n\n" + std::to_string(time.tm_mday) + "\\" + std::to_string(time.tm_mon + 1) + "\\" + std::to_string(time.tm_year + 1900) + " "
+			stream << "\n\n" + std::to_string(time.tm_mday) + "//" + std::to_string(time.tm_mon + 1) + "//" + std::to_string(time.tm_year + 1900) + " "
 				+ std::to_string(time.tm_hour) + ":" + std::to_string(time.tm_min) + ":" + std::to_string(time.tm_sec) + "\n"
 				+ "--------------------------------------------\n";
 			stream.close();

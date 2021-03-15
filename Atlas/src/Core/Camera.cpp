@@ -6,6 +6,8 @@ namespace Atlas
 {
 	Camera::Camera(float maxPos, float minPos, float speed)
 	{
+		AT_CORE_ASSERT(maxPos > minPos, "The maximum position is lower or equal to the minimum position")
+
 		//Initialise the GUI
 		m_GUI.Init("Camera");
 
@@ -33,8 +35,10 @@ namespace Atlas
 
 	void Camera::Update(TimeStep timeStep)
 	{
+		AT_CORE_ASSERT(m_Rotation || m_Position, "You are accessing a non constructed or a deleted camera")
+
 		//If the user presses the Right mouse button
-		if (Input::IsMouseButtonPressed(MK_RBUTTON)) 
+		if (Input::IsMouseButtonPressed(MK_RBUTTON))
 		{
 			//Set the initial position if it has an old or unset value
 			if (m_ResetInitialPosition)
@@ -99,6 +103,39 @@ namespace Atlas
 
 		//The view matrix is updated
 		CalculateViewMatrix();
+	}
+
+	DirectX::XMFLOAT3 Camera::GetPosition()
+	{
+		AT_CORE_ASSERT(m_Position, "You are accessing a non constructed or a deleted camera")
+
+		return DirectX::XMFLOAT3{ m_Position[0], m_Position[1], m_Position[2] };
+	}
+
+	DirectX::XMFLOAT3 Camera::GetRotation() 
+	{
+		AT_CORE_ASSERT(m_Rotation, "You are accessing a non constructed or a deleted camera")
+
+		return DirectX::XMFLOAT3{ m_Rotation[0], m_Rotation[1], m_Rotation[2] }; 
+	}
+
+	DirectX::XMVECTOR Camera::GetFront() 
+	{ 
+		AT_CORE_ASSERT(m_Rotation, "You are accessing a non constructed or a deleted camera")
+
+		return DirectX::XMVector3Transform(DirectX::g_XMIdentityR2, DirectX::XMMatrixRotationRollPitchYaw(m_Rotation[1], m_Rotation[0], 0.0f));
+	}
+
+	void Camera::Flip() 
+	{ 
+		AT_CORE_ASSERT(m_Rotation, "You are accessing a non constructed or a deleted camera")
+
+		m_Rotation[0] = -m_Rotation[0]; m_Rotation[1] = -m_Rotation[1]; m_Rotation[2] = -m_Rotation[2]; CalculateViewMatrix();
+	}
+
+	DirectX::XMMATRIX Camera::GetTransform() 
+	{ 
+		return m_ViewMatrix;
 	}
 
 	void Camera::Translate(DirectX::XMFLOAT3 translation)

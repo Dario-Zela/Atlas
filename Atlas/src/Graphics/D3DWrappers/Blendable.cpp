@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Blendable.h"
 #include "Graphics/DxgiInfoManager.h"
-#include "Graphics\BindableLib.h"
+#include "Graphics/BindableLib.h"
 
 namespace Atlas
 {
@@ -21,6 +21,9 @@ namespace Atlas
 
 		//The descriptor for the blending function
 		D3D11_BLEND_DESC blendingDescriptor = {};
+		
+		AT_CORE_ATTEMPT(blendingDescriptor.RenderTarget[renderTarget]);
+		
 		auto& tex = blendingDescriptor.RenderTarget[renderTarget]; //Specifies which render target is blended
 
 		//If the blending is enabled activate it
@@ -95,12 +98,12 @@ namespace Atlas
 		else
 		{
 			//Log the lack of bindables
-			AT_WARN("There is no blendable that uses the tag {0}", tag)
+			AT_CORE_WARN("There is no blendable that uses the tag {0}", tag)
 			return nullptr;
 		}
 	}
 
-	void Blendable::ImmidiateBind()
+	void Blendable::ImmediateBind()
 	{
 		//Binds the blend function to the pipeline
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetBlendState(m_BlendState.Get(), m_BlendFactor, m_Mask));

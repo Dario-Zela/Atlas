@@ -8,7 +8,9 @@ namespace Atlas
 	class Bindable
 	{
 	public:
-		virtual void ImmidiateBind() = 0;
+		//Binds the resource to the immediate context
+		virtual void ImmediateBind() = 0;
+		//Binds the resource to the given context
 		virtual void Bind(wrl::ComPtr<ID3D11DeviceContext> context) = 0;
 		virtual ~Bindable() = default;
 	};

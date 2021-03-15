@@ -2,13 +2,15 @@
 #include "RenderTarget.h"
 #include "Graphics/Graphics.h"
 #include "Graphics/DxgiInfoManager.h"
-#include "Graphics\D3DWrappers\Texture.h"
+#include "Graphics/D3DWrappers/Texture.h"
 
 namespace Atlas
 {
 	RenderTarget::RenderTarget(uint width, uint height)
 		: m_Width(width), m_Height(height)
 	{
+		AT_CORE_ASSERT(width * height > 0, "The width and height of the render target must be greater then 0")
+
 		//Create the descriptor for the texture 
 		//encapsulating the render target
 		D3D11_TEXTURE2D_DESC textureDesc = {};
@@ -111,14 +113,14 @@ namespace Atlas
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->ClearRenderTargetView(m_RenderTargetView.Get(), color));
 	}
 
-	void RenderTarget::ImmidiateBind()
+	void RenderTarget::ImmediateBind()
 	{
 		//Immediately bind the render target with 
 		//no depth stencil view
-		ImmidiateBind(nullptr);
+		ImmediateBind(nullptr);
 	}
 
-	void RenderTarget::ImmidiateBind(ID3D11DepthStencilView* depthStencilView)
+	void RenderTarget::ImmediateBind(ID3D11DepthStencilView* depthStencilView)
 	{
 		//Immediately bind the render target with the depth stencil view
 		AT_CHECK_GFX_INFO_VOID(Graphics::GetContext()->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), depthStencilView));
