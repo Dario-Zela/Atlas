@@ -3,11 +3,6 @@
 
 namespace Atlas
 {
-	Log::Log()
-	{
-		AT_CORE_ASSERT(!Logger, "You cannot create a logger")
-	}
-
 	void Log::Init(const std::string& filePos)
 	{
 		//The file position is saved

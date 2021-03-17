@@ -11,8 +11,6 @@ namespace Atlas
 	class Log
 	{
 	public:
-		Log();
-
 		//If the data is to be added to a text file
 		//The Init function must be called to initialise it
 		void Init(const std::string& filePos);
