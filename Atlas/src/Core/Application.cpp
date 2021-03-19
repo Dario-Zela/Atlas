@@ -20,28 +20,24 @@ namespace Atlas
 		//For each layer storages, attempt to add or remove the layer
 		for (auto& layer : m_LayersToPush)
 		{
-			layer->OnAttach();
 			AT_CORE_ATTEMPT(m_LayerStack->PushLayer(layer));
 		}
 		m_LayersToPush = std::vector<std::shared_ptr<Layer>>();		//Then clear the vector
 
 		for (auto& layer : m_LayersToPop)
 		{
-			layer->OnDetach();
 			AT_CORE_ATTEMPT(m_LayerStack->PopLayer(layer));
 		}
 		m_LayersToPop = std::vector<std::shared_ptr<Layer>>();			
 
 		for (auto& layer : m_OverlaysToPush)
 		{
-			layer->OnAttach();
 			AT_CORE_ATTEMPT(m_LayerStack->PushOverlay(layer));
 		}
 		m_OverlaysToPush = std::vector<std::shared_ptr<Layer>>();
 
 		for (auto& layer : m_OverlaysToPop)
 		{
-			layer->OnDetach();
 			AT_CORE_ATTEMPT(m_LayerStack->PopOverlay(layer));
 		}
 		m_OverlaysToPop = std::vector<std::shared_ptr<Layer>>();
