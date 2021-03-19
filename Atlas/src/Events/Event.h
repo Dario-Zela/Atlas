@@ -28,10 +28,14 @@ namespace Atlas
 		//Custom classes will use them to differentiate which type is what
 		virtual std::string GetName() const = 0;
 		virtual std::string& ToString() const = 0;
-
+		
+		//Allows the user to handle the event and stop it
+		//from passing to the next layer
+		inline bool HandleEvent() const { m_Handled = true; }
+		
 		//Returns if the event has been handled
-		inline bool IsHandled() const { return mHandled; }
+		inline bool IsHandled() const { return m_Handled; }
 	protected:
-		bool mHandled = false;
+		bool m_Handled = false;
 	};
 }
