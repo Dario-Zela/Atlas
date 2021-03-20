@@ -25,24 +25,34 @@ namespace Atlas
 
 	bool Node::ApplyTransform(const std::string& nodeName, DirectX::XMMATRIX& transform)
 	{
+		//Check if the node to be transformed is this one
 		if (m_Name != nodeName)
 		{
+			//If not and there are no children to check
 			if (m_Children.size() == 0)
+				//Go back
 				return false;
+			//If there are children to check
 			else
 			{
+				//Check each child
 				for (auto& child : m_Children)
+					//If they are the correct child
 					if (child->ApplyTransform(nodeName, transform))
+						//Go back
 						return true;
+				//If none of the children are it, go back
+				return false;
 			}
 		}
+		//If the node is it
 		else
 		{
+			//Set the applied transform
 			SetAppliedTranform(transform);
+			//Go back
 			return true;
 		}
-
-		AT_CORE_ASSERT(false, "The selected node doesn't exist")
 	}
 
 	void Node::Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings)

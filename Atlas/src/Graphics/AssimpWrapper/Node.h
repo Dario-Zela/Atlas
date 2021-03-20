@@ -19,7 +19,7 @@ namespace Atlas
 		DirectX::XMFLOAT4X4& GetAppliedTranfrom();
 
 		//A way to apply a transform to a specific node
-		//By using it's name
+		//By using its name
 		bool ApplyTransform(const std::string& nodeName, DirectX::XMMATRIX& transform);
 
 		//Adds a child node to node

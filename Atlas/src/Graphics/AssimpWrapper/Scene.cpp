@@ -69,7 +69,8 @@ namespace Atlas
 	void Scene::ApplyTransform(const std::string& nodeName, DirectX::XMMATRIX& transform)
 	{
 		//Use recursive node traversal to apply the transform
-		m_RootNode->ApplyTransform(nodeName, transform);
+		//If it returns false, it has failed, and an error should be returned
+		AT_CORE_ASSERT(m_RootNode->ApplyTransform(nodeName, transform), "The selected node doesn't exist")
 	}
 
 	void Scene::AddTechnique(Technique& technique)
