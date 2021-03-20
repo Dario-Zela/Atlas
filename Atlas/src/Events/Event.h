@@ -31,7 +31,7 @@ namespace Atlas
 		
 		//Allows the user to handle the event and stop it
 		//from passing to the next layer
-		inline bool HandleEvent() const { m_Handled = true; }
+		inline bool HandleEvent() { m_Handled = true; }
 		
 		//Returns if the event has been handled
 		inline bool IsHandled() const { return m_Handled; }

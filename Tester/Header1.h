@@ -89,7 +89,7 @@ public:
 		AddBindable(Atlas::Topology::Create());
 	}
 
-	DirectX::XMMATRIX GetTransformXM() override
+	DirectX::XMMATRIX GetTransform() override
 	{
 		std::vector<DirectX::XMFLOAT4> data;
 
@@ -163,7 +163,7 @@ public:
 		AddBindable(Atlas::Topology::Create());
 	}
 
-	DirectX::XMMATRIX GetTransformXM() override
+	DirectX::XMMATRIX GetTransform() override
 	{
 		return DirectX::XMMatrixTranslation(lightPos->x, lightPos->y, lightPos->z) * camera->GetTransform();
 	}
@@ -231,7 +231,7 @@ public:
 		m_Bindables.pop_back();
 	}
 
-	DirectX::XMMATRIX GetTransformXM() override
+	DirectX::XMMATRIX GetTransform() override
 	{
 		return DirectX::XMMatrixIdentity();
 	}
@@ -312,7 +312,7 @@ public:
 		AddBindable(Atlas::Topology::Create());
 	}
 
-	DirectX::XMMATRIX GetTransformXM() override
+	DirectX::XMMATRIX GetTransform() override
 	{
 		std::vector<DirectX::XMFLOAT4> data;
 

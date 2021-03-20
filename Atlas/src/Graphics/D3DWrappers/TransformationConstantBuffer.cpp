@@ -16,13 +16,13 @@ namespace Atlas
 	{
 		//This simply creates the shared ptr as they are unique elements
 		//And should never be cloned
-		return std::move(std::shared_ptr<TransformationConstantBuffer>(std::move(new TransformationConstantBuffer(parent, projection, slot))));
+		return std::shared_ptr<TransformationConstantBuffer>(std::move(new TransformationConstantBuffer(parent, projection, slot)));
 	}
 
 	void TransformationConstantBuffer::ImmediateBind()
 	{
 		//Get's the parent's transformation and adds it to it's projection
-		auto mat = DirectX::XMMatrixTranspose(m_Parent.GetTransformXM() * m_Projection);
+		auto mat = DirectX::XMMatrixTranspose(m_Parent.GetTransform() * m_Projection);
 		//Updates the constant buffer
 		m_VertexBuffer->ImmediateUpdate((void*)&mat, sizeof(mat));
 		//Binds the buffer
@@ -32,7 +32,7 @@ namespace Atlas
 	void TransformationConstantBuffer::Bind(wrl::ComPtr<ID3D11DeviceContext> context)
 	{
 		//Get's the parent's transformation and adds it to it's projection
-		auto mat = DirectX::XMMatrixTranspose(m_Parent.GetTransformXM() * m_Projection);
+		auto mat = DirectX::XMMatrixTranspose(m_Parent.GetTransform() * m_Projection);
 		//Updates the constant buffer
 		m_VertexBuffer->Update((void*)&mat, sizeof(mat), context);
 		//Binds the buffer

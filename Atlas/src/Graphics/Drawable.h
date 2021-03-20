@@ -29,7 +29,7 @@ namespace Atlas
 		void LinkTechniques(RenderGraph& renderGraph);
 
 		//The transform of the object form the origin
-		virtual DirectX::XMMATRIX GetTransformXM() = 0;
+		virtual DirectX::XMMATRIX GetTransform() = 0;
 
 	protected:
 		//Adds a technique to be used by the render graph

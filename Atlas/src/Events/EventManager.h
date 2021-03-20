@@ -41,7 +41,7 @@ namespace Atlas
 		{
 			if (m_Event.GetEventType() == T::GetStaticType())
 			{
-				m_Event.mHandled = func(static_cast<T&>(m_Event));
+				func(static_cast<T&>(m_Event));
 				return true;
 			}
 			return false;

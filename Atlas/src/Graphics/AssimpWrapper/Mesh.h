@@ -18,7 +18,7 @@ namespace Atlas
 		void Draw(DirectX::XMMATRIX& accumulatedTransform, ModelDrawSettings& settings);
 
 		//The transform of the transform constant buffer
-		DirectX::XMMATRIX GetTransformXM() override { return m_Transform; }
+		DirectX::XMMATRIX GetTransform() override { return m_Transform; }
 
 		//Wraps the add technique method to allow the outside to add the technique to the mesh
 		void AddTechniqueWrapper(Technique& technique) { AddTechnique(technique); }
