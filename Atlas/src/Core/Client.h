@@ -12,11 +12,11 @@ typedef UINT uint;
 
 #ifdef AT_ENABLE_LOGGER
 //ClientLogger Macros				 		
-#define AT_TRACE(...)				::Atlas::Logger->Add("Trace", 0, "APP", __VA_ARGS__);
-#define AT_INFO(...)				::Atlas::Logger->Add("Info", 1, "APP", __VA_ARGS__);
-#define AT_WARN(...)				::Atlas::Logger->Add("Warning", 2, "APP", __VA_ARGS__);
-#define AT_ERROR(...)				::Atlas::Logger->Add("Error", 3, "APP", __VA_ARGS__);
-#define AT_CRITICAL(...)			::Atlas::Logger->Add("Critical", 4, "APP", __VA_ARGS__);
+#define AT_TRACE(...)				::Atlas::Log::Logger->Add("Trace", 0, "APP", __VA_ARGS__);
+#define AT_INFO(...)				::Atlas::Log::Logger->Add("Info", 1, "APP", __VA_ARGS__);
+#define AT_WARN(...)				::Atlas::Log::Logger->Add("Warning", 2, "APP", __VA_ARGS__);
+#define AT_ERROR(...)				::Atlas::Log::Logger->Add("Error", 3, "APP", __VA_ARGS__);
+#define AT_CRITICAL(...)			::Atlas::Log::Logger->Add("Critical", 4, "APP", __VA_ARGS__);
 #else
 //ClientLogger Macros			
 #define AT_CRITICAL(...)		

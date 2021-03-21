@@ -14,11 +14,11 @@ typedef UINT uint;
 
 #ifdef AT_ENABLE_LOGGER
 //CoreLogger macros
-#define AT_CORE_TRACE(...)			::Atlas::Logger->Add("Trace", 0, "ATLAS", __VA_ARGS__);
-#define AT_CORE_INFO(...)			::Atlas::Logger->Add("Info", 1,"ATLAS", __VA_ARGS__);
-#define AT_CORE_WARN(...)			::Atlas::Logger->Add("Warning", 2, "ATLAS", __VA_ARGS__);
-#define AT_CORE_ERROR(...)			::Atlas::Logger->Add("Error", 3, "ATLAS", __VA_ARGS__);
-#define AT_CORE_CRITICAL(...)		::Atlas::Logger->Add("Critical", 4, "ATLAS", __VA_ARGS__);
+#define AT_CORE_TRACE(...)			::Atlas::Log::Logger->Add("Trace", 0, "ATLAS", __VA_ARGS__);
+#define AT_CORE_INFO(...)			::Atlas::Log::Logger->Add("Info", 1,"ATLAS", __VA_ARGS__);
+#define AT_CORE_WARN(...)			::Atlas::Log::Logger->Add("Warning", 2, "ATLAS", __VA_ARGS__);
+#define AT_CORE_ERROR(...)			::Atlas::Log::Logger->Add("Error", 3, "ATLAS", __VA_ARGS__);
+#define AT_CORE_CRITICAL(...)		::Atlas::Log::Logger->Add("Critical", 4, "ATLAS", __VA_ARGS__);
 #else
 //CoreLogger macros
 #define AT_CORE_CRITICAL(...)

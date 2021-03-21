@@ -54,6 +54,8 @@ namespace Atlas
 			m_Mutex.unlock();
 		}
 
+		//This allows the log class to be called from the macros
+		static Log* Logger;
 	private:
 		//Wraps a series of chrono function to get the time
 		std::string GetTime();
@@ -62,7 +64,4 @@ namespace Atlas
 		//A mutex to avoid conflicts
 		std::mutex m_Mutex;
 	};
-
-	//This allows the log class to be called from the macros
-	static Log* Logger = new Log();
 }

@@ -156,10 +156,10 @@ namespace Atlas
 				//If the window is not minimised, then update the layer
 				if (!m_Minimised)
 					//As it is a stack it is run from back to front
-					for (auto layer = m_LayerStack->rbegin(); layer != m_LayerStack->rend(); layer++)
+					for (auto layer : *m_LayerStack.get())
 					{
 							if (m_Window->isRunning()) //Keep on updating it while the window is alive
-								AT_CORE_ATTEMPT((*layer)->OnUpdate(timeStep))
+								AT_CORE_ATTEMPT(layer->OnUpdate(timeStep))
 							else
 								goto ForcedExit;
 					}

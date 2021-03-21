@@ -93,13 +93,53 @@ private:
 	int x = 0;
 };
 
+class TestLayer : public Atlas::Layer
+{
+public:
+	TestLayer(std::string name)
+		: Layer(name) {}
+
+	void OnUpdate(Atlas::TimeStep t) override
+	{
+		Sleep(10);
+	}
+
+	//void OnEvent(Atlas::Event& e) override
+	//{
+	//	auto test = Atlas::EventDispatcher(e);
+	//	test.Dispatch<Atlas::KeyPressedEvent>(std::bind(&TestLayer::OnPress, this, std::placeholders::_1));
+	//	test.Dispatch<Atlas::MouseMovedEvent>(std::bind(&TestLayer::OnMove, this, std::placeholders::_1));
+	//	test.Dispatch<Atlas::WindowResizeEvent>(std::bind(&TestLayer::OnResize, this, std::placeholders::_1));
+	//}
+	//
+	//void OnMove(Atlas::MouseMovedEvent& e)
+	//{
+	//	std::cout << e.ToString() << std::endl;
+	//	auto [x, y] = Atlas::Input::GetCursorPosition();
+	//	std::cout << x << "  " << y << std::endl;
+	//}
+	//
+	//void OnPress(Atlas::KeyPressedEvent& e)
+	//{
+	//	std::cout << e.ToString() << std::endl;
+	//	std::cout << Atlas::Input::IsKeyPressed(e.GetKeyCode()) << std::endl;
+	//}
+	//
+	//void OnResize(Atlas::WindowResizeEvent& e)
+	//{
+	//	std::cout << e.ToString() << std::endl;
+	//	auto [x, y] = Atlas::Input::GetWindowSize();
+	//	std::cout << x << "  " << y << std::endl;
+	//}
+};
+
 class TestApp : public Atlas::Application
 {
 public:
 	TestApp()
 		: Atlas::Application("Test", 1024, 700)
 	{
-		PushLayer(std::shared_ptr<Test>(new Test()));
+		PushLayer(std::shared_ptr<TestLayer>(new TestLayer("Layer1")));
 		//PushLayer(new Test2());
 	}
 
@@ -110,4 +150,9 @@ int main()
 {
 	TestApp app;
 	app.Run();
+
+	//std::cout << "OnAttach" << std::endl;
+	//std::cout << "OnUpdate" << std::endl;
+	//std::cout << "OnDetach" << std::endl;
+	//std::cin.get();
 }

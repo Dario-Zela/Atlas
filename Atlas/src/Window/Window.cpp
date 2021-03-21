@@ -231,7 +231,7 @@ namespace Atlas
 
     void Window::AddEvent(Event* e) 
     {
-        AT_CORE_ASSERT(e, "The event that is being added is not initialised")
+       AT_CORE_ASSERT(e, "The event that is being added is not initialised")
 
         m_EventManager->AddEventToQueue(e); 
     }

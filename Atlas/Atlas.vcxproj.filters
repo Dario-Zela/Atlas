@@ -338,5 +338,8 @@
     <ClInclude Include="src\Graphics\D3DWrappers\D3D11CommonHeaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Events\EventDispatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

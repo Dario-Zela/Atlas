@@ -3,6 +3,8 @@
 
 namespace Atlas
 {
+	Log* Log::Logger = new Log();
+
 	void Log::Init(const std::string& filePos)
 	{
 		//The file position is saved
@@ -11,7 +13,7 @@ namespace Atlas
 		{
 			//The file position is tested by creating a bookmark of the current date and time
 			std::ofstream stream(m_File, std::ofstream::app);
-			if (!stream.fail())
+			if (stream.fail())
 				throw std::exception();
 			time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 			tm time = *std::localtime(&now);
