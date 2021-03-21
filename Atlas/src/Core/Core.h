@@ -29,7 +29,7 @@ typedef UINT uint;
 #endif
 
 //Attempt is a try catch macro
-#define AT_CORE_ATTEMPT(x) {try{x;} catch(std::exception& e) { AT_CORE_CRITICAL("[File]:{1}\n[Line]:{2}\n[Description]:{3}", __FILE__,__LINE__, e.what()); }}
+#define AT_CORE_ATTEMPT(x) {try{x;} catch(std::exception& e) { AT_CORE_CRITICAL("[File]:{0}\n[Line]:{1}\n[Description]:{2}", __FILE__,__LINE__, e.what()); }}
 
 //Asserts break the debugger if a condition is false
 //And output the error

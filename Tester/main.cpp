@@ -10,6 +10,10 @@ class Test : public Atlas::Layer
 public:
 	Test()
 	{
+	}
+
+	void OnAttach() override 
+	{
 		camera = new Atlas::Camera(1000, -1000, 10);
 
 		lightPos = new DirectX::XMFLOAT3[4]();
