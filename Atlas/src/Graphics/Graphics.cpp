@@ -6,6 +6,7 @@
 
 #include "Graphics/D3DWrappers/RenderTarget.h"
 #include "Graphics/D3DWrappers/ViewPort.h"
+#include <d3dcompiler.h>
 
 namespace Atlas
 {
@@ -134,5 +135,4 @@ namespace Atlas
 		AT_CORE_ASSERT(s_Instance, "The graphics context has been released or \nit is being used before it has been constructed")
 		return s_Instance->m_RenderTarget;
 	}
-
 }

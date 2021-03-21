@@ -51,15 +51,24 @@ namespace Atlas
 	{
 		AT_CORE_ASSERT(s_Library, "The library not been initialised or it has already been released")
 
+		//Add a list of items to delete
+		std::vector<std::string> toDelete = std::vector<std::string>();
+
 		//Check if any of the items in the library
 		for (auto pairs : *s_Library)
 		{
 			//Only exist in the library
-			if (pairs.second.use_count() == 1)
+			if (pairs.second.use_count() == 2)
 			{
-				//If so, delete them
-				s_Library->erase(pairs.first);
+				//If so, add them to the list
+				toDelete.push_back(pairs.first);
 			}
+		}
+
+		//Then delete them from the list
+		for (auto value : toDelete)
+		{
+			s_Library->erase(value);
 		}
 	}
 }
